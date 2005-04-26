@@ -35,6 +35,8 @@
 #include "gconf-database-dbus.h"
 #endif
 
+#define SYNC_TIMEOUT 5000
+
 /*
  * Forward decls
  */
@@ -184,12 +186,12 @@ gconf_database_schedule_sync(GConfDatabase* db)
   if (db->sync_idle != 0)
     return;
   else if (db->sync_timeout != 0)
-    return;
-  else
     {
-      /* FIXME: Should check the timeout value here. */
-      db->sync_timeout = g_timeout_add(3000, (GSourceFunc)gconf_database_sync_timeout, db);
+      g_source_remove (db->sync_timeout);
+      db->sync_timeout = 0;
     }
+
+  db->sync_timeout = g_timeout_add(SYNC_TIMEOUT, (GSourceFunc)gconf_database_sync_timeout, db);
 }
 
 GConfValue*

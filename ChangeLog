@@ -1,5 +1,12 @@
 2005-04-26  Richard Hult  <richard@imendio.com>
 
+	Disable debug and restore the default conf to the normal one.
+	
+	* gconf/gconf-database.c (gconf_database_schedule_sync): Use a
+	define for the sync timeout, and make it re-schedule a new timeout
+	if we already have one. This makes the syncing group writes that
+	are close in time together.
+
 	* configure.in: Add flag for dbus service files location.
 	Bump version. Add some info when running configure on what options
 	were choosen.

@@ -19,7 +19,6 @@
 
 
 #include <gconf/gconf-backend.h>
-#include <gconf/gconf-internals.h>
 #include <gconf/gconf.h>
 
 #include <stdio.h>
@@ -807,8 +806,9 @@ sync_all (GConfSource *source,
        * set the init state and quit. This will result in an error on the client
        * side and the daemon will be restarted.
        */
-      markup_write_state_write (MARKUP_WRITE_STATE_INIT);
-      gconf_main_quit ();
+      /*markup_write_state_write (MARKUP_WRITE_STATE_INIT);*/
+      /*gconf_main_quit ();*/
+      exit (1);
       
       return FALSE;
     }
@@ -980,8 +980,9 @@ ms_new (const char* root_dir,
 	  gconf_log (GCL_ERR, "Could not get a consistent state");
 
 	  /* Quit as soon as possible. */
-	  markup_write_state_write (MARKUP_WRITE_STATE_INIT);
-	  gconf_main_quit ();
+	  /*markup_write_state_write (MARKUP_WRITE_STATE_INIT);*/
+	  /*gconf_main_quit ();*/
+	  exit (1);
 	}
     }
   

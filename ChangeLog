@@ -1,5 +1,9 @@
 2005-04-26  Richard Hult  <richard@imendio.com>
 
+	* backends/markup-backend.c (sync_all, ms_new): Don't use
+	gconf_main_quit, since it's in the daemon. Just exit instead and
+	don't change the state flag.
+
 	Disable debug and restore the default conf to the normal one.
 	
 	* gconf/gconf-database.c (gconf_database_schedule_sync): Use a

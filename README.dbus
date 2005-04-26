@@ -1,0 +1,33 @@
+Testing GConf/D-BUS
+===================
+
+To test the D-BUS enabled GConf daemon, just start dbus-daemon-1:
+
+dbus-daemon-1 --session --print-address
+
+which will print out the daemon address. Set the environment variable
+DBUS_SESSION_BUS_ADDRESS to the address in order to clients to contact
+it:
+
+export DBUS_SESSION_BUS_ADDRESS={address}
+
+You can now test GConf over D-BUS with for example gconftool:
+
+gconftool-2 --all-dirs /apps
+
+or gconf-editor
+
+Make sure to start gconftool or gconf-editor from a terminal where the
+environment variable has been set.
+
+
+How to get a session bus in GNOME:
+==================================
+
+This is done by starting gnome-session with the dbus-launch tool,
+instead of starting it directly in the session script:
+
+dbus-launch --exit-with-session gnome-session
+
+This causes D-BUS to quit the session bus when you log out, which will
+terminate the GConf server as well.

@@ -1,0 +1,8 @@
+.deps
+.libs
+Makefile.in
+Makefile
+*.lo
+*.la
+xml-test
+gconf-merge-tree

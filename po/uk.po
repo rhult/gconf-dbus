@@ -1,0 +1,2171 @@
+# translation of gconf.HEAD.po to ukrainian
+# translation of gconf.HEAD.uk.po to ukrainian
+# Ukrainian translation of GConf.
+# Copyright (C) 1999,2003 Free Software Foundation, Inc.
+# Yuri Syrota <rasta@renome.rovno.ua>, 1999.
+# Taras Boychuk <btr1@torba.com>, 2003.
+# Maxim Dziumanenko <mvd@mylinux.com.ua>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gconf.HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-09-19 15:28+0200\n"
+"PO-Revision-Date: 2004-03-16 15:47+0200\n"
+"Last-Translator: Maxim Dziumanenko <mvd@mylinux.com.ua>\n"
+"Language-Team: Ukrainian <uk@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: backends/dir-utils.c:108
+#, c-format
+msgid "Couldn't find the %s root directory in the address `%s'"
+msgstr "Не вдається знайти кореневий каталог %s за адресою \"%s\""
+
+#: backends/dir-utils.c:124 backends/xml-backend.c:340
+#, c-format
+msgid "Could not make directory `%s': %s"
+msgstr "Не вдається створити каталог \"%s\": %s"
+
+#: backends/dir-utils.c:212
+#, c-format
+msgid "Can't read from or write to the %s root directory in the address `%s'"
+msgstr ""
+"Неможливо виконати зчитування чи запис в кореневому каталозі %s за адресою "
+"\"%s\""
+
+#: backends/gconf-merge-tree.c:78
+#, c-format
+msgid "Cannot find directory %s\n"
+msgstr "Не вдається знайти каталог %s\n"
+
+#: backends/gconf-merge-tree.c:94
+#, c-format
+msgid "Error saving GConf tree to '%s': %s\n"
+msgstr "Помилка збереження схеми на \"%s\": %s\n"
+
+#: backends/gconf-merge-tree.c:120
+#, c-format
+msgid "Usage: %s <dir>\n"
+msgstr "Використання: %s <каталог>\n"
+
+#: backends/gconf-merge-tree.c:126
+#, c-format
+msgid ""
+"Usage: %s <dir>\n"
+"  Merges a markup backend filesystem hierarchy like:\n"
+"    dir/%%gconf.xml\n"
+"        subdir1/%%gconf.xml\n"
+"        subdir2/%%gconf.xml\n"
+"  to:\n"
+"    dir/%%gconf-tree.xml\n"
+msgstr ""
+"Використання: %s <каталог>\n"
+"  З'єднує ієрархію файлів у вигляді:\n"
+"    каталог/%%gconf.xml\n"
+"        підкаталог1/%%gconf.xml\n"
+"        підкаталог2/%%gconf.xml\n"
+"  у:\n"
+"    каталог/%%gconf-tree.xml\n"
+
+#: backends/xml-backend.c:236
+msgid "Unloading XML backend module."
+msgstr "Вивантаження серверного модуля XML."
+
+#: backends/xml-backend.c:285
+#, c-format
+msgid "Couldn't find the XML root directory in the address `%s'"
+msgstr "Не вдається знайти кореневий каталог XML за адресою \"%s\""
+
+#: backends/xml-backend.c:439
+#, c-format
+msgid ""
+"Can't read from or write to the XML root directory in the address \"%s\""
+msgstr ""
+"Неможливо виконати зчитування чи запис у кореневому каталозі XML за адресою "
+"\"%s\""
+
+#: backends/xml-backend.c:449
+#, c-format
+msgid "Directory/file permissions for XML source at root %s are: %o/%o"
+msgstr "Права каталогу чи файла для джерела XML з коренем %s: %o/%o"
+
+#: backends/xml-backend.c:615
+#, c-format
+msgid "Error syncing the XML backend directory cache: %s"
+msgstr "Помилка синхронізації кеша каталогу серверного модуля XML: %s"
+
+#: backends/xml-backend.c:680
+msgid ""
+"Remove directory operation is no longer supported, just remove all the "
+"values in the directory"
+msgstr ""
+"Операція видалення каталогу більше не підтримується, просто видаліть всі "
+"значення в каталозі"
+
+#: backends/xml-backend.c:766
+#, c-format
+msgid "Could not open lock directory for %s to remove locks: %s\n"
+msgstr ""
+"Неможливо відкрити каталог блокувань для %s, щоб видалити блокування: %s\n"
+
+#: backends/xml-backend.c:784
+#, c-format
+msgid "Could not remove file %s: %s\n"
+msgstr "Неможливо видалити файл %s: %s\n"
+
+#: backends/xml-backend.c:805
+msgid "Initializing XML backend module"
+msgstr "Ініціалізація серверного модуля XML"
+
+#: backends/xml-backend.c:873
+#, c-format
+msgid "Failed to give up lock on XML directory \"%s\": %s"
+msgstr "Не вдається зняти блокування з каталогу XML \"%s\": %s"
+
+#: backends/xml-cache.c:286
+msgid "Failed to sync XML cache contents to disk"
+msgstr "Помилка при збереженні вмісту кеша XML на диск"
+
+#: backends/xml-cache.c:316
+#, c-format
+msgid ""
+"Unable to remove directory `%s' from the XML backend cache, because it has "
+"not been successfully synced to disk"
+msgstr ""
+"Неможливо стерти каталог \"%s\" з кеша серверного модуля XML тому, що його "
+"не було успішно синхронізовано з диском"
+
+#: backends/xml-dir.c:171
+#, c-format
+msgid "Could not stat `%s': %s"
+msgstr "Не вдається отримати властивості \"%s\": %s"
+
+#: backends/xml-dir.c:181
+#, c-format
+msgid "XML filename `%s' is a directory"
+msgstr "XML файл \"%s\" є каталогом"
+
+#: backends/xml-dir.c:416 backends/xml-dir.c:425
+#, c-format
+msgid "Failed to delete \"%s\": %s"
+msgstr "Не вдається видалити \"%s\": %s"
+
+#: backends/xml-dir.c:471
+#, c-format
+msgid "Failed to write file `%s': %s"
+msgstr "Не вдається записати файл \"%s\": %s"
+
+#: backends/xml-dir.c:484
+#, c-format
+msgid "Failed to set mode on `%s': %s"
+msgstr "Помилка при встановленні прав доступу на \"%s\": %s"
+
+#: backends/xml-dir.c:494
+#, c-format
+msgid "Failed to write XML data to `%s': %s"
+msgstr "Помилка при записуванні даних XML в \"%s\": %s"
+
+#: backends/xml-dir.c:504 backends/xml-dir.c:1279
+#, c-format
+msgid "Failed to close file `%s': %s"
+msgstr "Не вдається закрити файл \"%s\": %s"
+
+#: backends/xml-dir.c:520 backends/xml-dir.c:530
+#, c-format
+msgid "Failed to rename `%s' to `%s': %s"
+msgstr "Не вдається перейменувати \"%s\" в \"%s\": %s"
+
+#: backends/xml-dir.c:536
+#, c-format
+msgid "Failed to restore `%s' from `%s': %s"
+msgstr "Не вдається відновити \"%s\" з \"%s\": %s"
+
+#: backends/xml-dir.c:548
+#, c-format
+msgid "Failed to delete old file `%s': %s"
+msgstr "Не вдається видалити старий файл \"%s\": %s"
+
+#. These are all fatal errors
+#: backends/xml-dir.c:978
+#, c-format
+msgid "Failed to stat `%s': %s"
+msgstr "Не вдається отримати властивості \"%s\": %s"
+
+#: backends/xml-dir.c:1152
+#, c-format
+msgid "Duplicate entry `%s' in `%s', ignoring"
+msgstr "Повторний елемент \"%s\" в \"%s\", проігноровано"
+
+#: backends/xml-dir.c:1174
+#, c-format
+msgid "Entry with no name in XML file `%s', ignoring"
+msgstr "Елемент без назви у файлі XML \"%s\", проігноровано"
+
+#: backends/xml-dir.c:1182
+#, c-format
+msgid "A toplevel node in XML file `%s' is <%s> rather than <entry>, ignoring"
+msgstr ""
+"Вузол верхнього рівня у XML-файлі \"%s\" встановлено в <%s> замість <entry>, "
+"проігноровано"
+
+#: backends/xml-dir.c:1255
+#, c-format
+msgid "Could not make directory \"%s\": %s"
+msgstr "Не вдається створити каталог \"%s\": %s"
+
+#: backends/xml-dir.c:1271
+#, c-format
+msgid "Failed to create file `%s': %s"
+msgstr "Не вдається створити файл \"%s\": %s"
+
+#: backends/xml-dir.c:1370
+#, c-format
+msgid "Failed to parse XML file \"%s\""
+msgstr "Помилка при аналізі XML-файла \"%s\""
+
+#. There was an error
+#: backends/xml-entry.c:154
+#, c-format
+msgid "Ignoring XML node with name `%s': %s"
+msgstr "Проігноровано вузол XML з назвою \"%s\": %s"
+
+#: backends/xml-entry.c:332
+#, c-format
+msgid "Ignoring schema name `%s', invalid: %s"
+msgstr "Ігнорується назва схеми \"%s\", помилка: %s"
+
+#: backends/xml-entry.c:380
+#, c-format
+msgid "Ignoring XML node `%s': %s"
+msgstr "Проігноровано XML-вузол \"%s\": %s"
+
+#: backends/xml-entry.c:732
+#, c-format
+msgid "Failed reading default value for schema: %s"
+msgstr "Помилка отримання типового значення схеми: %s"
+
+#: backends/xml-entry.c:952
+#, c-format
+msgid "No \"type\" attribute for <%s> node"
+msgstr "Немає атрибута \"type\" у вузлі <%s>"
+
+#: backends/xml-entry.c:966
+#, c-format
+msgid "A node has unknown \"type\" attribute `%s', ignoring"
+msgstr "Вузол має невідомий атрибут \"type\" - \"%s\", проігноровано"
+
+#: backends/xml-entry.c:981
+msgid "No \"value\" attribute for node"
+msgstr "Немає атрибута \"value\" у вузлі"
+
+#: backends/xml-entry.c:1029 backends/xml-entry.c:1105
+#, c-format
+msgid "Didn't understand XML node <%s> inside an XML list node"
+msgstr "Незрозумілий вузол XML <%s> у вузлі списку XML"
+
+#: backends/xml-entry.c:1063
+msgid "Invalid type (list, pair, or unknown) in a list node"
+msgstr "Неправильний тип (список, пара чи невідомий) у вузлі списку"
+
+#: backends/xml-entry.c:1086
+#, c-format
+msgid "Bad XML node: %s"
+msgstr "Неправильний вузол XML: %s"
+
+#: backends/xml-entry.c:1094
+#, c-format
+msgid "List contains a badly-typed node (%s, should be %s)"
+msgstr "Список містить неправильно оформлений вузол (%s замість %s)"
+
+# car - перший елемент списку
+# cdr - список без першого елемента
+#: backends/xml-entry.c:1146
+#, c-format
+msgid "Ignoring bad car from XML pair: %s"
+msgstr "Ігнорування неправильного ключа для пари XML: %s"
+
+#: backends/xml-entry.c:1155 backends/xml-entry.c:1178
+msgid "parsing XML file: lists and pairs may not be placed inside a pair"
+msgstr ""
+"аналіз файла XML: списки і пари не можуть бути розміщені всередині пари"
+
+#: backends/xml-entry.c:1168
+#, c-format
+msgid "Ignoring bad cdr from XML pair: %s"
+msgstr "Ігнорується неправильне значення для пари XML: %s"
+
+#: backends/xml-entry.c:1187
+#, c-format
+msgid "Didn't understand XML node <%s> inside an XML pair node"
+msgstr "Незрозумілий вузол XML <%s> у вузлі пари XML"
+
+#: backends/xml-entry.c:1205
+msgid "Didn't find car and cdr for XML pair node"
+msgstr "Не знайдено ключ і значення для вузла пари XML"
+
+#: backends/xml-entry.c:1211
+msgid "Missing cdr from pair of values in XML file"
+msgstr "Відсутнє значення для пари у файлі XML"
+
+#: backends/xml-entry.c:1218
+msgid "Missing car from pair of values in XML file"
+msgstr "Відсутній ключ для пари у файлі XML"
+
+#: backends/xml-entry.c:1223
+msgid "Missing both car and cdr values from pair in XML file"
+msgstr "Відсутні ключ і значення для пари у файлі XML"
+
+#. -- end debug only
+#: gconf/gconf-backend.c:167
+#, c-format
+msgid "No such file `%s'\n"
+msgstr "Немає файла \"%s\"\n"
+
+#: gconf/gconf-backend.c:195
+#, c-format
+msgid "Bad address `%s'"
+msgstr "Неправильна адреса - \"%s\""
+
+#: gconf/gconf-backend.c:220
+msgid "GConf won't work without dynamic module support (gmodule)"
+msgstr "GConf не може працювати без підтримки динамічних модулів (gmodule)"
+
+#: gconf/gconf-backend.c:230
+#, c-format
+msgid "Error opening module `%s': %s\n"
+msgstr "Помилка відкриття модуля \"%s\": %s\n"
+
+#: gconf/gconf-backend.c:262
+#, c-format
+msgid "Couldn't locate backend module for `%s'"
+msgstr "Не вдається знайти серверний модуль для \"%s\""
+
+#: gconf/gconf-backend.c:299
+msgid "Failed to shut down backend"
+msgstr "Не вдається вимкнути сервер"
+
+#: gconf/gconf-client.c:344 gconf/gconf-client.c:362
+#, c-format
+msgid "GConf Error: %s\n"
+msgstr "Помилка GConf: %s\n"
+
+#: gconf/gconf-client.c:896
+#, c-format
+msgid "GConf warning: failure listing pairs in `%s': %s"
+msgstr "Попередження GConf: Не вдається отримати список пар в \"%s\": %s"
+
+#: gconf/gconf-client.c:1181
+#, c-format
+msgid "Expected `%s' got `%s' for key %s"
+msgstr "Очікувалось \"%s\", отримано \"%s\" для ключа %s"
+
+#: gconf/gconf-database.c:153
+#, c-format
+msgid "Failed to sync one or more sources: %s"
+msgstr "Не вдається синхронізувати одне чи більше джерел: %s"
+
+#: gconf/gconf-database.c:221 gconf/gconf-sources.c:1563
+#, c-format
+msgid "Error getting value for `%s': %s"
+msgstr "Помилка отримання значення \"%s\": %s"
+
+#: gconf/gconf-database.c:267
+#, c-format
+msgid "Error setting value for `%s': %s"
+msgstr "Помилка встановлення значення для \"%s\": %s"
+
+#: gconf/gconf-database.c:322
+#, c-format
+msgid "Error unsetting `%s': %s"
+msgstr "Помилка зняття значення \"%s\": %s"
+
+#: gconf/gconf-database.c:351
+#, c-format
+msgid "Error getting default value for `%s': %s"
+msgstr "Помилка отримання типового значення \"%s\": %s"
+
+#: gconf/gconf-database.c:398
+#, c-format
+msgid "Error unsetting \"%s\": %s"
+msgstr "Помилка видалення значення \"%s\": %s"
+
+#: gconf/gconf-database.c:430
+#, c-format
+msgid "Error getting new value for \"%s\": %s"
+msgstr "Помилка отримання нового значення для \"%s\": %s"
+
+#: gconf/gconf-database.c:476
+#, c-format
+msgid "Error checking existence of `%s': %s"
+msgstr "Помилка перевірки наявності \"%s\": %s"
+
+#: gconf/gconf-database.c:500
+#, c-format
+msgid "Error removing directory \"%s\": %s"
+msgstr "Помилка видалення каталогу \"%s\": %s"
+
+#: gconf/gconf-database.c:527
+#, c-format
+msgid "Failed to get all entries in `%s': %s"
+msgstr "Не вдається отримати всі елементи в \"%s\": %s"
+
+#: gconf/gconf-database.c:553
+#, c-format
+msgid "Error listing dirs in `%s': %s"
+msgstr "Помилка отримання списку каталогу в \"%s\": %s"
+
+#: gconf/gconf-database.c:574
+#, c-format
+msgid "Error setting schema for `%s': %s"
+msgstr "Помилка отримання схеми для \"%s\": %s"
+
+#: gconf/gconf-error.c:25
+msgid "Success"
+msgstr "Успішно"
+
+#: gconf/gconf-error.c:26
+msgid "Failed"
+msgstr "Збій"
+
+#: gconf/gconf-error.c:27
+msgid "Configuration server couldn't be contacted"
+msgstr "Не встановлено з'єднання з конфігураційним сервером"
+
+#: gconf/gconf-error.c:28
+msgid "Permission denied"
+msgstr "Доступ заборонений"
+
+#: gconf/gconf-error.c:29
+msgid "Couldn't resolve address for configuration source"
+msgstr "Не вдається розпізнати адресу для джерела конфігурації"
+
+#: gconf/gconf-error.c:30
+msgid "Bad key or directory name"
+msgstr "Неправильний ключ чи назва каталогу"
+
+#: gconf/gconf-error.c:31
+msgid "Parse error"
+msgstr "Помилка аналізу"
+
+#: gconf/gconf-error.c:32
+msgid "Corrupt data in configuration source database"
+msgstr "Зіпсовані дані у базі даних джерела конфігурації"
+
+#: gconf/gconf-error.c:33
+msgid "Type mismatch"
+msgstr "Невідповідність типів"
+
+#: gconf/gconf-error.c:34
+msgid "Key operation on directory"
+msgstr "Операція ключа на каталозі"
+
+#: gconf/gconf-error.c:35
+msgid "Directory operation on key"
+msgstr "Операція каталогу на ключі"
+
+#: gconf/gconf-error.c:36
+msgid "Can't overwrite existing read-only value"
+msgstr "Неможливо переписати значення лише для зчитування"
+
+#: gconf/gconf-error.c:37
+msgid "Object Activation Framework error"
+msgstr "Помилка OAF"
+
+#: gconf/gconf-error.c:38
+msgid "Operation not allowed without configuration server"
+msgstr "Операція не доступна без конфігураційного сервера"
+
+#: gconf/gconf-error.c:39
+msgid "Failed to get a lock"
+msgstr "Не вдається встановити блокування"
+
+#: gconf/gconf-error.c:40
+msgid "No database available to save your configuration"
+msgstr "Немає доступної бази даних для збереження вашої конфігурації"
+
+#: gconf/gconf-internals.c:71
+#, c-format
+msgid "No '/' in key \"%s\""
+msgstr "Немає \"/\" в ключі \"%s\""
+
+#: gconf/gconf-internals.c:341
+#, c-format
+msgid "Couldn't open path file `%s': %s\n"
+msgstr "Не вдається відкрити файл шляху \"%s\": %s\n"
+
+#: gconf/gconf-internals.c:390
+#, c-format
+msgid "Adding source `%s'\n"
+msgstr "Додавання джерела \"%s\"\n"
+
+#: gconf/gconf-internals.c:402
+#, c-format
+msgid "Read error on file `%s': %s\n"
+msgstr "Помилка зчитування з файла \"%s\": %s\n"
+
+#: gconf/gconf-internals.c:706 gconf/gconf-internals.c:772
+#: gconf/gconf-value.c:154 gconf/gconf-value.c:253 gconf/gconf-value.c:395
+#: gconf/gconf-value.c:1681
+msgid "Text contains invalid UTF-8"
+msgstr "Текст містить неправильну послідовність UTF-8"
+
+#: gconf/gconf-internals.c:857
+#, c-format
+msgid "Expected list, got %s"
+msgstr "Очікувався список, отримано %s"
+
+#: gconf/gconf-internals.c:867
+#, c-format
+msgid "Expected list of %s, got list of %s"
+msgstr "Очікувався список %s, отримано список %s"
+
+#: gconf/gconf-internals.c:995
+#, c-format
+msgid "Expected pair, got %s"
+msgstr "Очікувалась пара, отримано %s"
+
+#: gconf/gconf-internals.c:1009
+#, c-format
+msgid "Expected (%s,%s) pair, got a pair with one or both values missing"
+msgstr ""
+"Очікувалась пара (%s,%s), отримано пару з неправильними одним або обома "
+"значеннями"
+
+#: gconf/gconf-internals.c:1025
+#, c-format
+msgid "Expected pair of type (%s,%s) got type (%s,%s)"
+msgstr "Очікувалась пара типу (%s,%s) отримано типу (%s,%s)"
+
+#: gconf/gconf-internals.c:1141
+msgid "Quoted string doesn't begin with a quotation mark"
+msgstr "Рядок в лапках не починається з лапки"
+
+#: gconf/gconf-internals.c:1203
+msgid "Quoted string doesn't end with a quotation mark"
+msgstr "Рядок в лапках не закінчується лапкою"
+
+#: gconf/gconf-internals.c:1339
+msgid "Encoded value is not valid UTF-8"
+msgstr "Закодоване значення не є правильною послідовністю UTF-8"
+
+#: gconf/gconf-internals.c:1841
+#, c-format
+msgid "IOR file '%s' not opened successfully, no gconfd located: %s"
+msgstr "Файл IOR \"%s\" не було успішно відкрито, gconfd не виявлено: %s"
+
+#: gconf/gconf-internals.c:1871
+#, c-format
+msgid "gconftool or other non-gconfd process has the lock file '%s'"
+msgstr "gconftool чи інший процес (не gconfd) заблокував файл \"%s\""
+
+#: gconf/gconf-internals.c:1888
+msgid "couldn't contact ORB to resolve existing gconfd object reference"
+msgstr ""
+"Не вдається зв'язатись з ORB для розв'язання дійсного посилання на об'єкт"
+
+#: gconf/gconf-internals.c:1898
+#, c-format
+msgid "Failed to convert IOR '%s' to an object reference"
+msgstr "Помилка на перетворенні IOR \"%s\" в посилання на об'єкт"
+
+#: gconf/gconf-internals.c:1953
+#, c-format
+msgid "Could not lock temporary file '%s': %s"
+msgstr "Не вдається заблокувати тимчасовий файл \"%s\": %s"
+
+#: gconf/gconf-internals.c:1980
+#, c-format
+msgid "Could not create file '%s', probably because it already exists"
+msgstr "Не вдається створити \"%s\", можливо тому, що він вже існує"
+
+#: gconf/gconf-internals.c:2027
+#, c-format
+msgid "Failed to create or open '%s'"
+msgstr "Не вдається створити чи відкрити \"%s\""
+
+#: gconf/gconf-internals.c:2037
+#, c-format
+msgid ""
+"Failed to lock '%s': probably another process has the lock, or your "
+"operating system has NFS file locking misconfigured (%s)"
+msgstr ""
+"Помилка блокування \"%s\": можливо вже заблоковано іншим процесом, чи в "
+"операційній системі неправильно налаштовано файли блокування NFS (%s)"
+
+#: gconf/gconf-internals.c:2121
+#, c-format
+msgid "We didn't have the lock on file `%s', but we should have"
+msgstr "Блокування на файл \"%s\" відсутнє, а має бути"
+
+#: gconf/gconf-internals.c:2142
+#, c-format
+msgid "Failed to link '%s' to '%s': %s"
+msgstr "Не вдається пов'язати \"%s\" з \"%s\": %s"
+
+#: gconf/gconf-internals.c:2154
+#, c-format
+msgid "Failed to remove lock file `%s': %s"
+msgstr "Помилка при видалені файла блокування \"%s\": %s"
+
+#: gconf/gconf-internals.c:2173
+#, c-format
+msgid "Failed to clean up file '%s': %s"
+msgstr "Помилка при очищені файла \"%s\": %s"
+
+#: gconf/gconf-internals.c:2187
+#, c-format
+msgid "Failed to remove lock directory `%s': %s"
+msgstr "Помилка при зніманні блокування каталогу \"%s\": %s"
+
+#: gconf/gconf-internals.c:2224
+#, c-format
+msgid "couldn't create directory `%s': %s"
+msgstr "Не вдається створити каталог \"%s\": %s"
+
+#: gconf/gconf-internals.c:2283
+#, c-format
+msgid "Can't write to file `%s': %s"
+msgstr "Неможливо записати у файл \"%s\": %s"
+
+#: gconf/gconf-internals.c:2327
+#, c-format
+msgid "Failed to unlink lock file %s: %s\n"
+msgstr "Помилка при зніманні посилання файла блокування %s: %s\n"
+
+#: gconf/gconf-sanity-check.c:43 gconf/gconftool.c:86
+msgid "Help options"
+msgstr "Параметри довідки"
+
+#: gconf/gconf-sanity-check.c:79 gconf/gconftool.c:508
+#, c-format
+msgid ""
+"Error on option %s: %s.\n"
+"Run '%s --help' to see a full list of available command line options.\n"
+msgstr ""
+"Помилка в параметрі %s: %s.\n"
+"Виконайте \"%s --help\", щоб побачити повний список наявних параметрів.\n"
+
+#: gconf/gconf-sanity-check.c:144 gconf/gconf-sanity-check.c:169
+#, c-format
+msgid ""
+"Please contact your system administrator to resolve the following problem:\n"
+"Could not open or create the file \"%s\"; this indicates that there may be a "
+"problem with your configuration, as many programs will need to create files "
+"in your home directory. The error was \"%s\" (errno = %d)."
+msgstr ""
+"Зв'яжіться з вашим системним адміністратором для вирішення наступної "
+"проблеми:\n"
+"Не вдається відкрити чи створити файл \"%s\". Це означає, що, можливо, існує "
+"проблема з конфігурацією, бо багатьом програмам буде необхідно створювати "
+"файли у вашому домашньому каталозі. Виникла помилка \"%s\" (errno = %d)."
+
+#: gconf/gconf-sanity-check.c:183
+#, c-format
+msgid ""
+"Please contact your system administrator to resolve the following problem:\n"
+"Could not lock the file \"%s\"; this indicates that there may be a problem "
+"with your operating system configuration. If you have an NFS-mounted home "
+"directory, either the client or the server may be set up incorrectly. See "
+"the rpc.statd and rpc.lockd documentation. A common cause of this error is "
+"that the \"nfslock\" service has been disabled.The error was \"%s\" (errno = "
+"%d)."
+msgstr ""
+"Зв'яжіться з вашим системним адміністратором для вирішення наступної "
+"проблеми:\n"
+"Не вдається заблокувати файл \"%s\". Це означає, що, можливо, існує проблема "
+"з конфігурацією вашої операційної системи. Якщо у вас є змонтований через "
+"NFS домашній каталог, можливо, або сервер, або клієнт налаштовано "
+"неправильно. Подивіться документацію на rpc.statd і rpc.lockd. Загальним "
+"випадком цієї помилки може бути те, що сервіс \"nfslock\" було вимкнено. "
+"Виникла помилка \"%s\" (errno = %d)."
+
+#: gconf/gconf-sanity-check.c:200
+#, c-format
+msgid "Can't remove file %s: %s\n"
+msgstr "Неможливо видалити файл %s: %s\n"
+
+#: gconf/gconf-sanity-check.c:236
+#, c-format
+msgid ""
+"Please contact your system administrator to resolve the following problem:\n"
+"No configuration sources in the configuration file \"%s\"; this means that "
+"preferences and other settings can't be saved. %s%s"
+msgstr ""
+"Зв'яжіться з вашим системним адміністратором для вирішення наступної "
+"проблеми:\n"
+"Немає джерел конфігурації у файлі \"%s\". Це означає, що параметри неможливо "
+"зберегти. %s%s"
+
+#: gconf/gconf-sanity-check.c:239
+msgid "Error reading the file: "
+msgstr "Помилка зчитування файла: "
+
+#: gconf/gconf-sanity-check.c:262
+#, c-format
+msgid ""
+"Please contact your system administrator to resolve the following problem:\n"
+"Could not resolve the address \"%s\" in the configuration file \"%s\": %s"
+msgstr ""
+"Зв'яжіться з вашим системним адміністратором для вирішення наступної "
+"проблеми:\n"
+"Не вдається розв'язати адреси \"%s\" у файлі конфігурації \"%s\": %s"
+
+#: gconf/gconf-sanity-check.c:323
+msgid ""
+"The files that contain your preference settings are currently in use.\n"
+"\n"
+"You might be logged in to a session from another computer, and the other "
+"login session is using your preference settings files.\n"
+"\n"
+"You can continue to use the current session, but this might cause temporary "
+"problems with the preference settings in the other session.\n"
+"\n"
+"Do you want to continue?"
+msgstr ""
+"Файли, які містять задані вами налаштування, вже використовуються.\n"
+"\n"
+"Можливо, ви зареєструвалися з іншого комп'ютера і файл налаштувань "
+"використовується в іншому сеансі.\n"
+"\n"
+"Ви можете продовжувати працювати в даному сеансі, але це може спричинити "
+"тимчасові проблеми з налаштуваннями в іншому сеансі.\n"
+"\n"
+"Бажаєте продовжувати?"
+
+#: gconf/gconf-sanity-check.c:344
+msgid "_Log Out"
+msgstr "_Завершити сеанс"
+
+#: gconf/gconf-sanity-check.c:346
+msgid "_Continue"
+msgstr "_Продовжити"
+
+#: gconf/gconf-sanity-check.c:359
+#, c-format
+msgid "%s Continue (y/n)?"
+msgstr "%s Продовжити (y - так, n - ні)?"
+
+#: gconf/gconf-schema.c:221 gconf/gconf-schema.c:229 gconf/gconf-schema.c:237
+#: gconf/gconf-schema.c:245
+msgid "Schema contains invalid UTF-8"
+msgstr "Схема містить неправильну послідовність UTF-8"
+
+#: gconf/gconf-schema.c:254
+msgid ""
+"Schema specifies type list but doesn't specify the type of the list elements"
+msgstr "Схема визначає тип списку, але не визначає тип елементів списку"
+
+#: gconf/gconf-schema.c:264
+msgid ""
+"Schema specifies type pair but doesn't specify the type of the car/cdr "
+"elements"
+msgstr "Схема визначає тип пари, але не визначає типи для ключа чи значення"
+
+#: gconf/gconf-sources.c:328
+#, c-format
+msgid "Failed to load source \"%s\": %s"
+msgstr "Помилка при завантаженні джерела \"%s\": %s"
+
+#: gconf/gconf-sources.c:368
+#, c-format
+msgid "Resolved address \"%s\" to a writable config source at position %d"
+msgstr ""
+"Розв'язано адресу \"%s\" до конфігураційного джерела з можливістю запису в "
+"позиції %d"
+
+#: gconf/gconf-sources.c:374
+#, c-format
+msgid "Resolved address \"%s\" to a read-only config source at position %d"
+msgstr ""
+"Розв'язано адресу \"%s\" до конфігураційного джерела без можливості запису в "
+"позиції %d"
+
+#: gconf/gconf-sources.c:381
+#, c-format
+msgid ""
+"Resolved address \"%s\" to a partially writable config source at position %d"
+msgstr ""
+"Розв'язано адресу \"%s\" до конфігураційного джерела з можливістю часткового "
+"запису в позиції %d"
+
+#: gconf/gconf-sources.c:390
+msgid ""
+"None of the resolved addresses are writable; saving configuration settings "
+"will not be possible"
+msgstr ""
+"Жодна з розв'язаних адрес не має можливості запису; збереження "
+"конфігураційних параметрів неможливе"
+
+#: gconf/gconf-sources.c:606
+#, c-format
+msgid "Schema `%s' specified for `%s' stores a non-schema value"
+msgstr "Схема \"%s\", вказана для \"%s\", зберігає значення, що не є схемою"
+
+#: gconf/gconf-sources.c:664
+msgid "The '/' name can only be a directory, not a key"
+msgstr "Назва \"/\" може бути лише каталогом, а не ключем"
+
+#: gconf/gconf-sources.c:702
+#, c-format
+msgid ""
+"Value for `%s' set in a read-only source at the front of your configuration "
+"path"
+msgstr ""
+"Значення для \"%s\" встановлено в джерелі лише для зчитування на початку "
+"конфігураційного шляху"
+
+#: gconf/gconf-sources.c:714
+#, c-format
+msgid ""
+"Unable to store a value at key '%s', as the configuration server has no "
+"writable databases. There are some common causes of this problem: 1) your "
+"configuration path file %s/path doesn't contain any databases or wasn't "
+"found 2) somehow we mistakenly created two gconfd processes 3) your "
+"operating system is misconfigured so NFS file locking doesn't work in your "
+"home directory or 4) your NFS client machine crashed and didn't properly "
+"notify the server on reboot that file locks should be dropped. If you have "
+"two gconfd processes (or had two at the time the second was launched), "
+"logging out, killing all copies of gconfd, and logging back in may help. If "
+"you have stale locks, remove ~/.gconf*/*lock. Perhaps the problem is that "
+"you attempted to use GConf from two machines at once, and ORBit still has "
+"its default configuration that prevents remote CORBA connections - put "
+"\"ORBIIOPIPv4=1\" in /etc/orbitrc. As always, check the user.* syslog for "
+"details on problems gconfd encountered. There can only be one gconfd per "
+"home directory, and it must own a lockfile in ~/.gconfd and also lockfiles "
+"in individual storage locations such as ~/.gconf"
+msgstr ""
+"Неможливо зберегти значення ключа \"%s\", бо сервер конфігурації не має баз "
+"даних з можливістю запису. Є кілька загальних причин цієї проблеми: 1) ваш "
+"файл шляху конфігурації %s/шлях не містить бази даних, або його не було "
+"знайдено; 2) було помилково створено два процеси gconfd; 3) вашу операційну "
+"систему неправильно налаштовано і блокування файлів через NFS не працює в "
+"домашньому каталозі; 4) ваша клієнтська машина NFS зазнала збою і "
+"неправильно сповістила сервер на перезавантаженні, що блокування файлів "
+"мають бути скинуті. Якщо запущено два процеси gconfd (чи їх було два в "
+"момент запуску другого), завершіть сеанс, видаліть всі копії gconfd і "
+"зареєструйтеся знову. Якщо залишились старі блокування, видаліть ~/.gconf*/"
+"*lock. Можливо, проблема в спробі використовувати GConf з двох машин "
+"одночасно і ORBit все ще має типову конфігурацію, яка забороняє віддалені "
+"з'єднання CORBA – помістіть \"ORBIIOPIPv4=1\" в /etc/orbitrc. Як завжди, "
+"перевірте user.* в системному журналі про помилки gconfd. Може бути лише "
+"один процес gconfd на домашній каталог, він має володіти блокуванням у  ~/."
+"gconfd і блокуваннями в індивідуальних місцях зберігання, таких як ~/.gconf."
+
+#: gconf/gconf-sources.c:1436
+#, c-format
+msgid "Error finding metainfo: %s"
+msgstr "Помилка пошуку метаінформації: %s"
+
+#: gconf/gconf-sources.c:1505
+#, c-format
+msgid "Error getting metainfo: %s"
+msgstr "Помилка отримання метаінформації: %s"
+
+#: gconf/gconf-sources.c:1529
+#, c-format
+msgid "Key `%s' listed as schema for key `%s' actually stores type `%s'"
+msgstr ""
+"Ключ \"%s\", вказаний як схема для ключа \"%s\", насправді зберігає тип \"%s"
+"\""
+
+#: gconf/gconf-value.c:110
+#, c-format
+msgid "Didn't understand `%s' (expected integer)"
+msgstr "Незрозуміло \"%s\" (очікувалось ціле число)"
+
+#: gconf/gconf-value.c:120
+#, c-format
+msgid "Integer `%s' is too large or small"
+msgstr "Ціле число \"%s\" надто велике чи мале"
+
+#: gconf/gconf-value.c:141
+#, c-format
+msgid "Didn't understand `%s' (expected real number)"
+msgstr "Незрозуміло \"%s\" (очікувалось дійсне число)"
+
+#: gconf/gconf-value.c:185
+#, c-format
+msgid "Didn't understand `%s' (expected true or false)"
+msgstr "Незрозуміло \"%s\" (очікувалось логічне значення)"
+
+#: gconf/gconf-value.c:261
+#, c-format
+msgid "Didn't understand `%s' (list must start with a '[')"
+msgstr "Незрозуміло \"%s\" (список має починатись з \"[\")"
+
+#: gconf/gconf-value.c:274
+#, c-format
+msgid "Didn't understand `%s' (list must end with a ']')"
+msgstr "Незрозуміло \"%s\" (список має закінчуватись на \"]\")"
+
+#: gconf/gconf-value.c:325
+#, c-format
+msgid "Didn't understand `%s' (extra unescaped ']' found inside list)"
+msgstr "Незрозуміле значення \"%s\" (знайдено зайвий знак \"]\" в списку)"
+
+#: gconf/gconf-value.c:356 gconf/gconf-value.c:517
+#, c-format
+msgid "Didn't understand `%s' (extra trailing characters)"
+msgstr "Незрозуміле значення \"%s\" (зайві знаки вкінці)"
+
+#: gconf/gconf-value.c:403
+#, c-format
+msgid "Didn't understand `%s' (pair must start with a '(')"
+msgstr "Незрозуміло \"%s\" (пара має починатись з \"(\")"
+
+#: gconf/gconf-value.c:416
+#, c-format
+msgid "Didn't understand `%s' (pair must end with a ')')"
+msgstr "Незрозуміло \"%s\" (пара має закінчуватись на \")\")"
+
+#: gconf/gconf-value.c:446 gconf/gconf-value.c:532
+#, c-format
+msgid "Didn't understand `%s' (wrong number of elements)"
+msgstr "Незрозуміло \"%s\" (неправильна кількість елементів)"
+
+#: gconf/gconf-value.c:486
+#, c-format
+msgid "Didn't understand `%s' (extra unescaped ')' found inside pair)"
+msgstr "Незрозуміле значення \"%s\" (знайдено зайвий знак \")\" в списку)"
+
+#: gconf/gconf.c:44
+#, c-format
+msgid "Key \"%s\" is NULL"
+msgstr "Ключ \"%s\" — NULL"
+
+#: gconf/gconf.c:51
+#, c-format
+msgid "\"%s\": %s"
+msgstr "\"%s\": %s"
+
+#: gconf/gconf.c:116
+msgid "Must begin with a slash (/)"
+msgstr "Мусить починатися з \"/\""
+
+#: gconf/gconf.c:138
+msgid "Can't have two slashes (/) in a row"
+msgstr "Не може бути два \"/\" в рядку"
+
+#: gconf/gconf.c:140
+msgid "Can't have a period (.) right after a slash (/)"
+msgstr "Не може бути крапки після \"/\""
+
+#: gconf/gconf.c:159
+#, c-format
+msgid "'%c' is not an ASCII character, so isn't allowed in key names"
+msgstr "\"%c\" — неправильний символ в назві ключів"
+
+#: gconf/gconf.c:169
+#, c-format
+msgid "`%c' is an invalid character in key/directory names"
+msgstr "\"%c\" — неправильний символ в назві ключів/каталогів"
+
+#: gconf/gconf.c:183
+msgid "Key/directory may not end with a slash (/)"
+msgstr "Ключ/каталог не може закінчуватись косою (/)"
+
+#: gconf/gconf.c:408
+#, c-format
+msgid "Expected float, got %s"
+msgstr "Очікувалось число з рухомою комою, отримано %s"
+
+#: gconf/gconf.c:443
+#, c-format
+msgid "Expected int, got %s"
+msgstr "Очікувалось ціле, отримано %s"
+
+#: gconf/gconf.c:478
+#, c-format
+msgid "Expected string, got %s"
+msgstr "Очікувався рядок, отримано %s"
+
+#: gconf/gconf.c:512
+#, c-format
+msgid "Expected bool, got %s"
+msgstr "Очікувалось логічне значення, отримано %s"
+
+#: gconf/gconf.c:545
+#, c-format
+msgid "Expected schema, got %s"
+msgstr "Очікувалась схема, отримано %s"
+
+#: gconf/gconfd.c:148
+msgid ""
+"gconfd compiled with debugging; trying to load gconf.path from the source "
+"directory"
+msgstr ""
+"gconfd скомпільовано з налагодженням; спроба завантажити gconf.path з "
+"каталогу вихідних текстів"
+
+#: gconf/gconfd.c:162
+#, c-format
+msgid ""
+"No configuration files found, trying to use the default config source `%s'"
+msgstr ""
+"Не знайдено конфігураційних файлів, спроба використати типове джерело "
+"конфігурації \"%s\""
+
+#. We want to stay alive but do nothing, because otherwise every
+#. request would result in another failed gconfd being spawned.
+#.
+#: gconf/gconfd.c:170
+#, c-format
+msgid ""
+"No configuration sources in the source path, configuration won't be saved; "
+"edit %s"
+msgstr ""
+"Немає джерел конфігурації в шляху джерел, конфігурацію не буде збережено; "
+"відредагувати %s"
+
+#: gconf/gconfd.c:183
+#, c-format
+msgid "Error loading some config sources: %s"
+msgstr "Помилка завантаження деяких джерел конфігурації: %s"
+
+#: gconf/gconfd.c:195
+msgid ""
+"No config source addresses successfully resolved, can't load or store config "
+"data"
+msgstr ""
+"Адресу конфігурації не було успішно розпізнано, неможливо завантажити чи "
+"зберегти конфігураційні дані"
+
+#: gconf/gconfd.c:212
+msgid ""
+"No writable config sources successfully resolved, may not be able to save "
+"some configuration changes"
+msgstr ""
+"Не було успішно розпізнано джерела конфігурації, в які можна записувати, "
+"можливо, деякі зміни конфігурації не вдасться зберегти"
+
+#: gconf/gconfd.c:238
+#, c-format
+msgid "Received signal %d, dumping core. Please report a GConf bug."
+msgstr ""
+"Отримано сигнал %d, скидання ядра. Будь ласка, повідомте про цю помилку в "
+"GConf."
+
+#: gconf/gconfd.c:256
+#, c-format
+msgid ""
+"Received signal %d, shutting down abnormally. Please file a GConf bug report."
+msgstr ""
+"Отримано сигнал %d, ненормальне завершення роботи. Будь ласка, повідомте про "
+"цю помилку."
+
+#: gconf/gconfd.c:273
+#, c-format
+msgid "Received signal %d, shutting down cleanly"
+msgstr "Отримано сигнал %d, нормальне завершення роботи."
+
+#: gconf/gconfd.c:342
+#, c-format
+msgid "Failed to open %s: %s"
+msgstr "Не вдалося відкрити \"%s\": %s"
+
+#: gconf/gconfd.c:349
+#, c-format
+msgid "Failed to stat %s: %s"
+msgstr "Помилка при виконанні stat для \"%s\": %s"
+
+#: gconf/gconfd.c:358
+#, c-format
+msgid "Owner of %s is not the current user"
+msgstr "Власник %s не є поточним користувачем"
+
+#: gconf/gconfd.c:366
+#, c-format
+msgid "Bad permissions %lo on directory %s"
+msgstr "Неправильні права доступу %lo для каталогу %s"
+
+#. openlog() does not copy logname - what total brokenness.
+#. So we free it at the end of main()
+#: gconf/gconfd.c:446
+#, c-format
+msgid "starting (version %s), pid %u user '%s'"
+msgstr "запуск (версія %s), процес %u користувача \"%s\""
+
+#: gconf/gconfd.c:485
+#, c-format
+msgid "Failed to create %s: %s"
+msgstr "Помилка при створенні %s: %s"
+
+#: gconf/gconfd.c:493
+#, c-format
+msgid "Directory %s has a problem, gconfd can't use it"
+msgstr "Каталог %s має проблеми, gconfd не може його використовувати"
+
+#: gconf/gconfd.c:529
+#, c-format
+msgid "Failed to write byte to pipe fd %d so client program may hang: %s"
+msgstr ""
+"Помилка запису байта в канал fd %d, клієнтська програма могла зависнути: %s"
+
+#: gconf/gconfd.c:543
+#, c-format
+msgid "Failed to get lock for daemon, exiting: %s"
+msgstr "Помилка при отриманні блокування для процесу, завершення роботи: %s"
+
+#: gconf/gconfd.c:585
+#, c-format
+msgid "Error releasing lockfile: %s"
+msgstr "Помилка на звільненні файла блокування: %s"
+
+#: gconf/gconfd.c:593
+msgid "Exiting"
+msgstr "Завершення"
+
+#: gconf/gconfd.c:636
+msgid "GConf server is not in use, shutting down."
+msgstr "Сервер GConf не використовується, завершення роботи."
+
+#: gconf/gconftool.c:95
+msgid "Set a key to a value and sync. Use with --type."
+msgstr ""
+"Встановити значення для ключа і синхронізувати. Використовується з --type."
+
+#: gconf/gconftool.c:104
+msgid "Print the value of a key to standard output."
+msgstr "Вивести значення ключа у стандартний вивід."
+
+#: gconf/gconftool.c:113
+msgid ""
+"Set a schema and sync. Use with --short-desc, --long-desc, --owner, and --"
+"type."
+msgstr ""
+"Встановити схему і синхронізувати. Використовується з --short-desc, --long-"
+"desc, --owner і --type."
+
+#: gconf/gconftool.c:123
+msgid "Unset the keys on the command line"
+msgstr "Зняти значення ключів в командному рядку"
+
+#: gconf/gconftool.c:132
+msgid ""
+"Recursively unset all keys at or below the key/directory names on the "
+"command line"
+msgstr ""
+"Рекурсивно знімає встановлення всіх ключів цього і нижчих ключів і каталогів "
+"у командному рядку"
+
+#: gconf/gconftool.c:141
+msgid "Print all key/value pairs in a directory."
+msgstr "Вивести усі пари ключі/значення в каталозі."
+
+#: gconf/gconftool.c:150
+msgid "Print all subdirectories in a directory."
+msgstr "Вивести усі підкаталоги в каталозі."
+
+#: gconf/gconftool.c:159
+msgid ""
+"Dump to standard out an XML description of all entries under a dir, "
+"recursively."
+msgstr ""
+"Вивести на пристрій стандартного видову у форматі XML описи усього вмісту "
+"каталогу, рекурсивно."
+
+#: gconf/gconftool.c:168
+msgid ""
+"Load from the specified file an XML description of values and set them "
+"relative to a dir."
+msgstr ""
+"Завантажити з вказаного файла в форматі XML описи вмісту і встановити їх для "
+"каталогу."
+
+#: gconf/gconftool.c:177
+msgid "Print all subdirectories and entries under a dir, recursively."
+msgstr "Вивести всі підкаталоги та рядки каталогу рекурсивно."
+
+#: gconf/gconftool.c:186
+msgid "Return 0 if the directory exists, 2 if it does not."
+msgstr "Повернути 0, якщо каталог існує, 2, якщо ні."
+
+#: gconf/gconftool.c:195
+msgid "Shut down gconfd. DON'T USE THIS OPTION WITHOUT GOOD REASON."
+msgstr "Вимкнути gconfd. НЕ ВИКОРИСТОВУЙТЕ ЦЕЙ ПАРАМЕТР БЕЗ ВАГОМОЇ ПРИЧИНИ."
+
+#: gconf/gconftool.c:204
+msgid "Return 0 if gconfd is running, 2 if not."
+msgstr "Повернути 0, якщо gconfd виконується, 2, якщо ні"
+
+#: gconf/gconftool.c:213
+msgid ""
+"Launch the config server (gconfd). (Normally happens automatically when "
+"needed.)"
+msgstr ""
+"Запустити конфігураційний сервер (gconfd) (Звичайно запускається автоматично "
+"при потребі)."
+
+#: gconf/gconftool.c:222
+msgid ""
+"Specify the type of the value being set, or the type of the value a schema "
+"describes. Unique abbreviations OK."
+msgstr ""
+"Вказує тип значення, що встановлюється, або тип значення, що описується "
+"схемою. Унікальні абревіатури повністю підходять."
+
+#: gconf/gconftool.c:223
+msgid "int|bool|float|string|list|pair"
+msgstr "int|bool|float|string|list|pair"
+
+#: gconf/gconftool.c:231
+msgid "Print the data type of a key to standard output."
+msgstr "Вивести тип значення ключа у стандартний вивід."
+
+#: gconf/gconftool.c:240
+msgid "Get the number of elements in a list key."
+msgstr "Отримати кількість елементів в ключі списку."
+
+#: gconf/gconftool.c:249
+msgid "Get a specific element from a list key, numerically indexed."
+msgstr "Отримати певний елемент із ключа списку за номером"
+
+#: gconf/gconftool.c:258
+msgid ""
+"Specify the type of the list value being set, or the type of the value a "
+"schema describes. Unique abbreviations OK."
+msgstr ""
+"Вказує тип значення списку, що встановлюється, або тип значення, що "
+"описується схемою. Унікальні абревіатури повністю підходять."
+
+#: gconf/gconftool.c:259 gconf/gconftool.c:268 gconf/gconftool.c:277
+msgid "int|bool|float|string"
+msgstr "int|bool|float|string"
+
+#: gconf/gconftool.c:267
+msgid ""
+"Specify the type of the car pair value being set, or the type of the value a "
+"schema describes. Unique abbreviations OK."
+msgstr ""
+"Вказує тип значення ключа пари, що встановлюється, або тип значення, що "
+"описується схемою. Унікальні абревіатури повністю підходять."
+
+#: gconf/gconftool.c:276
+msgid ""
+"Specify the type of the cdr pair value being set, or the type of the value a "
+"schema describes. Unique abbreviations OK."
+msgstr ""
+"Вказує тип значення пари, що встановлюється, або тип значення, що описується "
+"схемою. Унікальні абревіатури повністю підходять."
+
+#: gconf/gconftool.c:285
+msgid "Specify a short half-line description to go in a schema."
+msgstr "Вказує короткий (половину рядка) опис схеми."
+
+#: gconf/gconftool.c:286 gconf/gconftool.c:295
+msgid "DESCRIPTION"
+msgstr "ОПИС"
+
+#: gconf/gconftool.c:294
+msgid "Specify a several-line description to go in a schema."
+msgstr "Вказує багаторядний опис до схеми."
+
+#: gconf/gconftool.c:303
+msgid "Specify the owner of a schema"
+msgstr "Вказує власника схеми"
+
+#: gconf/gconftool.c:304
+msgid "OWNER"
+msgstr "ВЛАСНИК"
+
+#: gconf/gconftool.c:312
+msgid "Specify a schema file to be installed"
+msgstr "Вказує файл схеми для встановлення"
+
+#: gconf/gconftool.c:313
+msgid "FILENAME"
+msgstr "НАЗВА ФАЙЛА"
+
+#: gconf/gconftool.c:321
+msgid "Specify a configuration source to use rather than the default path"
+msgstr "Вказує джерело конфігурації, що має перевагу над типовим шляхом"
+
+#: gconf/gconftool.c:322
+msgid "SOURCE"
+msgstr "ДЖЕРЕЛО"
+
+#: gconf/gconftool.c:330
+msgid ""
+"Access the config database directly, bypassing server. Requires that gconfd "
+"is not running."
+msgstr ""
+"Безпосередній доступ до бази даних конфігурації, обминаючи сервер, вимагає "
+"зупинки gconfd."
+
+#: gconf/gconftool.c:339
+msgid ""
+"Properly installs schema files on the command line into the database. "
+"GCONF_CONFIG_SOURCE environment variable should be set to a non-default "
+"config source or set to the empty string to use the default."
+msgstr ""
+"Коректно встановлює файли схеми, вказані в командному рядку, в базу даних. "
+"Змінна середовища GCONF_CONFIG_SOURCE має бути встановлена в значення шляху "
+"до джерела, чи лишитися порожньою для використання типового значення."
+
+#: gconf/gconftool.c:348
+msgid ""
+"Properly uninstalls schema files on the command line from the database. "
+"GCONF_CONFIG_SOURCE environment variable should be set to a non-default "
+"config source or set to the empty string to use the default."
+msgstr ""
+"Коректно вилучає з бази даних файли схеми, вказані в командному рядку. "
+"Змінна середовища GCONF_CONFIG_SOURCE має бути встановлена в значення "
+"нетипового шляху до джерела чи лишитися порожньою для використання типового "
+"значення."
+
+#: gconf/gconftool.c:357
+msgid ""
+"Torture-test an application by setting and unsetting a bunch of values of "
+"different types for keys on the command line."
+msgstr ""
+"Ретельно перевірити програму встановленням і видаленням великої кількості "
+"різних типів значень для ключів з командного рядка."
+
+#: gconf/gconftool.c:366
+msgid ""
+"Torture-test an application by setting and unsetting a bunch of keys inside "
+"the directories on the command line."
+msgstr ""
+"Ретельно перевірити програму встановленням і видаленням великої кількості "
+"ключів всередині каталогів з командного рядка."
+
+#: gconf/gconftool.c:375
+msgid "Get the short doc string for a key"
+msgstr "Отримати короткий опис ключа"
+
+#: gconf/gconftool.c:384
+msgid "Get the long doc string for a key"
+msgstr "Отримати розгорнутий опис ключа"
+
+#: gconf/gconftool.c:393
+msgid "Get the name of the schema applied to this key"
+msgstr "Отримати назву схеми, яку було застосовано до цього ключа"
+
+#: gconf/gconftool.c:402
+msgid "Specify the schema name followed by the key to apply the schema name to"
+msgstr "Вказати назву схеми і ключ, до якого буде застосовано схему"
+
+#: gconf/gconftool.c:411
+msgid "Remove any schema name applied to the given keys"
+msgstr "Видалити будь-яку назву схеми, яку застосовано до цього ключа"
+
+#: gconf/gconftool.c:420
+msgid "Get the name of the default source"
+msgstr "Отримати назву типового джерела"
+
+#: gconf/gconftool.c:429
+msgid "Print version"
+msgstr "Вивести версію"
+
+#: gconf/gconftool.c:526
+msgid "Can't get and set/unset simultaneously\n"
+msgstr "Не можна зчитувати та встановлювати/знімати значення одночасно\n"
+
+#: gconf/gconftool.c:536
+msgid "Can't set and get/unset simultaneously\n"
+msgstr "Не можна встановлювати та зчитувати/знімати значення одночасно\n"
+
+#: gconf/gconftool.c:543
+msgid "Can't get type and set/unset simultaneously\n"
+msgstr "Не можна отримувати та встановлювати/знімати значення одночасно\n"
+
+#: gconf/gconftool.c:554
+msgid "Can't use --all-entries with --get or --set\n"
+msgstr ""
+"Не можна використовувати параметр --all-entries разом з параметрами --get чи "
+"--set\n"
+
+#: gconf/gconftool.c:565
+msgid "Can't use --all-dirs with --get or --set\n"
+msgstr "Не можна використовувати --all-dirs з --get чи --set\n"
+
+#: gconf/gconftool.c:578
+msgid ""
+"--recursive-list should not be used with --get, --set, --unset, --all-"
+"entries, or --all-dirs\n"
+msgstr ""
+"--recursive-list не можне бути використано з --get, --set, --unset, --all-"
+"entries чи --all-dirs\n"
+
+#: gconf/gconftool.c:591
+msgid ""
+"--set_schema should not be used with --get, --set, --unset, --all-entries, --"
+"all-dirs\n"
+msgstr ""
+"--set_schema не можне бути використано з --get, --set, --unset, --all-"
+"entries чи --all-dirs\n"
+
+#: gconf/gconftool.c:597
+msgid "Value type is only relevant when setting a value\n"
+msgstr "Тип має зміст лише при встановленні значення\n"
+
+#: gconf/gconftool.c:603
+msgid "Must specify a type when setting a value\n"
+msgstr "Потрібно вказувати тип при встановленні значення\n"
+
+#: gconf/gconftool.c:615 gconf/gconftool.c:628 gconf/gconftool.c:641
+#: gconf/gconftool.c:655 gconf/gconftool.c:668 gconf/gconftool.c:681
+#: gconf/gconftool.c:695
+#, c-format
+msgid "%s option must be used by itself.\n"
+msgstr "Параметр %s повинен використовуватись сам по собі.\n"
+
+#: gconf/gconftool.c:704
+msgid ""
+"You must specify a config source with --config-source when using --direct\n"
+msgstr ""
+"Необхідно вказати джерело конфігурації за допомогою параметра --config-"
+"source, коли використовується параметр --direct\n"
+
+#: gconf/gconftool.c:710
+msgid "You should use --direct when using a non-default configuration source\n"
+msgstr ""
+"Бажано використовувати параметр --direct, коли використовується нетипове "
+"джерело конфігурації\n"
+
+#: gconf/gconftool.c:716
+#, c-format
+msgid "Failed to init GConf: %s\n"
+msgstr "Помилка при ініціалізації GConf: %s\n"
+
+#: gconf/gconftool.c:745
+msgid "GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL is set, not installing schemas\n"
+msgstr ""
+"Змінну середовища GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL встановлено, схеми "
+"не встановлюються\n"
+
+#: gconf/gconftool.c:752
+msgid ""
+"GCONF_DISABLE_MAKEFILE_SCHEMA_UNINSTALL is set, not uninstalling schemas\n"
+msgstr ""
+"GCONF_DISABLE_MAKEFILE_SCHEMA_UNINSTALL встановлено, схеми не вилучаються\n"
+
+#: gconf/gconftool.c:765
+msgid "Must set the GCONF_CONFIG_SOURCE environment variable\n"
+msgstr "Необхідно встановити змінну середовища GCONF_CONFIG_SOURCE\n"
+
+#: gconf/gconftool.c:794
+#, c-format
+msgid "Failed to access configuration source(s): %s\n"
+msgstr "Помилка доступу до джерела конфігурації(й): %s\n"
+
+#: gconf/gconftool.c:1085
+#, c-format
+msgid "Shutdown error: %s\n"
+msgstr "Помилка вимкнення: %s\n"
+
+#: gconf/gconftool.c:1128
+msgid "Must specify one or more directories to recursively list.\n"
+msgstr "Необхідно вказати принаймні один каталог для рекурсивного списку.\n"
+
+#: gconf/gconftool.c:1180
+msgid "Must specify one or more directories to dump.\n"
+msgstr "Потрібно вказати принаймні один каталог для виводу.\n"
+
+#: gconf/gconftool.c:1222 gconf/gconftool.c:1487
+#, c-format
+msgid "Failure listing entries in `%s': %s\n"
+msgstr "Помилка при перерахуванні записів у \"%s\": %s\n"
+
+#: gconf/gconftool.c:1240
+msgid "(no value set)"
+msgstr "(значення не встановлено)"
+
+#: gconf/gconftool.c:1545
+#, c-format
+msgid "Failed to spawn the config server (gconfd): %s\n"
+msgstr "Не вдається породити сервер конфігурації (gconfd): %s\n"
+
+#: gconf/gconftool.c:1559
+msgid "Must specify a key or keys to get\n"
+msgstr "Потрібно вказати ключ або ключі для отримання\n"
+
+#: gconf/gconftool.c:1594
+#, c-format
+msgid "Type: %s\n"
+msgstr "Тип: %s\n"
+
+#: gconf/gconftool.c:1595
+#, c-format
+msgid "List Type: %s\n"
+msgstr "Тип списку: %s\n"
+
+#: gconf/gconftool.c:1596
+#, c-format
+msgid "Car Type: %s\n"
+msgstr "Тип ключа: %s\n"
+
+#: gconf/gconftool.c:1597
+#, c-format
+msgid "Cdr Type: %s\n"
+msgstr "Тип значення: %s\n"
+
+#: gconf/gconftool.c:1602
+#, c-format
+msgid "Default Value: %s\n"
+msgstr "Типове значення: %s\n"
+
+#: gconf/gconftool.c:1602 gconf/gconftool.c:1604 gconf/gconftool.c:1605
+#: gconf/gconftool.c:1606
+msgid "Unset"
+msgstr "Зняти значення"
+
+#: gconf/gconftool.c:1604
+#, c-format
+msgid "Owner: %s\n"
+msgstr "Власник: %s\n"
+
+#: gconf/gconftool.c:1605
+#, c-format
+msgid "Short Desc: %s\n"
+msgstr "Короткий опис: %s\n"
+
+#: gconf/gconftool.c:1606
+#, c-format
+msgid "Long Desc: %s\n"
+msgstr "Докладний опис: %s\n"
+
+#: gconf/gconftool.c:1615 gconf/gconftool.c:1839 gconf/gconftool.c:1873
+#: gconf/gconftool.c:1918 gconf/gconftool.c:2063
+#, c-format
+msgid "No value set for `%s'\n"
+msgstr "Не встановлено значення для \"%s\"\n"
+
+#: gconf/gconftool.c:1619 gconf/gconftool.c:1843 gconf/gconftool.c:1877
+#: gconf/gconftool.c:1922 gconf/gconftool.c:2067
+#, c-format
+msgid "Failed to get value for `%s': %s\n"
+msgstr "Не вдається отримати значення для \"%s\": %s\n"
+
+#: gconf/gconftool.c:1662 gconf/gconftool.c:1674
+#, c-format
+msgid "Don't understand type `%s'\n"
+msgstr "Незрозумілий тип \"%s\"\n"
+
+#: gconf/gconftool.c:1686
+msgid "Must specify alternating keys/values as arguments\n"
+msgstr "Потрібно вказати змінювані ключі й значення як аргументи\n"
+
+#: gconf/gconftool.c:1706
+#, c-format
+msgid "No value to set for key: `%s'\n"
+msgstr "Немає значення для ключа: \"%s\"\n"
+
+#: gconf/gconftool.c:1734
+msgid "Cannot set schema as value\n"
+msgstr "Неможливо встановити схему як значення\n"
+
+#: gconf/gconftool.c:1744
+msgid "When setting a list you must specify a primitive list-type\n"
+msgstr "Потрібно вказувати примітивний списковий тип\n"
+
+#: gconf/gconftool.c:1758
+msgid ""
+"When setting a pair you must specify a primitive car-type and cdr-type\n"
+msgstr "Потрібно вказувати примітивні типи для значення і ключа\n"
+
+#: gconf/gconftool.c:1773
+#, c-format
+msgid "Error: %s\n"
+msgstr "Помилка: %s\n"
+
+#: gconf/gconftool.c:1786 gconf/gconftool.c:2815
+#, c-format
+msgid "Error setting value: %s\n"
+msgstr "Помилка встановлення значення: %s\n"
+
+#: gconf/gconftool.c:1804
+#, c-format
+msgid "Error syncing: %s\n"
+msgstr "Помилка синхронізації: %s\n"
+
+#: gconf/gconftool.c:1819
+msgid "Must specify a key or keys to get type\n"
+msgstr "Потрібно вказати ключ або ключі для отримання типу\n"
+
+#: gconf/gconftool.c:1863
+msgid "Must specify a key to lookup size of.\n"
+msgstr "Потрібно вказати ключ для отримання розміру\n"
+
+#: gconf/gconftool.c:1888 gconf/gconftool.c:1933
+#, c-format
+msgid "Key %s is not a list.\n"
+msgstr "Ключ \"%s\" не є списком\n"
+
+#: gconf/gconftool.c:1908
+msgid "Must specify a key from which to get list element.\n"
+msgstr "Потрібно вказати ключ, з якого отримати елемент списку\n"
+
+#: gconf/gconftool.c:1939
+msgid "Must specify list index.\n"
+msgstr "Потрібно вказати індекс в списку.\n"
+
+#: gconf/gconftool.c:1946
+msgid "List index must be non-negative.\n"
+msgstr "Індекс в списку не може мати від'ємне значення.\n"
+
+#: gconf/gconftool.c:1955
+msgid "List index is out of bounds.\n"
+msgstr "Індекс в списку виходить за межі діапазону.\n"
+
+#: gconf/gconftool.c:1981
+msgid "Must specify a key or keys on the command line\n"
+msgstr "Необхідно вказати ключ або ключі в командному рядку\n"
+
+#: gconf/gconftool.c:2001
+#, c-format
+msgid "No schema known for `%s'\n"
+msgstr "Невідома схема для \"%s\"\n"
+
+#: gconf/gconftool.c:2034
+#, c-format
+msgid "No doc string stored in schema at '%s'\n"
+msgstr "В схемі відсутній опис на \"%s\"\n"
+
+#: gconf/gconftool.c:2039
+#, c-format
+msgid "Error getting schema at '%s': %s\n"
+msgstr "Помилка отримання схеми на \"%s\": %s\n"
+
+#: gconf/gconftool.c:2046
+#, c-format
+msgid "No schema stored at '%s'\n"
+msgstr "Відсутня схема на \"%s\"\n"
+
+#: gconf/gconftool.c:2049
+#, c-format
+msgid "Value at '%s' is not a schema\n"
+msgstr "Значення на \"%s\" не є схемою\n"
+
+#: gconf/gconftool.c:2105
+msgid "Must specify a schema name followed by the key name to apply it to\n"
+msgstr "Необхідно вказати назву схеми і ключа, до якого застосувати схему\n"
+
+#: gconf/gconftool.c:2112
+#, c-format
+msgid "Error associating schema name '%s' with key name '%s': %s\n"
+msgstr "Помилка пов'язування назви схеми \"%s\" з назвою ключа \"%s\": %s\n"
+
+#: gconf/gconftool.c:2130
+msgid "Must specify keys to unapply schema from\n"
+msgstr "Потрібно вказати ключ для скасування застосування схеми з\n"
+
+#: gconf/gconftool.c:2140
+#, c-format
+msgid "Error removing schema name from '%s': %s\n"
+msgstr "Помилка видалення назви схеми з \"%s\": %s\n"
+
+#: gconf/gconftool.c:2165
+msgid "Must specify key (schema name) as the only argument\n"
+msgstr "Потрібно вказати ключ (назву схеми), як єдиний аргумент\n"
+
+#: gconf/gconftool.c:2207
+msgid "List type must be a primitive type: string, int, float or bool\n"
+msgstr "Список має мати простий тип: string, int, float чи bool\n"
+
+#: gconf/gconftool.c:2227
+msgid "Pair car type must be a primitive type: string, int, float or bool\n"
+msgstr "Тип ключа пари має бути простим: string, int, float чи bool\n"
+
+#: gconf/gconftool.c:2247
+msgid "Pair cdr type must be a primitive type: string, int, float or bool\n"
+msgstr "Тип значення пари має бути простим: string, int, float чи bool\n"
+
+#: gconf/gconftool.c:2262
+#, c-format
+msgid "Error setting value: %s"
+msgstr "Помилка встановлення значення: %s"
+
+#: gconf/gconftool.c:2276
+#, c-format
+msgid "Error syncing: %s"
+msgstr "Помилка синхронізації: %s"
+
+#: gconf/gconftool.c:2291
+msgid "Must specify one or more directories to get key/value pairs from.\n"
+msgstr ""
+"Потрібно вказати принаймні один каталог для отримання звідти пар \"ключ-"
+"значення\".\n"
+
+#: gconf/gconftool.c:2305
+msgid "Must specify one or more keys to unset.\n"
+msgstr "Потрібно вказати один або більше ключів для зняття значення.\n"
+
+#: gconf/gconftool.c:2316
+#, c-format
+msgid "Error unsetting `%s': %s\n"
+msgstr "Помилка зняття значення \"%s\": %s\n"
+
+#: gconf/gconftool.c:2336
+msgid "Must specify one or more keys to recursively unset.\n"
+msgstr "Необхідно вказати один чи більше ключів для рекурсивного видалення.\n"
+
+#: gconf/gconftool.c:2350
+#, c-format
+msgid "Failure during recursive unset of \"%s\": %s\n"
+msgstr "Помилка під час рекурсивного видалення \"%s\": %s\n"
+
+#: gconf/gconftool.c:2370
+msgid "Must specify one or more directories to get subdirs from.\n"
+msgstr ""
+"Потрібно вказати принаймні один каталог для отримання звідти підкаталогів.\n"
+
+#: gconf/gconftool.c:2404
+#, c-format
+msgid "Error listing dirs: %s\n"
+msgstr "Помилка отримання списку каталогів: %s\n"
+
+#: gconf/gconftool.c:2540
+msgid "WARNING: must specify both a <car> and a <cdr> in a <pair>\n"
+msgstr "УВАГА: потрібно задати як <car>, так і <cdr> в <pair>\n"
+
+#: gconf/gconftool.c:2567
+#, c-format
+msgid "WARNING: key specified (%s) for schema under a <value> - ignoring\n"
+msgstr ""
+"УВАГА: вказано ключ (%s) для схеми зі значенням  <value>, проігноровано\n"
+
+#: gconf/gconftool.c:2600
+msgid "WARNING: must have a child node under <value>\n"
+msgstr "УВАГА: потрібна наявність підпорядкованого вузла для <value>\n"
+
+#: gconf/gconftool.c:2606
+#, c-format
+msgid "WARNING: node <%s> not understood\n"
+msgstr "УВАГА: вузол <%s> незрозумілий\n"
+
+#: gconf/gconftool.c:2624
+#, c-format
+msgid "WARNING: Failed to parse int value `%s'\n"
+msgstr "УВАГА: Не вдається проаналізувати значення типу int \"%s\"\n"
+
+#: gconf/gconftool.c:2645
+#, c-format
+msgid "WARNING: Failed to parse float value `%s'\n"
+msgstr "УВАГА: Не вдається проаналізувати значення типу float \"%s\"\n"
+
+#: gconf/gconftool.c:2667
+#, c-format
+msgid "WARNING: Failed to parse string value `%s'\n"
+msgstr "УВАГА: Не вдається проаналізувати значення типу string \"%s\"\n"
+
+#: gconf/gconftool.c:2688
+#, c-format
+msgid "WARNING: Failed to parse boolean value `%s'\n"
+msgstr "УВАГА: Не вдається проаналізувати значення типу boolean \"%s\"\n"
+
+#: gconf/gconftool.c:2797 gconf/gconftool.c:3340
+#, c-format
+msgid "WARNING: failed to associate schema `%s' with key `%s': %s\n"
+msgstr "УВАГА: Не вдається зв'язати схему \"%s\" з ключем \"%s\": %s\n"
+
+#: gconf/gconftool.c:2909
+#, c-format
+msgid "WARNING: invalid or missing type for schema (%s)\n"
+msgstr "УВАГА: неправильний чи відсутній тип для схеми (%s)\n"
+
+#: gconf/gconftool.c:2918
+#, c-format
+msgid "WARNING: invalid or missing list_type for schema (%s)\n"
+msgstr "УВАГА: неправильний чи відсутній тип list_type для схеми (%s)\n"
+
+#: gconf/gconftool.c:2929 gconf/gconftool.c:2959 gconf/gconftool.c:2988
+#, c-format
+msgid "WARNING: Failed to parse default value `%s' for schema (%s)\n"
+msgstr ""
+"УВАГА: Не вдається проаналізувати типове значення \"%s\" для схеми (%s)\n"
+
+#: gconf/gconftool.c:2947
+#, c-format
+msgid "WARNING: invalid or missing car_type or cdr_type for schema (%s)\n"
+msgstr ""
+"УВАГА: неправильний чи відсутній тип car_type чи cdr_type для схеми (%s)\n"
+
+#: gconf/gconftool.c:2972
+msgid "WARNING: You cannot set a default value for a schema\n"
+msgstr "УВАГА: не вказано типового значення ключа для схеми\n"
+
+#: gconf/gconftool.c:3001
+msgid "WARNING: gconftool internal error, unknown GConfValueType\n"
+msgstr "УВАГА: внутрішня помилка gconftool, невідомий тип GConfValueType\n"
+
+#: gconf/gconftool.c:3049 gconf/gconftool.c:3070 gconf/gconftool.c:3091
+#: gconf/gconftool.c:3112
+#, c-format
+msgid "WARNING: failed to parse type name `%s'\n"
+msgstr "УВАГА: Не вдається проаналізувати назву типу \"%s\"\n"
+
+#: gconf/gconftool.c:3066
+#, c-format
+msgid ""
+"WARNING: list_type can only be int, float, string or bool and not `%s'\n"
+msgstr ""
+"УВАГА: list_type може бути лише int, float, string чи bool, а не \"%s\"\n"
+
+#: gconf/gconftool.c:3087
+#, c-format
+msgid "WARNING: car_type can only be int, float, string or bool and not `%s'\n"
+msgstr ""
+"УВАГА: car_type може бути лише int, float, string чи bool, а не \"%s\"\n"
+
+#: gconf/gconftool.c:3108
+#, c-format
+msgid "WARNING: cdr_type can only be int, float, string or bool and not `%s'\n"
+msgstr ""
+"УВАГА: cdr_type може бути лише int, float, string чи bool, а не \"%s\"\n"
+
+#: gconf/gconftool.c:3148
+msgid "WARNING: empty <applyto> node"
+msgstr "УВАГА: порожній вузол <applyto>"
+
+#: gconf/gconftool.c:3151 gconf/gconftool.c:3413
+#, c-format
+msgid "WARNING: node <%s> not understood below <schema>\n"
+msgstr "УВАГА: вузол <%s> незрозумілий у <schema>\n"
+
+#: gconf/gconftool.c:3162
+msgid "WARNING: no <list_type> specified for schema of type list\n"
+msgstr "УВАГА: не вказано вузол <list_type> для схеми типу \"список\"\n"
+
+#: gconf/gconftool.c:3168
+msgid "WARNING: no <car_type> specified for schema of type pair\n"
+msgstr "УВАГА: не вказано вузол <car_type> для схеми типу \"пара\"\n"
+
+#: gconf/gconftool.c:3174
+msgid "WARNING: no <cdr_type> specified for schema of type pair\n"
+msgstr "УВАГА: не вказано вузол <cdr_type> для схеми типу \"пара\"\n"
+
+#: gconf/gconftool.c:3203
+msgid "WARNING: <locale> node has no `name=\"locale\"' attribute, ignoring\n"
+msgstr ""
+"УВАГА: вузол <locale> не має атрибуту \"name=\"locale\"\", проігноровано\n"
+
+#: gconf/gconftool.c:3209
+#, c-format
+msgid ""
+"WARNING: multiple <locale> nodes for locale `%s', ignoring all past first\n"
+msgstr ""
+"УВАГА: кілька вузлів <locale> для локалі \"%s\", проігноровано всі, крім "
+"першого\n"
+
+#: gconf/gconftool.c:3307
+#, c-format
+msgid "WARNING: Invalid node <%s> in a <locale> node\n"
+msgstr "УВАГА: неправильний вузол <%s> у вузлі <locale>\n"
+
+#: gconf/gconftool.c:3348
+#, c-format
+msgid "Attached schema `%s' to key `%s'\n"
+msgstr "Долучено схему \"%s\" до ключа \"%s\"\n"
+
+#: gconf/gconftool.c:3422
+msgid "You must have at least one <locale> entry in a <schema>\n"
+msgstr "Необхідно, щоб було хоча б один елемент <locale> в <schema>\n"
+
+#: gconf/gconftool.c:3454
+#, c-format
+msgid "WARNING: failed to install schema `%s' locale `%s': %s\n"
+msgstr "УВАГА: помилка при встановленні схеми \"%s\" локалі \"%s\": %s\n"
+
+#: gconf/gconftool.c:3462
+#, c-format
+msgid "Installed schema `%s' for locale `%s'\n"
+msgstr "Встановлено схему \"%s\" для локалі \"%s\"\n"
+
+#: gconf/gconftool.c:3486
+#, c-format
+msgid "WARNING: failed to uninstall schema `%s' locale `%s': %s\n"
+msgstr "УВАГА: неможливо вилучити схему \"%s\" локалі \"%s\": %s\n"
+
+#: gconf/gconftool.c:3494
+#, c-format
+msgid "Uninstalled schema `%s' from locale `%s'\n"
+msgstr "Вилучено схему \"%s\" для локалі \"%s\"\n"
+
+#: gconf/gconftool.c:3532
+msgid "WARNING: no key specified for schema\n"
+msgstr "УВАГА: не вказано ключ для схеми\n"
+
+#: gconf/gconftool.c:3573
+#, c-format
+msgid "WARNING: node <%s> not understood below <%s>\n"
+msgstr "УВАГА: вузол <%s> незрозумілий під <%s>\n"
+
+#: gconf/gconftool.c:3604
+#, c-format
+msgid "Failed to open `%s': %s\n"
+msgstr "Не вдалося відкрити \"%s\": %s\n"
+
+#: gconf/gconftool.c:3611
+#, c-format
+msgid "Document `%s' is empty?\n"
+msgstr "Документ \"%s\" порожній?\n"
+
+#: gconf/gconftool.c:3623
+#, c-format
+msgid "Document `%s' has the wrong type of root node (<%s>, should be <%s>)\n"
+msgstr ""
+"Документ \"%s\" має неправильний тип корінного вузла (<%s>, має бути <%s>)\n"
+
+#: gconf/gconftool.c:3636
+#, c-format
+msgid "Document `%s' has no top level <%s> node\n"
+msgstr "Документ \"%s\" не має вузла верхнього рівня <%s>\n"
+
+#: gconf/gconftool.c:3650
+#, c-format
+msgid "WARNING: node <%s> below <%s> not understood\n"
+msgstr "УВАГА: вузол <%s> перед <%s> - незрозумілий\n"
+
+#: gconf/gconftool.c:3661 gconf/gconftool.c:3696 gconf/gconftool.c:3728
+#, c-format
+msgid "Error syncing config data: %s"
+msgstr "Помилка синхронізації даних конфігурації: %s"
+
+#: gconf/gconftool.c:3680
+msgid "Must specify some schema files to install\n"
+msgstr "Потрібно вказати декілька файлів схеми для встановлення\n"
+
+#: gconf/gconftool.c:3712
+msgid "Must specify some schema files to uninstall\n"
+msgstr "Потрібно вказати файл(и) схеми для видалення\n"
+
+#: gconf/gconftool.c:3749
+#, c-format
+msgid ""
+"\n"
+"%s\n"
+msgstr ""
+"\n"
+"%s\n"
+
+#: gconf/gconftool.c:3769
+#, c-format
+msgid "Failed to unset breakage key %s: %s\n"
+msgstr "Помилка при на знятті значення ключа ушкодження %s: %s\n"
+
+#: gconf/gconftool.c:3895
+msgid "Must specify some keys to break\n"
+msgstr "Потрібно вказати деякі ключі для ушкодження\n"
+
+#: gconf/gconftool.c:3901
+#, c-format
+msgid ""
+"Trying to break your application by setting bad values for key:\n"
+"  %s\n"
+msgstr ""
+"Спроба ушкодити вашу програму встановленням неправильних значень для ключа:\n"
+"  %s\n"
+
+#: gconf/gconftool.c:3919
+msgid "Must specify some directories to break\n"
+msgstr "Необхідно вказати деякі каталоги для ушкодження\n"
+
+#: gconf/gconftool.c:3938
+#, c-format
+msgid ""
+"Trying to break your application by setting bad values for keys in "
+"directory:\n"
+"  %s\n"
+msgstr ""
+"Спроба ушкодити вашу програму встановленням неправильних значень для ключів "
+"у каталозі:\n"
+"  %s\n"
+
+#~ msgid "Received invalid value in set request"
+#~ msgstr "Отримано неправильне значення у запиті"
+
+#~ msgid ""
+#~ "Couldn't make sense of CORBA value received in set request for key `%s'"
+#~ msgstr ""
+#~ "Не вдається зрозуміти зміст значення CORBA, отриманого в результаті "
+#~ "запиту встановлення ключа \"%s\""
+
+#~ msgid "Received request to drop all cached data"
+#~ msgstr "Отримано запит на скидання усіх кешованих даних"
+
+#~ msgid "Received request to sync synchronously"
+#~ msgstr "Отримано запит на скидання всіх кешованих даних"
+
+#~ msgid "Fatal error: failed to get object reference for ConfigDatabase"
+#~ msgstr ""
+#~ "Фатальна помилка: помилка отримання посилання на об'єкт для ConfigDatabase"
+
+#~ msgid ""
+#~ "Failed to log addition of listener %s (%s);will not be able to restore "
+#~ "this listener on gconfd restart, resulting in unreliable notification of "
+#~ "configuration changes."
+#~ msgstr ""
+#~ "Помилка реєстрації додавання прослуховувача %s (%s); буде неможливо "
+#~ "відновити цього прослуховувача під час перезапуску gconfd, результатом "
+#~ "стане ненадійне сповіщення про зміни в конфігурації."
+
+#~ msgid "Listener ID %lu doesn't exist"
+#~ msgstr "Прослуховувач з ідентифікатором %lu не існує"
+
+#~ msgid ""
+#~ "Failed to log removal of listener to logfile (most likely harmless, may "
+#~ "result in a notification weirdly reappearing): %s"
+#~ msgstr ""
+#~ "Помилка реєстрації видалення прослуховувача (в більшості випадків "
+#~ "нешкідливий, в результаті може відновитися сповіщення): %s"
+
+#~ msgid "Invalid UTF-8 in string value in '%s'"
+#~ msgstr "Неправильна послідовність UTF-8 у рядковому значенні \"%s\""
+
+#~ msgid "Couldn't interpret CORBA value for list element"
+#~ msgstr "Не вдається інтерпретувати CORBA-значення елементу списку"
+
+#~ msgid "Incorrect type for list element in %s"
+#~ msgstr "Некоректний тип елемента списку в %s"
+
+#~ msgid "Received list from gconfd with a bad list type"
+#~ msgstr "Від gconfd отримано список з неправильним типом списку"
+
+#~ msgid "Failed to convert object to IOR"
+#~ msgstr "Не вдається перетворити об'єкт у IOR"
+
+#~ msgid "Invalid UTF-8 in locale for schema"
+#~ msgstr "Неправильна послідовність UTF-8 в локалі для схеми"
+
+#~ msgid "Invalid UTF-8 in short description for schema"
+#~ msgstr "Неправильна послідовність UTF-8 в короткому описі схеми"
+
+#~ msgid "Invalid UTF-8 in long description for schema"
+#~ msgstr "Неправильна послідовність UTF-8 в розгорнутому описі схеми"
+
+#~ msgid "Invalid UTF-8 in owner for schema"
+#~ msgstr "Неправильна послідовність UTF-8 у власнику схеми"
+
+#~ msgid "Server ping error: %s"
+#~ msgstr "Помилка перевірки доступності сервера: %s"
+
+#~ msgid ""
+#~ "Failed to create pipe for communicating with spawned gconf daemon: %s\n"
+#~ msgstr ""
+#~ "Помилка при створенні каналу зв'язку з породженим процесом gconfd: %s\n"
+
+#~ msgid "Failed to launch configuration server: %s\n"
+#~ msgstr "Помилка запуску сервера конфігурації: %s\n"
+
+#~ msgid ""
+#~ "Failed to contact configuration server; some possible causes are that you "
+#~ "need to enable TCP/IP networking for ORBit, or you have stale NFS locks "
+#~ "due to a system crash. See http://www.gnome.org/projects/gconf/ for "
+#~ "information. (Details - %s)"
+#~ msgstr ""
+#~ "Помилка при з'єднанні з сервером конфігурації. Серед можливих причин те, "
+#~ "що необхідно увімкнути мережеві можливості TCP/IP для ORBit, чи те, що "
+#~ "лишилися старі блокування NFS через збій в системі. Для отримання "
+#~ "інформації дивіться http://www.gnome.org/projects/gconf/ . (Докладніше - %"
+#~ "s)."
+
+#~ msgid "none"
+#~ msgstr "немає"
+
+#~ msgid "Server couldn't resolve the address `%s'"
+#~ msgstr "Сервер не зміг розпізнати адресу \"%s\""
+
+#~ msgid "Can't add notifications to a local configuration source"
+#~ msgstr "Неможливо додавати звістки до локального джерела конфігурації"
+
+#~ msgid "Adding client to server's list failed, CORBA error: %s"
+#~ msgstr "Помилка при додаванні клієнта у серверний список, помилка CORBA: %s"
+
+#~ msgid "Failure shutting down config server: %s"
+#~ msgstr "Не вдається вимкнути сервера конфігурації: %s"
+
+#~ msgid "CORBA error: %s"
+#~ msgstr "Помилка CORBA: %s"
+
+#~ msgid "Shutdown request received"
+#~ msgstr "Отримано запит на завершення роботи"
+
+#~ msgid "Failed to get object reference for ConfigServer"
+#~ msgstr "Помилка отримання посилання на об'єкт для ConfigServer"
+
+#~ msgid "Returning exception: %s"
+#~ msgstr "Повертання виключення: %s"
+
+#~ msgid ""
+#~ "Failed to open gconfd logfile; won't be able to restore listeners after "
+#~ "gconfd shutdown (%s)"
+#~ msgstr ""
+#~ "Помилка відривання файла журналу gconfd: буде неможливо відновити "
+#~ "прослуховувача після зупинки gconfd (%s)"
+
+#~ msgid ""
+#~ "Failed to close gconfd logfile; data may not have been properly saved (%s)"
+#~ msgstr ""
+#~ "Помилка при закриванні файла журналу gconfd; дані може бути неправильно "
+#~ "збережено (%s)"
+
+#~ msgid "Could not open saved state file '%s' for writing: %s"
+#~ msgstr "Не вдається відкрити файл збереженого стану \"%s\" для запису: %s"
+
+#~ msgid "Could not write saved state file '%s' fd: %d: %s"
+#~ msgstr ""
+#~ "Не вдається записати файл збереженого стану \"%s\", дескриптор: %d: %s"
+
+#~ msgid "Failed to close new saved state file '%s': %s"
+#~ msgstr "Не вдається закрити новий файл збереженого стану \"%s\": %s"
+
+#~ msgid "Could not move aside old saved state file '%s': %s"
+#~ msgstr "Не вдається відкласти старий файл збереженого стану \"%s\": %s"
+
+#~ msgid "Failed to move new save state file into place: %s"
+#~ msgstr "Не вдається перенести новий файл збереженого стану на місце: %s"
+
+#~ msgid ""
+#~ "Failed to restore original saved state file that had been moved to '%s': %"
+#~ "s"
+#~ msgstr ""
+#~ "Не вдається відновити оригінальний файл збереженого стану, який було "
+#~ "перенесено у \"%s\": %s"
+
+#~ msgid ""
+#~ "Unable to restore a listener on address '%s', couldn't resolve the "
+#~ "database"
+#~ msgstr ""
+#~ "Неможливо відновити прослуховувача на адресі \"%s\", не вдалося "
+#~ "розв'язати базу даних"
+
+#~ msgid "Error reading saved state file: %s"
+#~ msgstr "Помилка зчитування файла збереженого стану: %s"
+
+#~ msgid "Unable to open saved state file '%s': %s"
+#~ msgstr "Не вдається відкрити файл збереженого стану \"%s\": %s"
+
+#~ msgid ""
+#~ "Failed to log addition of listener to gconfd logfile; won't be able to re-"
+#~ "add the listener if gconfd exits or shuts down (%s)"
+#~ msgstr ""
+#~ "Помилка запису в журнал gconfd додавання прослуховувача: буде неможливо "
+#~ "додати прослуховувача знову, якщо gcofd завершить роботу (%s)"
+
+#~ msgid ""
+#~ "Failed to log removal of listener to gconfd logfile; might erroneously re-"
+#~ "add the listener if gconfd exits or shuts down (%s)"
+#~ msgstr ""
+#~ "Помилка запису в журнал gconfd видалення прослуховувача: прослуховувача "
+#~ "може бути помилково додано ще раз, якщо gcofd завершить роботу (%s)"
+
+#~ msgid "Failed to get IOR for client: %s"
+#~ msgstr "Не вдається отримати IOR для клієнта: %s"
+
+#~ msgid "Failed to open saved state file: %s"
+#~ msgstr "Помилка при відкриванні файла збереженого стану: %s"
+
+#~ msgid "Failed to write client add to saved state file: %s"
+#~ msgstr "Помилка запису додавання клієнта у файл збереженого стану: %s"
+
+#~ msgid "Failed to flush client add to saved state file: %s"
+#~ msgstr "Не вдається скинути клієнта у файл збереженого стану: %s"
+
+#~ msgid ""
+#~ "Some client removed itself from the GConf server when it hadn't been "
+#~ "added."
+#~ msgstr ""
+#~ "Якийсь клієнт видалив себе з сервера GConf, не будучи до нього доданим"

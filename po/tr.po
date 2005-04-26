@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gconf.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-19 15:28+0200\n"
+"POT-Creation-Date: 2005-04-26 11:04+0200\n"
 "PO-Revision-Date: 2004-03-22 15:16+0200\n"
 "Last-Translator: Gurkan Aslan <gurkan@iaslan.com>\n"
 "Language-Team: Türkçe <tr@li.org>\n"
@@ -35,22 +35,22 @@ msgstr "Dizin oluşturulamadı `%s': %s"
 msgid "Can't read from or write to the %s root directory in the address `%s'"
 msgstr "%s kök dizini `%s' adresinden okunamıyor veya yazılamıyor"
 
-#: backends/gconf-merge-tree.c:78
+#: backends/gconf-merge-tree.c:79
 #, c-format
 msgid "Cannot find directory %s\n"
 msgstr "%s dizini bulunamıyor\n"
 
-#: backends/gconf-merge-tree.c:94
+#: backends/gconf-merge-tree.c:95
 #, c-format
 msgid "Error saving GConf tree to '%s': %s\n"
 msgstr "GConf ağacını kaydederken hata '%s': %s\n"
 
-#: backends/gconf-merge-tree.c:120
+#: backends/gconf-merge-tree.c:121
 #, c-format
 msgid "Usage: %s <dir>\n"
 msgstr "Kullanım: %s <dir>\n"
 
-#: backends/gconf-merge-tree.c:126
+#: backends/gconf-merge-tree.c:127
 #, c-format
 msgid ""
 "Usage: %s <dir>\n"
@@ -356,62 +356,62 @@ msgstr "GConf uyarısı: `%s' içindeki çiftlerin listelenmesi başarısız old
 msgid "Expected `%s' got `%s' for key %s"
 msgstr "`%3$s' anahtarı için `%1$s' bekleniyordu `%2$s' alındı"
 
-#: gconf/gconf-database.c:153
+#: gconf/gconf-database.c:155
 #, c-format
 msgid "Failed to sync one or more sources: %s"
 msgstr "Bir ya da daha fazla kaynağı eşzamanlanamadı: %s"
 
-#: gconf/gconf-database.c:221 gconf/gconf-sources.c:1563
+#: gconf/gconf-database.c:223 gconf/gconf-sources.c:1563
 #, c-format
 msgid "Error getting value for `%s': %s"
 msgstr "`%s' için değer alınırken hata: %s"
 
-#: gconf/gconf-database.c:267
+#: gconf/gconf-database.c:269
 #, c-format
 msgid "Error setting value for `%s': %s"
 msgstr "`%s' için değer belirtilirken hata: %s"
 
-#: gconf/gconf-database.c:322
+#: gconf/gconf-database.c:324
 #, c-format
 msgid "Error unsetting `%s': %s"
 msgstr "`%s': Kaldırılırken hata %s"
 
-#: gconf/gconf-database.c:351
+#: gconf/gconf-database.c:353
 #, c-format
 msgid "Error getting default value for `%s': %s"
 msgstr "`%s' için öntanımlı değer alınırken hata: %s"
 
-#: gconf/gconf-database.c:398
+#: gconf/gconf-database.c:400
 #, c-format
 msgid "Error unsetting \"%s\": %s"
 msgstr "\"%s\" Kaldırılırken hata: %s"
 
-#: gconf/gconf-database.c:430
+#: gconf/gconf-database.c:432
 #, c-format
 msgid "Error getting new value for \"%s\": %s"
 msgstr "\"%s\" için yeni değer alınırken hata: %s"
 
-#: gconf/gconf-database.c:476
+#: gconf/gconf-database.c:478
 #, c-format
 msgid "Error checking existence of `%s': %s"
 msgstr "`%s' var olup olmadığına bakılırken hata: %s"
 
-#: gconf/gconf-database.c:500
+#: gconf/gconf-database.c:502
 #, c-format
 msgid "Error removing directory \"%s\": %s"
 msgstr "`%s' dizini silinirken hata: %s"
 
-#: gconf/gconf-database.c:527
+#: gconf/gconf-database.c:529
 #, c-format
 msgid "Failed to get all entries in `%s': %s"
 msgstr "`%s' içindeki tüm girdiler alınamadı: %s"
 
-#: gconf/gconf-database.c:553
+#: gconf/gconf-database.c:555
 #, c-format
 msgid "Error listing dirs in `%s': %s"
 msgstr "`%s' içindeki dizinler listelenirken hata: %s"
 
-#: gconf/gconf-database.c:574
+#: gconf/gconf-database.c:576
 #, c-format
 msgid "Error setting schema for `%s': %s"
 msgstr "`%s' için şema belirtilirken hata: %s"
@@ -981,7 +981,7 @@ msgstr "Mantıksal beklenirken %s alındı"
 msgid "Expected schema, got %s"
 msgstr "Şema beklenirken %s alındı"
 
-#: gconf/gconfd.c:148
+#: gconf/gconfd.c:150
 msgid ""
 "gconfd compiled with debugging; trying to load gconf.path from the source "
 "directory"
@@ -989,7 +989,7 @@ msgstr ""
 "gconfd hata ayıklama seçeneği ile derlenmiş; gconf.yolu kaynak dizininden "
 "yüklenmeye çalışılıyor"
 
-#: gconf/gconfd.c:162
+#: gconf/gconfd.c:164
 #, c-format
 msgid ""
 "No configuration files found, trying to use the default config source `%s'"
@@ -1000,7 +1000,7 @@ msgstr ""
 #. We want to stay alive but do nothing, because otherwise every
 #. request would result in another failed gconfd being spawned.
 #.
-#: gconf/gconfd.c:170
+#: gconf/gconfd.c:172
 #, c-format
 msgid ""
 "No configuration sources in the source path, configuration won't be saved; "
@@ -1009,12 +1009,12 @@ msgstr ""
 "Kaynak yolda yapılandırma kaynakları yok, yapılandırma kaydedilmeyecek; %s "
 "'i düzeltin"
 
-#: gconf/gconfd.c:183
+#: gconf/gconfd.c:185
 #, c-format
 msgid "Error loading some config sources: %s"
 msgstr "Bazı yapılandırma kaynakları yüklenirken hata: %s"
 
-#: gconf/gconfd.c:195
+#: gconf/gconfd.c:197
 msgid ""
 "No config source addresses successfully resolved, can't load or store config "
 "data"
@@ -1022,7 +1022,7 @@ msgstr ""
 "Çözümlenebilen bir yapılandırma kaynağı adresi yok, yapılandırma bilgisi "
 "yüklenemez ve kaydedilemez"
 
-#: gconf/gconfd.c:212
+#: gconf/gconfd.c:214
 msgid ""
 "No writable config sources successfully resolved, may not be able to save "
 "some configuration changes"
@@ -1030,81 +1030,81 @@ msgstr ""
 "Çözümlenebilen bir yazılabilir ayarlama kaynağı adresi yok, bazı "
 "yapılandırma değişikliklerini kaydetmek mümkün olmayabilir"
 
-#: gconf/gconfd.c:238
+#: gconf/gconfd.c:240
 #, c-format
 msgid "Received signal %d, dumping core. Please report a GConf bug."
 msgstr ""
 "%d sinyali alındı, core dökümlendi. Lütfen bir GConf hata raporu gönderin."
 
-#: gconf/gconfd.c:256
+#: gconf/gconfd.c:258
 #, c-format
 msgid ""
 "Received signal %d, shutting down abnormally. Please file a GConf bug report."
 msgstr ""
 "%d sinyali alındı, olağandışı kapanma. Lütfen bir GConf hata raporu gönderin"
 
-#: gconf/gconfd.c:273
+#: gconf/gconfd.c:275
 #, c-format
 msgid "Received signal %d, shutting down cleanly"
 msgstr "%d sinyali alındı, GConf kapatılıyor."
 
-#: gconf/gconfd.c:342
+#: gconf/gconfd.c:344
 #, c-format
 msgid "Failed to open %s: %s"
 msgstr "%s açılamadı: %s"
 
-#: gconf/gconfd.c:349
+#: gconf/gconfd.c:351
 #, c-format
 msgid "Failed to stat %s: %s"
 msgstr "%s durumlanamadı: %s"
 
-#: gconf/gconfd.c:358
+#: gconf/gconfd.c:360
 #, c-format
 msgid "Owner of %s is not the current user"
 msgstr "%s 'in sahibi şu anki kullanıcı değil."
 
-#: gconf/gconfd.c:366
+#: gconf/gconfd.c:368
 #, c-format
 msgid "Bad permissions %lo on directory %s"
 msgstr ""
 
 #. openlog() does not copy logname - what total brokenness.
 #. So we free it at the end of main()
-#: gconf/gconfd.c:446
+#: gconf/gconfd.c:452
 #, c-format
 msgid "starting (version %s), pid %u user '%s'"
 msgstr "başlıyor (sürüm: %s), pid %u kullanıcı '%s'"
 
-#: gconf/gconfd.c:485
+#: gconf/gconfd.c:493
 #, c-format
 msgid "Failed to create %s: %s"
 msgstr "%s oluşturulamadı: %s"
 
-#: gconf/gconfd.c:493
+#: gconf/gconfd.c:501
 #, c-format
 msgid "Directory %s has a problem, gconfd can't use it"
 msgstr "%s dizininde bir problem var; gconfd onu kullanamaz"
 
-#: gconf/gconfd.c:529
+#: gconf/gconfd.c:537
 #, c-format
 msgid "Failed to write byte to pipe fd %d so client program may hang: %s"
 msgstr "Bayt fd %d veriyoluna yazılamadığından istemci kapanabilir: %s"
 
-#: gconf/gconfd.c:543
+#: gconf/gconfd.c:551
 #, c-format
 msgid "Failed to get lock for daemon, exiting: %s"
 msgstr "Artalan uygulama için kilit alınamadı, çıkılıyor: %s"
 
-#: gconf/gconfd.c:585
+#: gconf/gconfd.c:593
 #, c-format
 msgid "Error releasing lockfile: %s"
 msgstr "kilit dosyası bırakılırken hata: %s"
 
-#: gconf/gconfd.c:593
+#: gconf/gconfd.c:601
 msgid "Exiting"
 msgstr "Çıkılıyor"
 
-#: gconf/gconfd.c:636
+#: gconf/gconfd.c:644
 msgid "GConf server is not in use, shutting down."
 msgstr "GConf sunucusu kullanımda değil, kapanıyor."
 

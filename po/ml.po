@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:gconf.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-19 15:28+0200\n"
+"POT-Creation-Date: 2005-04-26 11:04+0200\n"
 "PO-Revision-Date: 2003-07-05 10:29+0530\n"
 "Last-Translator: FSF-India <locale@gnu.org.in>\n"
 "Language-Team: Malayalam <locale@gnu.org.in>\n"
@@ -30,22 +30,22 @@ msgstr "'%s'എന്ന കൂട് ഉണ്ടാക്കാന്‌ ക�
 msgid "Can't read from or write to the %s root directory in the address `%s'"
 msgstr ""
 
-#: backends/gconf-merge-tree.c:78
+#: backends/gconf-merge-tree.c:79
 #, fuzzy, c-format
 msgid "Cannot find directory %s\n"
 msgstr "'%s'എന്ന കൂട് ഉണ്ടാക്കാന്‌ കഴിയുന്നില്ല: %s\n"
 
-#: backends/gconf-merge-tree.c:94
+#: backends/gconf-merge-tree.c:95
 #, fuzzy, c-format
 msgid "Error saving GConf tree to '%s': %s\n"
 msgstr "%s വായിക്കുന്നതില്‌ പരാജയം : %s"
 
-#: backends/gconf-merge-tree.c:120
+#: backends/gconf-merge-tree.c:121
 #, c-format
 msgid "Usage: %s <dir>\n"
 msgstr ""
 
-#: backends/gconf-merge-tree.c:126
+#: backends/gconf-merge-tree.c:127
 #, c-format
 msgid ""
 "Usage: %s <dir>\n"
@@ -340,62 +340,62 @@ msgstr ""
 msgid "Expected `%s' got `%s' for key %s"
 msgstr " `%s' ന്റെ ചാവിക്കുവേണ്ടി `%s' ന‌്  %s കിട്ടുമെന്ന് പ്രതീക്ഷിക്കുന്നു."
 
-#: gconf/gconf-database.c:153
+#: gconf/gconf-database.c:155
 #, fuzzy, c-format
 msgid "Failed to sync one or more sources: %s"
 msgstr "%s തുറക്കുന്നതില്‌ പരാജയം : %s"
 
-#: gconf/gconf-database.c:221 gconf/gconf-sources.c:1563
+#: gconf/gconf-database.c:223 gconf/gconf-sources.c:1563
 #, fuzzy, c-format
 msgid "Error getting value for `%s': %s"
 msgstr "%s വായിക്കുന്നതില്‌ പരാജയം : %s"
 
-#: gconf/gconf-database.c:267
+#: gconf/gconf-database.c:269
 #, fuzzy, c-format
 msgid "Error setting value for `%s': %s"
 msgstr "%s വായിക്കുന്നതില്‌ പരാജയം : %s"
 
-#: gconf/gconf-database.c:322
+#: gconf/gconf-database.c:324
 #, fuzzy, c-format
 msgid "Error unsetting `%s': %s"
 msgstr "%s പ്രദ‌ര്ശിപ്പിക്കുന്നതില്‌ തകരാറ്: %s‍\n"
 
-#: gconf/gconf-database.c:351
+#: gconf/gconf-database.c:353
 #, fuzzy, c-format
 msgid "Error getting default value for `%s': %s"
 msgstr "%s വായിക്കുന്നതില്‌ പരാജയം : %s"
 
-#: gconf/gconf-database.c:398
+#: gconf/gconf-database.c:400
 #, fuzzy, c-format
 msgid "Error unsetting \"%s\": %s"
 msgstr "രചന നശിപ്പിക്കുന്നതില്‌ തെറ്റ് \"%s\": %s"
 
-#: gconf/gconf-database.c:430
+#: gconf/gconf-database.c:432
 #, fuzzy, c-format
 msgid "Error getting new value for \"%s\": %s"
 msgstr "രചന നശിപ്പിക്കുന്നതില്‌ തെറ്റ് \"%s\": %s"
 
-#: gconf/gconf-database.c:476
+#: gconf/gconf-database.c:478
 #, fuzzy, c-format
 msgid "Error checking existence of `%s': %s"
 msgstr "%s വായിക്കുന്നതില്‌ പരാജയം : %s"
 
-#: gconf/gconf-database.c:500
+#: gconf/gconf-database.c:502
 #, fuzzy, c-format
 msgid "Error removing directory \"%s\": %s"
 msgstr "%s വായിക്കുന്നതില്‌ പരാജയം : %s"
 
-#: gconf/gconf-database.c:527
+#: gconf/gconf-database.c:529
 #, fuzzy, c-format
 msgid "Failed to get all entries in `%s': %s"
 msgstr "%s തുറക്കുന്നതില്‌ പരാജയം : %s"
 
-#: gconf/gconf-database.c:553
+#: gconf/gconf-database.c:555
 #, fuzzy, c-format
 msgid "Error listing dirs in `%s': %s"
 msgstr "%s രചനാ എഴുതുന്നതില്‌ പരാജയം : %s"
 
-#: gconf/gconf-database.c:574
+#: gconf/gconf-database.c:576
 #, fuzzy, c-format
 msgid "Error setting schema for `%s': %s"
 msgstr "കൂട് നി‌‌‌ര്മ്മിക്കുന്നതില്‌ തെറ്റ് \"%s\": %s\n"
@@ -915,13 +915,13 @@ msgstr ""
 msgid "Expected schema, got %s"
 msgstr " `%s' ന്റെ ചാവിക്കുവേണ്ടി `%s' ന‌്  %s കിട്ടുമെന്ന് പ്രതീക്ഷിക്കുന്നു."
 
-#: gconf/gconfd.c:148
+#: gconf/gconfd.c:150
 msgid ""
 "gconfd compiled with debugging; trying to load gconf.path from the source "
 "directory"
 msgstr ""
 
-#: gconf/gconfd.c:162
+#: gconf/gconfd.c:164
 #, c-format
 msgid ""
 "No configuration files found, trying to use the default config source `%s'"
@@ -930,104 +930,104 @@ msgstr ""
 #. We want to stay alive but do nothing, because otherwise every
 #. request would result in another failed gconfd being spawned.
 #.
-#: gconf/gconfd.c:170
+#: gconf/gconfd.c:172
 #, c-format
 msgid ""
 "No configuration sources in the source path, configuration won't be saved; "
 "edit %s"
 msgstr ""
 
-#: gconf/gconfd.c:183
+#: gconf/gconfd.c:185
 #, fuzzy, c-format
 msgid "Error loading some config sources: %s"
 msgstr "സൂചകം നിറയ‌്ക്കുന്നതില്‌ പരാജയം : %s"
 
-#: gconf/gconfd.c:195
+#: gconf/gconfd.c:197
 msgid ""
 "No config source addresses successfully resolved, can't load or store config "
 "data"
 msgstr ""
 
-#: gconf/gconfd.c:212
+#: gconf/gconfd.c:214
 msgid ""
 "No writable config sources successfully resolved, may not be able to save "
 "some configuration changes"
 msgstr ""
 
-#: gconf/gconfd.c:238
+#: gconf/gconfd.c:240
 #, c-format
 msgid "Received signal %d, dumping core. Please report a GConf bug."
 msgstr ""
 
-#: gconf/gconfd.c:256
+#: gconf/gconfd.c:258
 #, c-format
 msgid ""
 "Received signal %d, shutting down abnormally. Please file a GConf bug report."
 msgstr ""
 
-#: gconf/gconfd.c:273
+#: gconf/gconfd.c:275
 #, c-format
 msgid "Received signal %d, shutting down cleanly"
 msgstr ""
 
-#: gconf/gconfd.c:342
+#: gconf/gconfd.c:344
 #, c-format
 msgid "Failed to open %s: %s"
 msgstr ""
 
-#: gconf/gconfd.c:349
+#: gconf/gconfd.c:351
 #, c-format
 msgid "Failed to stat %s: %s"
 msgstr ""
 
-#: gconf/gconfd.c:358
+#: gconf/gconfd.c:360
 #, c-format
 msgid "Owner of %s is not the current user"
 msgstr ""
 
-#: gconf/gconfd.c:366
+#: gconf/gconfd.c:368
 #, fuzzy, c-format
 msgid "Bad permissions %lo on directory %s"
 msgstr "ഒരു കൂട് അല്ല"
 
 #. openlog() does not copy logname - what total brokenness.
 #. So we free it at the end of main()
-#: gconf/gconfd.c:446
+#: gconf/gconfd.c:452
 #, c-format
 msgid "starting (version %s), pid %u user '%s'"
 msgstr ""
 
-#: gconf/gconfd.c:485
+#: gconf/gconfd.c:493
 #, fuzzy, c-format
 msgid "Failed to create %s: %s"
 msgstr "%s കൊണ്ട് വരാന് കഴിഞ്ഞില്ല: %s\n"
 
-#: gconf/gconfd.c:493
+#: gconf/gconfd.c:501
 #, c-format
 msgid "Directory %s has a problem, gconfd can't use it"
 msgstr ""
 
-#: gconf/gconfd.c:529
+#: gconf/gconfd.c:537
 #, c-format
 msgid "Failed to write byte to pipe fd %d so client program may hang: %s"
 msgstr ""
 
-#: gconf/gconfd.c:543
+#: gconf/gconfd.c:551
 #, fuzzy, c-format
 msgid "Failed to get lock for daemon, exiting: %s"
 msgstr "%s എഴുതാനായി തുറക്കുന്നതില്‌ %s പരാജയം"
 
-#: gconf/gconfd.c:585
+#: gconf/gconfd.c:593
 #, fuzzy, c-format
 msgid "Error releasing lockfile: %s"
 msgstr "%s വായിക്കുന്നതില്‌ പരാജയം : %s"
 
-#: gconf/gconfd.c:593
+#: gconf/gconfd.c:601
 #, fuzzy
 msgid "Exiting"
 msgstr "ചിട്ടപ്പെടുത്തുന്നു"
 
-#: gconf/gconfd.c:636
+#: gconf/gconfd.c:644
 msgid "GConf server is not in use, shutting down."
 msgstr ""
 

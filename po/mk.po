@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gconf.HEAD.mk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-19 15:28+0200\n"
+"POT-Creation-Date: 2005-04-26 11:04+0200\n"
 "PO-Revision-Date: 2003-06-15 21:59+0000\n"
 "Last-Translator: Vladislav Bidikov <bidikovi@mail.com.mk>\n"
 "Language-Team: Macedonian <lug@lists.linux.net.mk>\n"
@@ -38,22 +38,22 @@ msgid "Can't read from or write to the %s root directory in the address `%s'"
 msgstr ""
 "Не можам да читам од или пишувам во %s root директориумот во адресата `%s'"
 
-#: backends/gconf-merge-tree.c:78
+#: backends/gconf-merge-tree.c:79
 #, fuzzy, c-format
 msgid "Cannot find directory %s\n"
 msgstr "Не можев да го направам директориумот `%s': %s"
 
-#: backends/gconf-merge-tree.c:94
+#: backends/gconf-merge-tree.c:95
 #, fuzzy, c-format
 msgid "Error saving GConf tree to '%s': %s\n"
 msgstr "Грешка земајќи ја схемата на '%s': %s\n"
 
-#: backends/gconf-merge-tree.c:120
+#: backends/gconf-merge-tree.c:121
 #, c-format
 msgid "Usage: %s <dir>\n"
 msgstr ""
 
-#: backends/gconf-merge-tree.c:126
+#: backends/gconf-merge-tree.c:127
 #, c-format
 msgid ""
 "Usage: %s <dir>\n"
@@ -356,62 +356,62 @@ msgstr "GConf предупредување: неуспешно листање п
 msgid "Expected `%s' got `%s' for key %s"
 msgstr "Очекувано `%s' добиено `%s' за клуч %s"
 
-#: gconf/gconf-database.c:153
+#: gconf/gconf-database.c:155
 #, c-format
 msgid "Failed to sync one or more sources: %s"
 msgstr "Не успеав да синхронизирам еден или повеќе сорсови: %s"
 
-#: gconf/gconf-database.c:221 gconf/gconf-sources.c:1563
+#: gconf/gconf-database.c:223 gconf/gconf-sources.c:1563
 #, c-format
 msgid "Error getting value for `%s': %s"
 msgstr "Грешка во земањето вредност за `%s': %s"
 
-#: gconf/gconf-database.c:267
+#: gconf/gconf-database.c:269
 #, c-format
 msgid "Error setting value for `%s': %s"
 msgstr "Грешка местењето вредност за `%s': %s"
 
-#: gconf/gconf-database.c:322
+#: gconf/gconf-database.c:324
 #, c-format
 msgid "Error unsetting `%s': %s"
 msgstr "Грешка при одсетирање `%s': %s"
 
-#: gconf/gconf-database.c:351
+#: gconf/gconf-database.c:353
 #, c-format
 msgid "Error getting default value for `%s': %s"
 msgstr "Грешка земајќи преддефинирана вредност за `%s': %s"
 
-#: gconf/gconf-database.c:398
+#: gconf/gconf-database.c:400
 #, c-format
 msgid "Error unsetting \"%s\": %s"
 msgstr "Грешка одсетирајќи \"%s\": %s"
 
-#: gconf/gconf-database.c:430
+#: gconf/gconf-database.c:432
 #, c-format
 msgid "Error getting new value for \"%s\": %s"
 msgstr "Грешка земајќи нова вредност за \"%s\": %s"
 
-#: gconf/gconf-database.c:476
+#: gconf/gconf-database.c:478
 #, c-format
 msgid "Error checking existence of `%s': %s"
 msgstr "Грешка проверувајќи пшостоење на `%s': %s"
 
-#: gconf/gconf-database.c:500
+#: gconf/gconf-database.c:502
 #, fuzzy, c-format
 msgid "Error removing directory \"%s\": %s"
 msgstr "Грешка одстранувајќи директориум `%s': %s"
 
-#: gconf/gconf-database.c:527
+#: gconf/gconf-database.c:529
 #, c-format
 msgid "Failed to get all entries in `%s': %s"
 msgstr "Не успеав да ги земам сите влезови во `%s': %s"
 
-#: gconf/gconf-database.c:553
+#: gconf/gconf-database.c:555
 #, c-format
 msgid "Error listing dirs in `%s': %s"
 msgstr "Грешка листајќи ги директориумите во `%s': %s"
 
-#: gconf/gconf-database.c:574
+#: gconf/gconf-database.c:576
 #, c-format
 msgid "Error setting schema for `%s': %s"
 msgstr "Грешка местејќи ја схемата за `%s': %s"
@@ -987,7 +987,7 @@ msgstr "Очекував bool, добив %s"
 msgid "Expected schema, got %s"
 msgstr "Очекував схема, добив %s"
 
-#: gconf/gconfd.c:148
+#: gconf/gconfd.c:150
 msgid ""
 "gconfd compiled with debugging; trying to load gconf.path from the source "
 "directory"
@@ -995,7 +995,7 @@ msgstr ""
 "gconfd компајлирано со дебагирање; се обидувам да вчитам gconf.path од "
 "изворниот директориум"
 
-#: gconf/gconfd.c:162
+#: gconf/gconfd.c:164
 #, c-format
 msgid ""
 "No configuration files found, trying to use the default config source `%s'"
@@ -1006,7 +1006,7 @@ msgstr ""
 #. We want to stay alive but do nothing, because otherwise every
 #. request would result in another failed gconfd being spawned.
 #.
-#: gconf/gconfd.c:170
+#: gconf/gconfd.c:172
 #, fuzzy, c-format
 msgid ""
 "No configuration sources in the source path, configuration won't be saved; "
@@ -1015,12 +1015,12 @@ msgstr ""
 "Нема конфигурациски кодови во изворната патека, конфигурацијата нема да се "
 "зачува; уреди"
 
-#: gconf/gconfd.c:183
+#: gconf/gconfd.c:185
 #, c-format
 msgid "Error loading some config sources: %s"
 msgstr "Грешка вчитувајќи некои конфиг кодови: %s"
 
-#: gconf/gconfd.c:195
+#: gconf/gconfd.c:197
 msgid ""
 "No config source addresses successfully resolved, can't load or store config "
 "data"
@@ -1028,7 +1028,7 @@ msgstr ""
 "Не беше успешно резолвирана конфиг сорс, не можам да вчитам или зачувам "
 "конфиг податоци"
 
-#: gconf/gconfd.c:212
+#: gconf/gconfd.c:214
 msgid ""
 "No writable config sources successfully resolved, may not be able to save "
 "some configuration changes"
@@ -1036,84 +1036,84 @@ msgstr ""
 "Немаше успешно резолвирани конфиг кодови, можеби нема да може да се зачуваат "
 "некои конфигурациски промени"
 
-#: gconf/gconfd.c:238
+#: gconf/gconfd.c:240
 #, c-format
 msgid "Received signal %d, dumping core. Please report a GConf bug."
 msgstr ""
 "Добиен сигнал %d, чувам слика од меморијата. Ве молам пријавете грешка во  "
 "GConf ."
 
-#: gconf/gconfd.c:256
+#: gconf/gconfd.c:258
 #, c-format
 msgid ""
 "Received signal %d, shutting down abnormally. Please file a GConf bug report."
 msgstr ""
 "Добиен сигнал %d, абнормално исклучување. Молам доставете GConf баг извештај."
 
-#: gconf/gconfd.c:273
+#: gconf/gconfd.c:275
 #, c-format
 msgid "Received signal %d, shutting down cleanly"
 msgstr "Примен сигнал %d, исклучувам чисто"
 
-#: gconf/gconfd.c:342
+#: gconf/gconfd.c:344
 #, c-format
 msgid "Failed to open %s: %s"
 msgstr "Неможеше да се отвори %s: %s"
 
-#: gconf/gconfd.c:349
+#: gconf/gconfd.c:351
 #, c-format
 msgid "Failed to stat %s: %s"
 msgstr "Не успеав да проценам %s: %s"
 
-#: gconf/gconfd.c:358
+#: gconf/gconfd.c:360
 #, c-format
 msgid "Owner of %s is not the current user"
 msgstr "Сопственикот на %s не е моменталниот корисник"
 
-#: gconf/gconfd.c:366
+#: gconf/gconfd.c:368
 #, fuzzy, c-format
 msgid "Bad permissions %lo on directory %s"
 msgstr "Лоши дозволи %o на директориумите %s"
 
 #. openlog() does not copy logname - what total brokenness.
 #. So we free it at the end of main()
-#: gconf/gconfd.c:446
+#: gconf/gconfd.c:452
 #, c-format
 msgid "starting (version %s), pid %u user '%s'"
 msgstr "почнувам (верзија %s), pid %u корисник '%s'"
 
-#: gconf/gconfd.c:485
+#: gconf/gconfd.c:493
 #, c-format
 msgid "Failed to create %s: %s"
 msgstr "Не успеав да создадам %s: %s"
 
-#: gconf/gconfd.c:493
+#: gconf/gconfd.c:501
 #, c-format
 msgid "Directory %s has a problem, gconfd can't use it"
 msgstr "Директориумот %s има проблем, gconfd не може да го употребува"
 
-#: gconf/gconfd.c:529
+#: gconf/gconfd.c:537
 #, c-format
 msgid "Failed to write byte to pipe fd %d so client program may hang: %s"
 msgstr ""
 "Не успеав да напишам бајт на цевка fd %d така клиент програмот може да "
 "падне: %s"
 
-#: gconf/gconfd.c:543
+#: gconf/gconfd.c:551
 #, c-format
 msgid "Failed to get lock for daemon, exiting: %s"
 msgstr "Неуспешен обид за заклучување на даемонот, излегувам: %s"
 
-#: gconf/gconfd.c:585
+#: gconf/gconfd.c:593
 #, c-format
 msgid "Error releasing lockfile: %s"
 msgstr "Грешка издавајќи локдатотеки: %s"
 
-#: gconf/gconfd.c:593
+#: gconf/gconfd.c:601
 msgid "Exiting"
 msgstr "Езлегување"
 
-#: gconf/gconfd.c:636
+#: gconf/gconfd.c:644
 msgid "GConf server is not in use, shutting down."
 msgstr "GConf серверот не е во употреба, исклучувам."
 

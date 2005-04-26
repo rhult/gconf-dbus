@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gconf 2.6.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-19 15:28+0200\n"
+"POT-Creation-Date: 2005-04-26 11:04+0200\n"
 "PO-Revision-Date: 2004-03-20 21:56+0800\n"
 "Last-Translator: LoneStar <lone@auvtech.com>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
@@ -32,22 +32,22 @@ msgstr "无法创建目录“%s”：%s"
 msgid "Can't read from or write to the %s root directory in the address `%s'"
 msgstr "无法在地址“%s”处读或写 %s 根目录"
 
-#: backends/gconf-merge-tree.c:78
+#: backends/gconf-merge-tree.c:79
 #, c-format
 msgid "Cannot find directory %s\n"
 msgstr "无法找到目录 %s\n"
 
-#: backends/gconf-merge-tree.c:94
+#: backends/gconf-merge-tree.c:95
 #, c-format
 msgid "Error saving GConf tree to '%s': %s\n"
 msgstr "将 GConf 树保存到“%s”时发生错误：%s\n"
 
-#: backends/gconf-merge-tree.c:120
+#: backends/gconf-merge-tree.c:121
 #, c-format
 msgid "Usage: %s <dir>\n"
 msgstr "用法：%s <dir>\n"
 
-#: backends/gconf-merge-tree.c:126
+#: backends/gconf-merge-tree.c:127
 #, c-format
 msgid ""
 "Usage: %s <dir>\n"
@@ -357,62 +357,62 @@ msgstr "GConf 警告：无法列出“%s”中的 pair：%s"
 msgid "Expected `%s' got `%s' for key %s"
 msgstr "需要“%s”，实际为“%s”(针对键 %s)"
 
-#: gconf/gconf-database.c:153
+#: gconf/gconf-database.c:155
 #, c-format
 msgid "Failed to sync one or more sources: %s"
 msgstr "无法同步一个或多个源：%s"
 
-#: gconf/gconf-database.c:221 gconf/gconf-sources.c:1563
+#: gconf/gconf-database.c:223 gconf/gconf-sources.c:1563
 #, c-format
 msgid "Error getting value for `%s': %s"
 msgstr "获取“%s”的值时发生错误：%s"
 
-#: gconf/gconf-database.c:267
+#: gconf/gconf-database.c:269
 #, c-format
 msgid "Error setting value for `%s': %s"
 msgstr "设置“%s”的值时发生错误：%s"
 
-#: gconf/gconf-database.c:322
+#: gconf/gconf-database.c:324
 #, c-format
 msgid "Error unsetting `%s': %s"
 msgstr "取消“%s”设置值时发生错误：%s"
 
-#: gconf/gconf-database.c:351
+#: gconf/gconf-database.c:353
 #, c-format
 msgid "Error getting default value for `%s': %s"
 msgstr "获取“%s”的默认值时发生错误：%s"
 
-#: gconf/gconf-database.c:398
+#: gconf/gconf-database.c:400
 #, c-format
 msgid "Error unsetting \"%s\": %s"
 msgstr "取消“%s”的设置值时发生错误：%s"
 
-#: gconf/gconf-database.c:430
+#: gconf/gconf-database.c:432
 #, c-format
 msgid "Error getting new value for \"%s\": %s"
 msgstr "获取“%s”的新值时发生错误：%s"
 
-#: gconf/gconf-database.c:476
+#: gconf/gconf-database.c:478
 #, c-format
 msgid "Error checking existence of `%s': %s"
 msgstr "检查“%s”的存在时发生错误：%s"
 
-#: gconf/gconf-database.c:500
+#: gconf/gconf-database.c:502
 #, c-format
 msgid "Error removing directory \"%s\": %s"
 msgstr "删除目录“%s”发生错误：%s"
 
-#: gconf/gconf-database.c:527
+#: gconf/gconf-database.c:529
 #, c-format
 msgid "Failed to get all entries in `%s': %s"
 msgstr "无法获取“%s”中的所有项：%s"
 
-#: gconf/gconf-database.c:553
+#: gconf/gconf-database.c:555
 #, c-format
 msgid "Error listing dirs in `%s': %s"
 msgstr "列出“%s”中的目录时发生错误：%s"
 
-#: gconf/gconf-database.c:574
+#: gconf/gconf-database.c:576
 #, c-format
 msgid "Error setting schema for `%s': %s"
 msgstr "为“%s”设置模式时发生错误：%s"
@@ -1024,14 +1024,14 @@ msgid "Expected schema, got %s"
 msgstr "需要 schema ，得到的值为 %s"
 
 # SUN NEW TRANSLATION
-#: gconf/gconfd.c:148
+#: gconf/gconfd.c:150
 msgid ""
 "gconfd compiled with debugging; trying to load gconf.path from the source "
 "directory"
 msgstr "gconfd 用调试编译；尝试从源目录载入gconf.path"
 
 # SUN NEW TRANSLATION
-#: gconf/gconfd.c:162
+#: gconf/gconfd.c:164
 #, c-format
 msgid ""
 "No configuration files found, trying to use the default config source `%s'"
@@ -1041,7 +1041,7 @@ msgstr "找不到配置文件，尝试使用默认配置源“%s”"
 #. We want to stay alive but do nothing, because otherwise every
 #. request would result in another failed gconfd being spawned.
 #.
-#: gconf/gconfd.c:170
+#: gconf/gconfd.c:172
 #, c-format
 msgid ""
 "No configuration sources in the source path, configuration won't be saved; "
@@ -1049,60 +1049,60 @@ msgid ""
 msgstr "该源路径中没有配置源，配置不会保存；请编辑 %s"
 
 # SUN NEW TRANSLATION
-#: gconf/gconfd.c:183
+#: gconf/gconfd.c:185
 #, c-format
 msgid "Error loading some config sources: %s"
 msgstr "载入某些配置源时出错：%s"
 
 # SUN NEW TRANSLATION
-#: gconf/gconfd.c:195
+#: gconf/gconfd.c:197
 msgid ""
 "No config source addresses successfully resolved, can't load or store config "
 "data"
 msgstr "配置源地址无一解析成功，无法载入或存储配置数据"
 
 # SUN NEW TRANSLATION
-#: gconf/gconfd.c:212
+#: gconf/gconfd.c:214
 msgid ""
 "No writable config sources successfully resolved, may not be able to save "
 "some configuration changes"
 msgstr "可写入配置源无一解析成功，可能无法保存某些配置更改"
 
 # SUN NEW TRANSLATION
-#: gconf/gconfd.c:238
+#: gconf/gconfd.c:240
 #, c-format
 msgid "Received signal %d, dumping core. Please report a GConf bug."
 msgstr "已接收到信号 %d，正在转储核心文件。请报告一个 GConf 问题。"
 
 # SUN NEW TRANSLATION
-#: gconf/gconfd.c:256
+#: gconf/gconfd.c:258
 #, c-format
 msgid ""
 "Received signal %d, shutting down abnormally. Please file a GConf bug report."
 msgstr "已接收到信号 %d，正在异常关闭。请将 GConf 问题记入报告。"
 
 # SUN NEW TRANSLATION
-#: gconf/gconfd.c:273
+#: gconf/gconfd.c:275
 #, c-format
 msgid "Received signal %d, shutting down cleanly"
 msgstr "已接收到信号 %d，正在干净地关闭"
 
-#: gconf/gconfd.c:342
+#: gconf/gconfd.c:344
 #, c-format
 msgid "Failed to open %s: %s"
 msgstr "打开 %s 失败：%s"
 
-#: gconf/gconfd.c:349
+#: gconf/gconfd.c:351
 #, c-format
 msgid "Failed to stat %s: %s"
 msgstr "查看 %s 失败：%s"
 
-#: gconf/gconfd.c:358
+#: gconf/gconfd.c:360
 #, c-format
 msgid "Owner of %s is not the current user"
 msgstr "%s 的所有者并非当前用户"
 
-#: gconf/gconfd.c:366
+#: gconf/gconfd.c:368
 #, c-format
 msgid "Bad permissions %lo on directory %s"
 msgstr "目录 %2$s 的权限 %1$lo 有错"
@@ -1110,47 +1110,47 @@ msgstr "目录 %2$s 的权限 %1$lo 有错"
 # SUN NEW TRANSLATION
 #. openlog() does not copy logname - what total brokenness.
 #. So we free it at the end of main()
-#: gconf/gconfd.c:446
+#: gconf/gconfd.c:452
 #, c-format
 msgid "starting (version %s), pid %u user '%s'"
 msgstr "正在启动(版本 %s)，pid %u 用户“%s”"
 
 # SUN CHANGED MESSAGE
-#: gconf/gconfd.c:485
+#: gconf/gconfd.c:493
 #, c-format
 msgid "Failed to create %s: %s"
 msgstr "无法创建 %s：%s"
 
-#: gconf/gconfd.c:493
+#: gconf/gconfd.c:501
 #, c-format
 msgid "Directory %s has a problem, gconfd can't use it"
 msgstr "目录 %s 有问题，gconfd 无法使用它"
 
 # SUN NEW TRANSLATION
-#: gconf/gconfd.c:529
+#: gconf/gconfd.c:537
 #, c-format
 msgid "Failed to write byte to pipe fd %d so client program may hang: %s"
 msgstr "无法将字节写入管道 fd %d，所以客户端程序可能挂起：%s"
 
 # SUN CHANGED MESSAGE
-#: gconf/gconfd.c:543
+#: gconf/gconfd.c:551
 #, c-format
 msgid "Failed to get lock for daemon, exiting: %s"
 msgstr "无法锁定守护进程，正在退出：%s"
 
 # SUN CHANGED MESSAGE
-#: gconf/gconfd.c:585
+#: gconf/gconfd.c:593
 #, c-format
 msgid "Error releasing lockfile: %s"
 msgstr "释放锁定文件时出错：%s"
 
 # SUN NEW TRANSLATION
-#: gconf/gconfd.c:593
+#: gconf/gconfd.c:601
 msgid "Exiting"
 msgstr "退出"
 
 # SUN NEW TRANSLATION
-#: gconf/gconfd.c:636
+#: gconf/gconfd.c:644
 msgid "GConf server is not in use, shutting down."
 msgstr "GConf 服务器不在使用，正在关闭。"
 

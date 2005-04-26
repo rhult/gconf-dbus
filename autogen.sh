@@ -6,7 +6,7 @@ test -z "$srcdir" && srcdir=.
 
 ORIGDIR=`pwd`
 cd $srcdir
-PROJECT=GConf
+PROJECT=gconf-dbus
 TEST_TYPE=-f
 FILE=gconf/gconf.h
 

@@ -33,6 +33,8 @@
 #include <stdio.h>
 #include <time.h>
 
+#include "markup-write-state.h"
+
 typedef struct
 {
   char       *locale;
@@ -79,6 +81,9 @@ static void save_tree  (MarkupDir  *root,
 			guint       file_mode,
 			GError    **err);
 
+static MarkupDir *markup_dir_create_shallow_copy (MarkupDir  *root);
+static void       markup_dir_free_shallow_copy   (MarkupDir  *root);
+
 
 struct _MarkupTree
 {
@@ -86,6 +91,8 @@ struct _MarkupTree
   guint dir_mode;
   guint file_mode;
 
+  gboolean reliable_writes;
+  
   MarkupDir *root;
 
   guint refcount;
@@ -96,7 +103,8 @@ static GHashTable *trees_by_root_dir = NULL;
 MarkupTree*
 markup_tree_get (const char *root_dir,
                  guint       dir_mode,
-                 guint       file_mode)
+                 guint       file_mode,
+		 gboolean    reliable_writes)
 {
   MarkupTree *tree = NULL;
 
@@ -117,6 +125,8 @@ markup_tree_get (const char *root_dir,
   tree->dir_mode = dir_mode;
   tree->file_mode = file_mode;
 
+  tree->reliable_writes = reliable_writes;
+  
   tree->root = markup_dir_new (tree, NULL, "/");  
 
   tree->refcount = 1;
@@ -162,6 +172,16 @@ markup_tree_rebuild (MarkupTree *tree)
   tree->root = markup_dir_new (tree, NULL, "/");  
 }
 
+/* Rebuilds the tree even with outstanding sync requests. Used when reverting to
+ * an old copy of the data in case of failure.
+ */
+void
+markup_tree_force_rebuild (MarkupTree *tree)
+{
+  markup_dir_free (tree->root);
+  tree->root = markup_dir_new (tree, NULL, "/");  
+}
+
 struct _MarkupDir
 {
   MarkupTree *tree;
@@ -171,6 +191,11 @@ struct _MarkupDir
   GSList *entries;
   GSList *subdirs;
 
+  /* If this is a temporary shallow copy used when saving the second copy of the
+   * tree.
+   */
+  guint is_copy : 1;
+  
   /* Have read the existing XML file */
   guint entries_loaded : 1;
   /* Need to rewrite the XML file since we changed
@@ -339,17 +364,74 @@ gboolean
 markup_tree_sync (MarkupTree *tree,
                   GError    **err)
 {
+  MarkupDir *copy = NULL;
+
   if (markup_dir_needs_sync (tree->root))
     {
+      if (tree->reliable_writes)
+	{
+	  if (!markup_write_state_write (MARKUP_WRITE_STATE_WRITING_V1))
+	    {
+	      g_set_error (err, GCONF_ERROR,
+			   GCONF_ERROR_FAILED,
+			   "Failed to write state information before writing v1");
+	      return FALSE;
+	    }
+	  
+	  copy = markup_dir_create_shallow_copy (tree->root);
+	}
+
+      /*
+       * Write the first copy of the data.
+       */
+
       if (!markup_dir_sync (tree->root))
         {
           g_set_error (err, GCONF_ERROR,
                        GCONF_ERROR_FAILED,
                        _("Failed to write some configuration data to disk\n"));
+
+	  markup_dir_free_shallow_copy (copy);
           return FALSE;          
         }
-    }
 
+      if (tree->reliable_writes)
+	{
+	  if (!markup_write_state_write (MARKUP_WRITE_STATE_WRITING_V2))
+	    {
+	      g_set_error (err, GCONF_ERROR,
+			   GCONF_ERROR_FAILED,
+			   "Failed to write state information after writing v1");
+	      markup_dir_free_shallow_copy (copy);
+	      return FALSE;
+	    }
+
+	  /*
+	   * Write the second copy of the data.
+	   */
+
+	  if (!markup_dir_sync (copy))
+	    {
+	      g_set_error (err, GCONF_ERROR,
+			   GCONF_ERROR_FAILED,
+			   "Failed to write some configuration data to disk (copy)");
+	      
+	      markup_dir_free_shallow_copy (copy);
+	      return FALSE;          
+	    }
+	  
+	  markup_dir_free_shallow_copy (copy);
+
+	  if (!markup_write_state_write (MARKUP_WRITE_STATE_OK))
+	    {
+	      g_set_error (err, GCONF_ERROR,
+			   GCONF_ERROR_FAILED,
+			   "Failed to write state information after writing v2");
+	      return FALSE;
+	    }
+	}
+    }
+  
   return TRUE;
 }
 
@@ -965,6 +1047,8 @@ markup_dir_sync (MarkupDir *dir)
   fs_filename = markup_dir_build_path (dir, TRUE, FALSE);
   fs_subtree = markup_dir_build_path (dir, TRUE, TRUE);
 
+  /*g_print ("markup_dir_sync, %s\n", fs_filename);*/
+  
   /* For a dir to be loaded as a subdir, it must have a
    * %gconf.xml file, even if it has no entries in that
    * file.  Thus when creating a new dir, we set dir->entries_need_save
@@ -1118,6 +1202,11 @@ markup_dir_build_path (MarkupDir  *dir,
     }
 
   name = g_string_new (dir->tree->dirname);
+
+  /* If we are working on the copy, add -copy to the root dir. */
+  if (iter->is_copy)
+    g_string_append (name, "-copy");
+  
   tmp = components;
   while (tmp != NULL)
     {
@@ -3688,9 +3777,9 @@ save_tree (MarkupDir  *dir,
   f = NULL;
 
   filename = markup_dir_build_path (dir, TRUE, save_as_subtree);
-  
+
   new_filename = g_strconcat (filename, ".new", NULL);
-  new_fd = open (new_filename, O_WRONLY | O_CREAT, file_mode);
+  new_fd = open (new_filename, O_WRONLY | O_CREAT | O_SYNC, file_mode);
   if (new_fd < 0)
     {
       err_str = g_strdup_printf (_("Failed to open \"%s\": %s\n"),
@@ -3788,7 +3877,7 @@ save_tree (MarkupDir  *dir,
   
   if (rename (new_filename, filename) < 0)
     {
-      err_str = g_strdup_printf (_("Failed to move temporary file \"%s\" to final location \"%s\": %s"),                                 
+      err_str = g_strdup_printf (_("Failed to move temporary file \"%s\" to final location \"%s\": %s"),
                                  new_filename, filename, g_strerror (errno));
       goto out;
     }
@@ -3813,6 +3902,68 @@ save_tree (MarkupDir  *dir,
   if (f != NULL)
     fclose (f);
 }
+
+/* Make a shallow copy of the dir for using when writing a second copy of the
+ * data. It's life-time must only be during the writing of that copy, and then
+ * free with the markup_dir_free_shallow_copy().
+ */
+static MarkupDir *
+markup_dir_create_shallow_copy (MarkupDir *dir)
+{
+  MarkupDir *copy;
+  GSList    *l;
+
+  copy = g_new0 (MarkupDir, 1);
+  memcpy (copy, dir, sizeof (MarkupDir));
+  
+  /* Move the root of the copy to "...-copy" and mark it as a copy so that
+   * markup_dir_build_path knows to add -copy.
+   */
+  if (strcmp (dir->name, "/") == 0)
+    copy->is_copy = TRUE;
+
+  /* Copy the lists. */
+  copy->entries = g_slist_copy (dir->entries);
+  copy->subdirs = NULL;
+
+  for (l = dir->subdirs; l; l = l->next)
+    {
+      MarkupDir *subdir, *subdir_copy;
+
+      subdir = l->data;
+      subdir_copy = markup_dir_create_shallow_copy (subdir);
+
+      subdir_copy->parent = copy;
+      
+      copy->subdirs = g_slist_prepend (copy->subdirs, subdir_copy);
+    }
+  
+  copy->subdirs = g_slist_reverse (copy->subdirs);
+  
+  return copy;
+}
+
+static void
+markup_dir_free_shallow_copy (MarkupDir *dir)
+{
+  GSList *l;
+  
+  g_slist_free (dir->entries);
+
+  for (l = dir->subdirs; l; l = l->next)
+    {
+      MarkupDir *subdir;
+
+      subdir = l->data;
+      
+      markup_dir_free_shallow_copy (subdir);
+    }
+  
+  g_slist_free (dir->subdirs);
+
+  g_free (dir);
+}
+
 
 /*
  * Local schema

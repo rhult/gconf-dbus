@@ -1,3 +1,25 @@
+2005-04-26  Richard Hult  <richard@imendio.com>
+
+	Add reliable writes to handle shutdown in the middle of writing a
+	set of keys better.
+	
+	* backends/Makefile.am:
+	* backends/gconf-merge-tree.c:
+	* backends/markup-write-state.[ch]: Add functions for handling the
+	write state.
+	
+	* backends/markup-backend.c: 
+	* backends/markup-tree.c: Use the write state functions and save
+	the data to two databases and update the state accordingly.
+
+	* gconf/default.path.in: Mark the writable source in the homedir
+	as reliable.
+
+	* gconf/gconf-database.c: (gconf_database_schedule_sync): Use a
+	smaller timeout.
+	
+	* gconf/gconfd.c: Add a define for helping debugging the daemon.
+
 2005-02-10  Richard Hult  <richard@imendio.com>
 
 	* configure.in: Bump version to 2.6.4.3.

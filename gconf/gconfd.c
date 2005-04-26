@@ -62,6 +62,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#define DAEMON_DEBUG
+
 /* This makes hash table safer when debugging */
 #ifndef GCONF_ENABLE_DEBUG
 #define safe_g_hash_table_insert g_hash_table_insert
@@ -406,25 +408,29 @@ main(int argc, char** argv)
        exit (1);
     }
 
+#ifndef DAEMON_DEBUG
   if (!g_getenv ("GCONF_DEBUG_OUTPUT"))
     {
       dev_null_fd = open ("/dev/null", O_RDWR);
       if (dev_null_fd >= 0)
-        {
+	{
 	  dup2 (dev_null_fd, 0);
 	  dup2 (dev_null_fd, 1);
 	  dup2 (dev_null_fd, 2);
 	}
     }
   else
+#endif
     {
       gconf_log_debug_messages = TRUE;
     }
   
   umask (022);
-  
-  gconf_set_daemon_mode(TRUE);
 
+#ifndef DAEMON_DEBUG
+  gconf_set_daemon_mode(TRUE);
+#endif
+  
   /* Logs */
   username = g_get_user_name();
   logname = g_strdup_printf("gconfd (%s-%u)", username, (guint)getpid());
@@ -465,8 +471,10 @@ main(int argc, char** argv)
   sigaction (SIGUSR1,  &act, 0);
   
   act.sa_handler = SIG_IGN;
+#ifndef DAEMON_DEBUG
   sigaction (SIGINT, &act, 0);
-
+#endif
+  
   init_databases ();
 
 #ifdef HAVE_ORBIT
@@ -624,7 +632,7 @@ get_client_count (void)
 static gboolean
 periodic_cleanup_timeout(gpointer data)
 {  
-  gconf_log (GCL_DEBUG, "Performing periodic cleanup, expiring cache cruft");
+  /*gconf_log (GCL_DEBUG, "Performing periodic cleanup, expiring cache cruft");*/
 
 #ifdef HAVE_ORBIT
   gconfd_corba_drop_old_clients ();
@@ -643,7 +651,7 @@ periodic_cleanup_timeout(gpointer data)
 
   if (!need_log_cleanup)
     {
-      gconf_log (GCL_DEBUG, "No log file saving needed in periodic cleanup handler");
+      /*gconf_log (GCL_DEBUG, "No log file saving needed in periodic cleanup handler");*/
       return TRUE;
     }
 

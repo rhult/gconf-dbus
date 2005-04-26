@@ -187,8 +187,8 @@ gconf_database_schedule_sync(GConfDatabase* db)
     return;
   else
     {
-      /* 1 minute timeout */
-      db->sync_timeout = g_timeout_add(60000, (GSourceFunc)gconf_database_sync_timeout, db);
+      /* FIXME: Should check the timeout value here. */
+      db->sync_timeout = g_timeout_add(3000, (GSourceFunc)gconf_database_sync_timeout, db);
     }
 }
 

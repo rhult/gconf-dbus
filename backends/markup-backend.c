@@ -35,6 +35,7 @@
 #include <limits.h>
 
 #include "markup-tree.h"
+#include "markup-write-state.h"
 
 /*
  * Overview
@@ -65,12 +66,15 @@ typedef struct
   MarkupTree *tree;
   guint dir_mode;
   guint file_mode;
+
+  gboolean reliable_writes;
 } MarkupSource;
 
 static MarkupSource* ms_new     (const char   *root_dir,
                                  guint         dir_mode,
                                  guint         file_mode,
-                                 GConfLock    *lock);
+                                 GConfLock    *lock,
+				 gboolean      reliable_writes);
 static void          ms_destroy (MarkupSource *source);
 
 /*
@@ -258,6 +262,7 @@ resolve_address (const char *address,
   char** address_flags;
   char** iter;
   gboolean force_readonly;
+  gboolean reliable_writes;
 
   root_dir = get_dir_from_address (address, err);
   if (root_dir == NULL)
@@ -282,6 +287,7 @@ resolve_address (const char *address,
     }
 
   force_readonly = FALSE;
+  reliable_writes = FALSE;
   
   address_flags = gconf_address_flags (address);  
   if (address_flags)
@@ -292,7 +298,10 @@ resolve_address (const char *address,
           if (strcmp (*iter, "readonly") == 0)
             {
               force_readonly = TRUE;
-              break;
+            }
+          else if (strcmp (*iter, "reliable") == 0)
+            {
+              reliable_writes = TRUE;
             }
 
           ++iter;
@@ -353,6 +362,9 @@ resolve_address (const char *address,
             return NULL;
           }
       }
+
+    /* It only makes sense to use reliable writes if we're writable. */
+    reliable_writes &= writable;
   }
 
   {
@@ -384,7 +396,7 @@ resolve_address (const char *address,
   
   /* Create the new source */
 
-  xsource = ms_new (root_dir, dir_mode, file_mode, lock);
+  xsource = ms_new (root_dir, dir_mode, file_mode, lock, reliable_writes);
 
   gconf_log (GCL_DEBUG,
              _("Directory/file permissions for XML source at root %s are: %o/%o"),
@@ -757,16 +769,62 @@ set_schema (GConfSource *source,
   markup_entry_set_schema_name (entry, schema_name);
 }
 
+#include "gconfd.h"
+
 static gboolean      
 sync_all (GConfSource *source,
           GError     **err)
 {
-  MarkupSource* ms = (MarkupSource*)source;
+  MarkupSource*    ms = (MarkupSource*)source;
+  gboolean         ret;
+  MarkupWriteState state;
+  gboolean         need_reload;
 
-  return markup_tree_sync (ms->tree, err);
+  if (!ms->reliable_writes)
+    return markup_tree_sync (ms->tree, err);
+  
+  /* We always know that the state is consistent when we get here. Start with
+   * saving to both databases.
+   */
+  ret = markup_tree_sync (ms->tree, err);
+  if (ret)
+    return TRUE;
+
+  if (err)
+    g_clear_error (err);
+  
+  /* If the syncing was not successful, try to recover. */
+  state = markup_write_state_read ();
+  if (!markup_write_state_ensure_consistent (state, ms->root_dir, &need_reload))
+    {
+      gconf_log (GCL_ERR, "Could not get a consistent state");
+
+      g_set_error (err, GCONF_ERROR,
+		   GCONF_ERROR_FAILED,
+		   "Could not ensure consistent state");
+      
+      /* Since we can't get a consistent state, we do the best we can, which is
+       * set the init state and quit. This will result in an error on the client
+       * side and the daemon will be restarted.
+       */
+      markup_write_state_write (MARKUP_WRITE_STATE_INIT);
+      gconf_main_quit ();
+      
+      return FALSE;
+    }
+  
+  /* At this point, we have two correct databases and the proper state. Drop the
+   * cache and rebuild from the newly copied version if necessary. Note that
+   * clients will not have the right data after doing this, but it should only
+   * happen after errors.
+   */
+  if (need_reload)
+    markup_tree_force_rebuild (ms->tree);
+
+  return TRUE;
 }
 
-static void          
+static void
 destroy_source (GConfSource *source)
 {
   ms_destroy ((MarkupSource*)source);
@@ -887,7 +945,8 @@ static MarkupSource*
 ms_new (const char* root_dir,
         guint       dir_mode,
         guint       file_mode,
-        GConfLock  *lock)
+        GConfLock  *lock,
+	gboolean    reliable_writes)
 {
   MarkupSource* ms;
 
@@ -905,9 +964,29 @@ ms_new (const char* root_dir,
 
   ms->dir_mode = dir_mode;
   ms->file_mode = file_mode;
+
+  ms->reliable_writes = reliable_writes;
+
+  /* Read the state left from the last run and sync the two copies (v1/v2) of
+   * the data.
+   */
+  if (reliable_writes)
+    {
+      MarkupWriteState state;
+
+      state = markup_write_state_read ();
+      if (!markup_write_state_ensure_consistent (state, ms->root_dir, NULL))
+	{
+	  gconf_log (GCL_ERR, "Could not get a consistent state");
+
+	  /* Quit as soon as possible. */
+	  markup_write_state_write (MARKUP_WRITE_STATE_INIT);
+	  gconf_main_quit ();
+	}
+    }
   
-  ms->tree = markup_tree_get (ms->root_dir, ms->dir_mode, ms->file_mode);
-  
+  ms->tree = markup_tree_get (ms->root_dir, ms->dir_mode, ms->file_mode, ms->reliable_writes);
+
   return ms;
 }
 

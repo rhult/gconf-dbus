@@ -24,6 +24,7 @@
 #include <locale.h>
 
 #include "markup-tree.c"
+#include "markup-write-state.c"
 
 guint
 _gconf_mode_t_to_mode (mode_t orig)
@@ -80,7 +81,7 @@ merge_tree (const char *root_dir)
 
     }
 
-  tree = markup_tree_get (root_dir, dir_mode, file_mode);
+  tree = markup_tree_get (root_dir, dir_mode, file_mode, FALSE);
 
   recursively_load_entire_tree (tree->root);
 

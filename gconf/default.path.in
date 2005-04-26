@@ -18,7 +18,7 @@ include @EXPANDED_SYSCONFDIR@/gconf/2/local-mandatory.path
 include "$(HOME)/.gconf.path"
 
 # Give users a default storage location, ~/.gconf
-xml:readwrite:$(HOME)/.gconf
+xml:readwrite,reliable:$(HOME)/.gconf
 
 # To read in any defaults settings that the Sys Admin may have created
 # prior to a desktop system upgrade. The SysAdmin can stick default values

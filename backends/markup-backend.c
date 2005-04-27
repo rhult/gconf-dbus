@@ -798,19 +798,11 @@ sync_all (GConfSource *source,
     {
       gconf_log (GCL_ERR, "Could not get a consistent state");
 
-      g_set_error (err, GCONF_ERROR,
-		   GCONF_ERROR_FAILED,
-		   "Could not ensure consistent state");
-      
       /* Since we can't get a consistent state, we do the best we can, which is
        * set the init state and quit. This will result in an error on the client
        * side and the daemon will be restarted.
        */
-      /*markup_write_state_write (MARKUP_WRITE_STATE_INIT);*/
-      /*gconf_main_quit ();*/
       exit (1);
-      
-      return FALSE;
     }
   
   /* At this point, we have two correct databases and the proper state. Drop the
@@ -980,8 +972,6 @@ ms_new (const char* root_dir,
 	  gconf_log (GCL_ERR, "Could not get a consistent state");
 
 	  /* Quit as soon as possible. */
-	  /*markup_write_state_write (MARKUP_WRITE_STATE_INIT);*/
-	  /*gconf_main_quit ();*/
 	  exit (1);
 	}
     }

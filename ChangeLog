@@ -1,3 +1,9 @@
+2005-05-17  Mikael Hallendal  <micke@imendio.com>
+
+	* gconf/gconf-client.c: 
+	- Don't free the entry key here, owned by the entry.
+	- Fix already in HEAD in GConf.
+
 2005-04-27  Richard Hult  <richard@imendio.com>
 
 	Release 2.6.4.5.

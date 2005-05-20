@@ -1,3 +1,13 @@
+2005-05-20  Richard Hult  <richard@imendio.com>
+
+	* configure.in: Bump version.
+
+	* gconf/Makefile.am: Add localstatedir for consistency.
+
+	* backends/markup-write-state.c (markup_write_state_write): Add
+	log message when the state file can't be opened. Disable debug
+	spew.
+
 2005-05-17  Mikael Hallendal  <micke@imendio.com>
 
 	* gconf/gconf-client.c: 

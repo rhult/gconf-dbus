@@ -18,6 +18,7 @@ INCLUDES=								\
 	-DGCONF_ETCDIR=\""$(sysconfdir)/gconf"\"			\
 	-DGCONF_BINDIR=\""$(bindir)"\"					\
 	-DGCONF_SERVERDIR=\""$(libexecdir)"\"           		\
+	-DGCONF_LOCALSTATEDIR=\""$(localstatedir)"\"           		\
 	-DGCONF_BUILDDIR=\""$(top_builddir)"\"				\
 	-DGCONF_BACKEND_DIR=\""$(pkglibdir)/$(MAJOR_VERSION)"\"		\
 	-DVERSION=\""$(VERSION)"\"					\

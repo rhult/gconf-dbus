@@ -35,7 +35,7 @@
 #define STATE_WRITING_V1 "V1"
 #define STATE_WRITING_V2 "V2"
 
-#define d(x) x
+#define d(x) 
 
 
 static gchar *
@@ -121,6 +121,9 @@ markup_write_state_write (MarkupWriteState state)
   
   if (fd < 0)
     {
+      gconf_log (GCL_ERR, "Could not open state file for writing %s: %s"),
+	filename, g_strerror (errno);
+      
       g_free (filename);
       g_free (tmp_filename);
       return FALSE;
@@ -147,8 +150,6 @@ markup_write_state_write (MarkupWriteState state)
   g_free (filename);
   g_free (tmp_filename);
 
-  /*sleep(1);*/
-  
   return ret;
 }
 

@@ -1,5 +1,7 @@
 2005-05-20  Richard Hult  <richard@imendio.com>
 
+	* Release 2.6.4.6.
+
 	* configure.in: Bump version.
 
 	* gconf/Makefile.am: Add localstatedir for consistency.

@@ -1,3 +1,11 @@
+2005-05-23  Anders Carlsson  <andersca@imendio.com>
+
+	* gconf/Makefile.am:
+	Define the standard system bus socket
+	
+	* gconf/gconf-dbus.c:
+	Use a separate connection for the bus.
+	
 2005-05-20  Richard Hult  <richard@imendio.com>
 
 	* Release 2.6.4.6.

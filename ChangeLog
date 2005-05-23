@@ -2,6 +2,10 @@
 
 	* Release 2.6.4.7.
 
+	* Makefile.am: Dist README.dbus. 
+
+	* README.dbus: Add information about the DBUS version.
+
 	* configure.in: Bump version.
 
 2005-05-23  Anders Carlsson  <andersca@imendio.com>

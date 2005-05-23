@@ -1,3 +1,9 @@
+2005-05-23  Richard Hult  <richard@imendio.com>
+
+	* Release 2.6.4.7.
+
+	* configure.in: Bump version.
+
 2005-05-23  Anders Carlsson  <andersca@imendio.com>
 
 	* gconf/Makefile.am:

@@ -167,7 +167,12 @@ service_DATA     = gconf.service
 	sed -e "s|\@libexecdir\@|$(libexecdir)|" $< > $@
 endif
 
-EXTRA_DIST=GConfX.idl default.path.in gconfmarshal.list regenerate-enum-header.sh regenerate-enum-footer.sh gconf-corba.c gconf-corba.h gconf-corba-utils.c gconf-corba-utils.h gconf-database-corba.c gconf-database-corba.h gconfd-corba.c gconf-dbus.c gconf-database-dbus.c gconf-database-dbus.h gconfd-dbus.c gconfd-dbus.h gconf.service.in
+if USE_SYSTEM_BUS
+systembusconfdir = $(sysconfdir)/dbus-1/system.d
+systembusconf_DATA = gconfd.conf
+endif
+
+EXTRA_DIST=GConfX.idl default.path.in gconfmarshal.list regenerate-enum-header.sh regenerate-enum-footer.sh gconf-corba.c gconf-corba.h gconf-corba-utils.c gconf-corba-utils.h gconf-database-corba.c gconf-database-corba.h gconfd-corba.c gconf-dbus.c gconf-database-dbus.c gconf-database-dbus.h gconfd-dbus.c gconfd-dbus.h gconf.service.in gconfd.conf
 
 install-data-local:
 	-mkdir -p $(DESTDIR)$(sysconfdir)/gconf/$(MAJOR_VERSION)

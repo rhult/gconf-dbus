@@ -4,7 +4,7 @@ AC_INIT(gconf/gconf.h)
 
 AM_CONFIG_HEADER(config.h)
 
-AM_INIT_AUTOMAKE(gconf-dbus, 2.6.4.7)
+AM_INIT_AUTOMAKE(gconf-dbus, 2.6.4.8)
 
 AM_MAINTAINER_MODE
 

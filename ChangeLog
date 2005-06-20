@@ -1,3 +1,12 @@
+2005-06-20  Richard Hult  <richard@imendio.com>
+
+	* Release 2.6.4.8.
+
+	* configure.in: Bump version.
+
+	* gconf/Makefile.am (systembusconfdir): Install system bus conf
+	data when using the system bus.
+
 2005-05-23  Richard Hult  <richard@imendio.com>
 
 	* Release 2.6.4.7.

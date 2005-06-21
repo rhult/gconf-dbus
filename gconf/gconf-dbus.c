@@ -400,7 +400,7 @@ ensure_dbus_connection (void)
   global_conn = dbus_connection_open (address, &error);
   if (!global_conn) 
     {
-      g_warning ("Failed to connect to the D-BUS daemon: %s", error.message);
+      g_warning ("Client failed to connect to the D-BUS daemon:\n%s", error.message);
       
       dbus_error_free (&error);
       return FALSE;
@@ -408,7 +408,7 @@ ensure_dbus_connection (void)
 	
   if (!dbus_bus_register (global_conn, &error)) 
     {
-      g_warning ("Failed to register with the D-BUS daemon: %s", error.message);
+      g_warning ("Client failed to register with the D-BUS daemon:\n%s", error.message);
       
       dbus_connection_disconnect (global_conn);
       dbus_connection_unref (global_conn);

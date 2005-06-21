@@ -24,7 +24,7 @@ INCLUDES=								\
 	-DVERSION=\""$(VERSION)"\"					\
 	-DGCONF_ENABLE_INTERNALS=1					\
 	-DGCONFD=\""$(GCONFD_BINARY_NAME)"\"				\
-	-DGCONF_SYSTEM_BUS_ADDRESS=\""$(localstatedir)/dbus/system_bus_socket"\" \
+	-DGCONF_SYSTEM_BUS_ADDRESS=\"unix:path="$(localstatedir)/run/dbus/system_bus_socket"\" \
 	$(DBUS_API_SUBJECT_TO_CHANGE)					\
 	$(NULL)
 

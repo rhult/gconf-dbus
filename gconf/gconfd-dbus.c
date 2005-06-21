@@ -202,7 +202,7 @@ gconfd_dbus_init (void)
   DBusError   error;
 
   dbus_error_init (&error);
-  
+
 #ifdef USE_SYSTEM_BUS
   bus_conn = dbus_bus_get (DBUS_BUS_SYSTEM, &error);
 #else
@@ -211,7 +211,7 @@ gconfd_dbus_init (void)
 
   if (!bus_conn) 
     {
-      gconf_log (GCL_ERR, _("Failed to connect to the D-BUS daemon: %s"),
+      gconf_log (GCL_ERR, _("Daemon failed to connect to the D-BUS daemon:\n%s"),
 		 error.message);
       dbus_error_free (&error);
       return FALSE;
@@ -231,7 +231,8 @@ gconfd_dbus_init (void)
   dbus_bus_acquire_service (bus_conn, GCONF_DBUS_SERVICE, 0, &error);
   if (dbus_error_is_set (&error)) 
     {
-      gconf_log (GCL_ERR, _("Failed to acquire gconf service"));
+      gconf_log (GCL_ERR, _("Daemon failed to acquire gconf service:\n%s"),
+		 error.message);
       dbus_error_free (&error);
       return FALSE;
     }

@@ -1,3 +1,8 @@
+2005-06-23  Mikael Hallendal  <micke@imendio.com>
+
+	* gconf/gconf-sources.c: (gconf_source_free):
+	- Free source->address, patch from GNOME Bugzilla #307887.
+
 2005-06-21  Richard Hult  <richard@imendio.com>
 
 	* gconf/gconf-dbus.c (ensure_dbus_connection): 

@@ -9,6 +9,8 @@
 
 2005-06-21  Richard Hult  <richard@imendio.com>
 
+	* Release 2.6.4.9.
+
 	* gconf/gconf-dbus.c (ensure_dbus_connection): 
 	* gconf/gconfd-dbus.c (gconfd_dbus_init): Improve logging messages
 	to help debugging.

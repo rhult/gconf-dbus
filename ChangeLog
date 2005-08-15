@@ -1,3 +1,7 @@
+2005-08-15  Mikael Hallendal  <micke@imendio.com>
+
+	* Release 2.6.4.10  
+
 2005-06-23  Mikael Hallendal  <micke@imendio.com>
 
 	* gconf/gconf-sources.c: (gconf_source_free):

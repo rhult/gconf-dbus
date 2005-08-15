@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-04-26 11:04+0200\n"
+"POT-Creation-Date: 2005-08-15 12:45+0200\n"
 "PO-Revision-Date: 2004-03-16 15:25-0200\n"
 "Last-Translator: Nikos Charonitakis <charosn@her.fothnet.gr>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
@@ -396,13 +396,13 @@ msgid "GConf Error: %s\n"
 msgstr "Σφάλμα GConf: %s\n"
 
 # gconf/gconftool.c:749
-#: gconf/gconf-client.c:896
+#: gconf/gconf-client.c:895
 #, c-format
 msgid "GConf warning: failure listing pairs in `%s': %s"
 msgstr "Προειδοποίηση GConf: αποτυχία απαρίθμησης ζευγών στο `%s': %s"
 
 # gconf/gconf-internals.c:1292
-#: gconf/gconf-client.c:1181
+#: gconf/gconf-client.c:1180
 #, c-format
 msgid "Expected `%s' got `%s' for key %s"
 msgstr "Αναμενόταν `%s' λήφθηκε `%s' για το κλειδί %s"
@@ -414,7 +414,7 @@ msgid "Failed to sync one or more sources: %s"
 msgstr "Αποτυχία συγχρονισμού μίας ή περισσοτέρων πηγών: %s"
 
 # gconf/gconfd.c:1523
-#: gconf/gconf-database.c:223 gconf/gconf-sources.c:1563
+#: gconf/gconf-database.c:223 gconf/gconf-sources.c:1566
 #, c-format
 msgid "Error getting value for `%s': %s"
 msgstr "Σφάλμα κατά τη λήψη τιμής για `%s': %s"
@@ -863,30 +863,30 @@ msgstr ""
 "cdr "
 
 # gconf/gconf-internals.c:2416
-#: gconf/gconf-sources.c:328
+#: gconf/gconf-sources.c:331
 #, c-format
 msgid "Failed to load source \"%s\": %s"
 msgstr "Αδύνατη η φόρτωση της πηγής  \"%s\": %s"
 
-#: gconf/gconf-sources.c:368
+#: gconf/gconf-sources.c:371
 #, c-format
 msgid "Resolved address \"%s\" to a writable config source at position %d"
 msgstr "Ανάλυση διευθύνσεως \"%s\" σε εγγράψιμη πηγή ρυθμίσεων στη θέση %d"
 
-#: gconf/gconf-sources.c:374
+#: gconf/gconf-sources.c:377
 #, c-format
 msgid "Resolved address \"%s\" to a read-only config source at position %d"
 msgstr ""
 "Ανάλυση διευθύνσεως \"%s\" σε μόνο για ανάγνωση πηγή ρυθμίσεων στη θέση %d"
 
-#: gconf/gconf-sources.c:381
+#: gconf/gconf-sources.c:384
 #, c-format
 msgid ""
 "Resolved address \"%s\" to a partially writable config source at position %d"
 msgstr ""
 "Ανάλυση διευθύνσεως \"%s\" σε μερικώς εγγράψιμη πηγή ρυθμίσεων στη θέση %d"
 
-#: gconf/gconf-sources.c:390
+#: gconf/gconf-sources.c:393
 msgid ""
 "None of the resolved addresses are writable; saving configuration settings "
 "will not be possible"
@@ -894,17 +894,17 @@ msgstr ""
 "Καμμία από τις αναλυόμενες διευθύνσεις δεν είναι εγγράψιμες; δε θα είναι "
 "δυνατή η αποθήκευση των ρυθμίσεων"
 
-#: gconf/gconf-sources.c:606
+#: gconf/gconf-sources.c:609
 #, c-format
 msgid "Schema `%s' specified for `%s' stores a non-schema value"
 msgstr ""
 "Το σχήμα `%s'  που καθορίστηκε για  `%s' αποθηκεύει μια τιμή χωρίς σχήμα"
 
-#: gconf/gconf-sources.c:664
+#: gconf/gconf-sources.c:667
 msgid "The '/' name can only be a directory, not a key"
 msgstr "Το όνομα '/' μπορεί να είναι μόνο κατάλογος, όχι ένα κλειδί"
 
-#: gconf/gconf-sources.c:702
+#: gconf/gconf-sources.c:705
 #, c-format
 msgid ""
 "Value for `%s' set in a read-only source at the front of your configuration "
@@ -913,7 +913,7 @@ msgstr ""
 "Η τιμή για το `%s' έχει ορισθεί ως μόνο για ανάγνωση στη διαδρομή των "
 "ρυθμίσεων σας"
 
-#: gconf/gconf-sources.c:714
+#: gconf/gconf-sources.c:717
 #, c-format
 msgid ""
 "Unable to store a value at key '%s', as the configuration server has no "
@@ -954,18 +954,18 @@ msgstr ""
 "όπως ~/.gconf"
 
 # gconf/gconftool.c:1181
-#: gconf/gconf-sources.c:1436
+#: gconf/gconf-sources.c:1439
 #, c-format
 msgid "Error finding metainfo: %s"
 msgstr "Σφάλμα στην εύρεση μεταπληροφορίας: %s"
 
 # gconf/gconftool.c:964 gconf/gconftool.c:1070
-#: gconf/gconf-sources.c:1505
+#: gconf/gconf-sources.c:1508
 #, c-format
 msgid "Error getting metainfo: %s"
 msgstr "Σφάλμα στην λήψη μεταπληροφορίας: %s"
 
-#: gconf/gconf-sources.c:1529
+#: gconf/gconf-sources.c:1532
 #, c-format
 msgid "Key `%s' listed as schema for key `%s' actually stores type `%s'"
 msgstr ""

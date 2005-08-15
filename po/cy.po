@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gconf\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-04-26 11:04+0200\n"
+"POT-Creation-Date: 2005-08-15 12:45+0200\n"
 "PO-Revision-Date: 2004-03-20 09:30+0000\n"
 "Last-Translator: Rhys Jones <rhys@sucs.org>\n"
 "Language-Team: Cymraeg <gnome-cy@pengwyn.linux.org.uk>\n"
@@ -348,12 +348,12 @@ msgstr "Methwyd cau yr ochr gefn"
 msgid "GConf Error: %s\n"
 msgstr "Gwall GConf: %s\n"
 
-#: gconf/gconf-client.c:896
+#: gconf/gconf-client.c:895
 #, c-format
 msgid "GConf warning: failure listing pairs in `%s': %s"
 msgstr "Rhybudd GConf: methu rhestru parau yn `%s': %s"
 
-#: gconf/gconf-client.c:1181
+#: gconf/gconf-client.c:1180
 #, c-format
 msgid "Expected `%s' got `%s' for key %s"
 msgstr "Disgwyliwyd `%s', cafwyd `%s' am allwedd %s"
@@ -363,7 +363,7 @@ msgstr "Disgwyliwyd `%s', cafwyd `%s' am allwedd %s"
 msgid "Failed to sync one or more sources: %s"
 msgstr "Methwyd cysoni un ffynhonnell neu fwy: %s"
 
-#: gconf/gconf-database.c:223 gconf/gconf-sources.c:1563
+#: gconf/gconf-database.c:223 gconf/gconf-sources.c:1566
 #, c-format
 msgid "Error getting value for `%s': %s"
 msgstr "Gwall wrth gael gwerth am `%s': %s"
@@ -763,26 +763,26 @@ msgid ""
 "elements"
 msgstr "Mae'r sgema yn penodi pâr ond nid yw'n penodi math yr elfennau CAR/CDR"
 
-#: gconf/gconf-sources.c:328
+#: gconf/gconf-sources.c:331
 #, c-format
 msgid "Failed to load source \"%s\": %s"
 msgstr "Methu llwytho'r ffynhonnell \"%s\": %s"
 
-#: gconf/gconf-sources.c:368
+#: gconf/gconf-sources.c:371
 #, c-format
 msgid "Resolved address \"%s\" to a writable config source at position %d"
 msgstr ""
 "Datryswyd y cyfeiriad \"%s\" i ffynhonnell cyfluniad ysgrifennadwy ger y "
 "safle %d"
 
-#: gconf/gconf-sources.c:374
+#: gconf/gconf-sources.c:377
 #, c-format
 msgid "Resolved address \"%s\" to a read-only config source at position %d"
 msgstr ""
 "Datryswyd y cyfeiriad \"%s\" i ffynhonnell cyfluniad darllen-yn-unig ger y "
 "safle %d"
 
-#: gconf/gconf-sources.c:381
+#: gconf/gconf-sources.c:384
 #, c-format
 msgid ""
 "Resolved address \"%s\" to a partially writable config source at position %d"
@@ -790,7 +790,7 @@ msgstr ""
 "Datryswyd y cyfeiriad \"%s\" i ffynhonnell cyfluniad rhannol ysgrifennadwy "
 "ger y safle %d"
 
-#: gconf/gconf-sources.c:390
+#: gconf/gconf-sources.c:393
 msgid ""
 "None of the resolved addresses are writable; saving configuration settings "
 "will not be possible"
@@ -798,16 +798,16 @@ msgstr ""
 "Does dim o'r cyfeiriadau fe ddatryswyd yn ysgrifennadwy; ni fydd yn bosib "
 "cadw gosodiadau cyfluniad"
 
-#: gconf/gconf-sources.c:606
+#: gconf/gconf-sources.c:609
 #, c-format
 msgid "Schema `%s' specified for `%s' stores a non-schema value"
 msgstr "Mae'r sgema `%s' a benodwyd ar gyfer `%s' yn dal gwerth nid yw'n sgema"
 
-#: gconf/gconf-sources.c:664
+#: gconf/gconf-sources.c:667
 msgid "The '/' name can only be a directory, not a key"
 msgstr "Gall yr enw '/' fod yn gyfeiriadur yn unig, nid allwedd"
 
-#: gconf/gconf-sources.c:702
+#: gconf/gconf-sources.c:705
 #, c-format
 msgid ""
 "Value for `%s' set in a read-only source at the front of your configuration "
@@ -816,7 +816,7 @@ msgstr ""
 "Gosodwyd gwerth ar gyfer `%s' mewn ffynhonnell darllen-yn-unig ar flaen eich "
 "llwybr cyfluniad"
 
-#: gconf/gconf-sources.c:714
+#: gconf/gconf-sources.c:717
 #, c-format
 msgid ""
 "Unable to store a value at key '%s', as the configuration server has no "
@@ -854,17 +854,17 @@ msgstr ""
 "a mae'n rhaid iddo berchen clo yn ~/.gconfd a hefyd cloëon yn lleoliadau "
 "storio unigol megis ~/.gconf"
 
-#: gconf/gconf-sources.c:1436
+#: gconf/gconf-sources.c:1439
 #, c-format
 msgid "Error finding metainfo: %s"
 msgstr "Gwall wrth ganfod metawybodaeth: %s"
 
-#: gconf/gconf-sources.c:1505
+#: gconf/gconf-sources.c:1508
 #, c-format
 msgid "Error getting metainfo: %s"
 msgstr "Gwall wrth gyrchu metagwybodaeth: %s"
 
-#: gconf/gconf-sources.c:1529
+#: gconf/gconf-sources.c:1532
 #, c-format
 msgid "Key `%s' listed as schema for key `%s' actually stores type `%s'"
 msgstr ""

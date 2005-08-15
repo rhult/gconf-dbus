@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gconf 2.4.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-04-26 11:04+0200\n"
+"POT-Creation-Date: 2005-08-15 12:45+0200\n"
 "PO-Revision-Date: 2004-03-14 23:51-0300\n"
 "Last-Translator: Evandro Fernandes Giovanini <evandrofg@ig.com.br>\n"
 "Language-Team: Brazilian Portuguese <gnome-l10n-br@listas.cipsga.org.br>\n"
@@ -347,12 +347,12 @@ msgstr "Falha ao desligar módulo"
 msgid "GConf Error: %s\n"
 msgstr "Erro do GConf: %s\n"
 
-#: gconf/gconf-client.c:896
+#: gconf/gconf-client.c:895
 #, c-format
 msgid "GConf warning: failure listing pairs in `%s': %s"
 msgstr "Alerta do GConf: falha ao construir a lista de pares em `%s': %s"
 
-#: gconf/gconf-client.c:1181
+#: gconf/gconf-client.c:1180
 #, c-format
 msgid "Expected `%s' got `%s' for key %s"
 msgstr "Esperado `%s' recebi `%s' para a chave %s"
@@ -362,7 +362,7 @@ msgstr "Esperado `%s' recebi `%s' para a chave %s"
 msgid "Failed to sync one or more sources: %s"
 msgstr "Falha ao sincronizar uma ou mais fontes: %s"
 
-#: gconf/gconf-database.c:223 gconf/gconf-sources.c:1563
+#: gconf/gconf-database.c:223 gconf/gconf-sources.c:1566
 #, c-format
 msgid "Error getting value for `%s': %s"
 msgstr "Erro ao obter valor de `%s': %s"
@@ -772,26 +772,26 @@ msgstr ""
 "O esquema especifica o tipo par, mas não especifica o tipo dos elementos car/"
 "cdr"
 
-#: gconf/gconf-sources.c:328
+#: gconf/gconf-sources.c:331
 #, c-format
 msgid "Failed to load source \"%s\": %s"
 msgstr "Falha ao carregar fonte \"%s\": %s"
 
-#: gconf/gconf-sources.c:368
+#: gconf/gconf-sources.c:371
 #, c-format
 msgid "Resolved address \"%s\" to a writable config source at position %d"
 msgstr ""
 "Endereço \"%s\" resolvido para uma fonte de configuração com permissões de "
 "escrita na posição %d"
 
-#: gconf/gconf-sources.c:374
+#: gconf/gconf-sources.c:377
 #, c-format
 msgid "Resolved address \"%s\" to a read-only config source at position %d"
 msgstr ""
 "Endereço \"%s\" resolvido para uma fonte de configuração somente leitura na "
 "posição %d"
 
-#: gconf/gconf-sources.c:381
+#: gconf/gconf-sources.c:384
 #, c-format
 msgid ""
 "Resolved address \"%s\" to a partially writable config source at position %d"
@@ -799,7 +799,7 @@ msgstr ""
 "Endereço \"%s\" resolvido para uma fonte de configuração com permissões "
 "parciais de escrita na posição %d"
 
-#: gconf/gconf-sources.c:390
+#: gconf/gconf-sources.c:393
 msgid ""
 "None of the resolved addresses are writable; saving configuration settings "
 "will not be possible"
@@ -807,16 +807,16 @@ msgstr ""
 "Nenhum dos endereços resolvidos tem permissões de escrita; não é possível "
 "salvar as definições da configuração"
 
-#: gconf/gconf-sources.c:606
+#: gconf/gconf-sources.c:609
 #, c-format
 msgid "Schema `%s' specified for `%s' stores a non-schema value"
 msgstr "Esquema `%s' especificado para `%s' armazena um valor de não-esquema"
 
-#: gconf/gconf-sources.c:664
+#: gconf/gconf-sources.c:667
 msgid "The '/' name can only be a directory, not a key"
 msgstr "O nome '/' pode ser apenas um diretório, não uma chave"
 
-#: gconf/gconf-sources.c:702
+#: gconf/gconf-sources.c:705
 #, c-format
 msgid ""
 "Value for `%s' set in a read-only source at the front of your configuration "
@@ -825,7 +825,7 @@ msgstr ""
 "O valor para `%s' atribuído em fonte somente leitura no início do seu "
 "caminho de configuração"
 
-#: gconf/gconf-sources.c:714
+#: gconf/gconf-sources.c:717
 #, c-format
 msgid ""
 "Unable to store a value at key '%s', as the configuration server has no "
@@ -865,17 +865,17 @@ msgstr ""
 "arquivo de bloqueio no ~/.gconfd e também arquivos de bloqueio em locais "
 "onde guarda configurações individuais como o ~/.gconf"
 
-#: gconf/gconf-sources.c:1436
+#: gconf/gconf-sources.c:1439
 #, c-format
 msgid "Error finding metainfo: %s"
 msgstr "Erro ao localizar metainfo: %s"
 
-#: gconf/gconf-sources.c:1505
+#: gconf/gconf-sources.c:1508
 #, c-format
 msgid "Error getting metainfo: %s"
 msgstr "Erro ao obter metainfo: %s"
 
-#: gconf/gconf-sources.c:1529
+#: gconf/gconf-sources.c:1532
 #, c-format
 msgid "Key `%s' listed as schema for key `%s' actually stores type `%s'"
 msgstr ""

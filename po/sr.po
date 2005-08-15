@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gconf 2.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-04-26 11:04+0200\n"
+"POT-Creation-Date: 2005-08-15 12:45+0200\n"
 "PO-Revision-Date: 2003-12-30 12:38+0100\n"
 "Last-Translator: Данило Шеган <danilo@prevod.org>\n"
 "Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
@@ -341,12 +341,12 @@ msgstr "Није успео да угаси део нижег нивоа"
 msgid "GConf Error: %s\n"
 msgstr "ГКонф грешка: %s\n"
 
-#: gconf/gconf-client.c:896
+#: gconf/gconf-client.c:895
 #, c-format
 msgid "GConf warning: failure listing pairs in `%s': %s"
 msgstr "ГКонф упозорење: грешка при проласку кроз парове у „%s“: %s"
 
-#: gconf/gconf-client.c:1181
+#: gconf/gconf-client.c:1180
 #, c-format
 msgid "Expected `%s' got `%s' for key %s"
 msgstr "Очекивао је „%s“, добио је „%s“ за кључ „%s“"
@@ -356,7 +356,7 @@ msgstr "Очекивао је „%s“, добио је „%s“ за кључ �
 msgid "Failed to sync one or more sources: %s"
 msgstr "Није успео да усклади са једним или више извора: %s"
 
-#: gconf/gconf-database.c:223 gconf/gconf-sources.c:1563
+#: gconf/gconf-database.c:223 gconf/gconf-sources.c:1566
 #, c-format
 msgid "Error getting value for `%s': %s"
 msgstr "Грешка при читању вредности за „%s“: %s"
@@ -749,13 +749,13 @@ msgid ""
 "elements"
 msgstr "Схема наводи пар за тип, али не наводи тип првог и другог члана пара"
 
-#: gconf/gconf-sources.c:328
+#: gconf/gconf-sources.c:331
 #, c-format
 msgid "Failed to load source \"%s\": %s"
 msgstr "Није успео да учита извор „%s“: %s"
 
 # bug: config -> configuration
-#: gconf/gconf-sources.c:368
+#: gconf/gconf-sources.c:371
 #, c-format
 msgid "Resolved address \"%s\" to a writable config source at position %d"
 msgstr ""
@@ -763,14 +763,14 @@ msgstr ""
 "позицији %d"
 
 # bug: config -> configuration
-#: gconf/gconf-sources.c:374
+#: gconf/gconf-sources.c:377
 #, c-format
 msgid "Resolved address \"%s\" to a read-only config source at position %d"
 msgstr ""
 "Адреса „%s“ показује на извор подешавања који се може само читати, на "
 "позицији %d"
 
-#: gconf/gconf-sources.c:381
+#: gconf/gconf-sources.c:384
 #, c-format
 msgid ""
 "Resolved address \"%s\" to a partially writable config source at position %d"
@@ -778,7 +778,7 @@ msgstr ""
 "Адреса „%s“ показује на извор подешавања у који је делимично могуће "
 "уписивати, на позицији %d"
 
-#: gconf/gconf-sources.c:390
+#: gconf/gconf-sources.c:393
 msgid ""
 "None of the resolved addresses are writable; saving configuration settings "
 "will not be possible"
@@ -786,16 +786,16 @@ msgstr ""
 "Ни на једну од прослеђених адреса се не може уписивати; неће бити могуће "
 "сачувати подешавања"
 
-#: gconf/gconf-sources.c:606
+#: gconf/gconf-sources.c:609
 #, c-format
 msgid "Schema `%s' specified for `%s' stores a non-schema value"
 msgstr "Дата схема „%s“ за „%s“ чува вредност која није за схему"
 
-#: gconf/gconf-sources.c:664
+#: gconf/gconf-sources.c:667
 msgid "The '/' name can only be a directory, not a key"
 msgstr "Име „/“ може представљати само категорију, а не и кључ"
 
-#: gconf/gconf-sources.c:702
+#: gconf/gconf-sources.c:705
 #, c-format
 msgid ""
 "Value for `%s' set in a read-only source at the front of your configuration "
@@ -804,7 +804,7 @@ msgstr ""
 "Вредност за „%s“ је постављена у неуписивом извору на почетку путање ваших "
 "подешавања"
 
-#: gconf/gconf-sources.c:714
+#: gconf/gconf-sources.c:717
 #, c-format
 msgid ""
 "Unable to store a value at key '%s', as the configuration server has no "
@@ -842,17 +842,17 @@ msgstr ""
 "имати датотеку за закључавање у ~/.gconfd и датотеке за закључавање у "
 "појединачним местима за смештање као што је ~/.gconf"
 
-#: gconf/gconf-sources.c:1436
+#: gconf/gconf-sources.c:1439
 #, c-format
 msgid "Error finding metainfo: %s"
 msgstr "Грешка при проналажењу метаподатака: %s"
 
-#: gconf/gconf-sources.c:1505
+#: gconf/gconf-sources.c:1508
 #, c-format
 msgid "Error getting metainfo: %s"
 msgstr "Грешка при добављању метаподатака: %s"
 
-#: gconf/gconf-sources.c:1529
+#: gconf/gconf-sources.c:1532
 #, c-format
 msgid "Key `%s' listed as schema for key `%s' actually stores type `%s'"
 msgstr "Кључ „%s“, означен као схема за кључ „%s“, заправо смешта тип „%s“"

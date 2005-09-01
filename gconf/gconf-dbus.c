@@ -514,6 +514,8 @@ ensure_service (gboolean  start_if_not_found,
 
       service_running = TRUE;
       
+      dbus_message_unref (reply);
+
       return TRUE;
     }
   

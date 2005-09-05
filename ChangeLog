@@ -1,3 +1,7 @@
+2005-09-05  Richard Hult  <richard@imendio.com>
+
+	* Release 2.6.4.11.
+
 2005-09-01  Richard Hult  <richard@imendio.com>
 
 	* gconf/gconf-dbus.c (ensure_service): Unref the reply, fixes a

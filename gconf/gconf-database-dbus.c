@@ -40,6 +40,8 @@ struct _GConfDatabaseDBus {
   
   /* Information about clients that want notification. */
   GHashTable *notifications;
+
+  GHashTable *listening_clients;
 };
 
 typedef struct {
@@ -47,6 +49,10 @@ typedef struct {
   GList *clients;
 } NotificationData;
 
+typedef struct {
+  gchar *service;
+  gint nr_of_notifications;
+} ListeningClientData;
 
 static void           database_unregistered_func (DBusConnection  *connection,
                                                   GConfDatabaseDBus *db);
@@ -105,6 +111,11 @@ database_handle_remove_notify                    (DBusConnection  *conn,
                                                   GConfDatabaseDBus *db);
 static void           ensure_initialized         (void);
 static void           database_removed           (GConfDatabaseDBus *db);
+static ListeningClientData * database_add_listening_client (GConfDatabaseDBus *db, 
+							    const gchar       *service);
+
+static void           database_remove_listening_client (GConfDatabaseDBus *db,
+							ListeningClientData *client);
 
 static DBusObjectPathVTable
 database_vtable = {
@@ -223,6 +234,7 @@ database_handle_name_owner_changed (DBusConnection *connection,
   char *new_owner;
   GList *notifications = NULL, *l;
   NotificationData *notification;
+  ListeningClientData *client;
   
   dbus_message_get_args (message,
 			 NULL,
@@ -250,7 +262,13 @@ database_handle_name_owner_changed (DBusConnection *connection,
       
       database_remove_notification_data (db, notification, service);
     }
-  
+ 
+  client = g_hash_table_lookup (db->listening_clients, service);
+  if (client) {
+    database_remove_listening_client (db, client);
+  }
+
+  /* FIXME: Remove notification on this client */
   g_list_free (notifications);
 
   return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
@@ -607,6 +625,7 @@ database_handle_add_notify (DBusConnection    *conn,
   DBusMessage *reply;
   const char *sender;
   NotificationData *notification;
+  ListeningClientData *client;
 
   if (!gconfd_dbus_get_message_args (conn, message,
 				     DBUS_TYPE_STRING, &namespace_section,
@@ -615,8 +634,18 @@ database_handle_add_notify (DBusConnection    *conn,
 
   sender = dbus_message_get_sender (message);
   
+  client = g_hash_table_lookup (db->listening_clients, sender);
+  if (!client)
+    {
+      client = database_add_listening_client (db, sender);
+    }
+  else
+    {
+      client->nr_of_notifications++;
+    }
+  
   notification = g_hash_table_lookup (db->notifications, namespace_section);
-
+  
   if (notification == NULL)
     {
       notification = g_new0 (NotificationData, 1);
@@ -671,6 +700,7 @@ database_handle_remove_notify (DBusConnection    *conn,
   DBusMessage *reply;
   const char *sender;
   NotificationData *notification;
+  ListeningClientData *client;
   
   if (!gconfd_dbus_get_message_args (conn, message,
 				     DBUS_TYPE_STRING, &namespace_section,
@@ -681,6 +711,15 @@ database_handle_remove_notify (DBusConnection    *conn,
   
   notification = g_hash_table_lookup (db->notifications, namespace_section);
 
+  client = g_hash_table_lookup (db->listening_clients, sender);
+  if (client) {
+    client->nr_of_notifications--;
+    
+    if (client->nr_of_notifications == 0) {
+      database_remove_listening_client (db, client);
+    }
+  }
+    
   /* Notification can be NULL if the client and server get out of sync. */
   if (notification == NULL || !database_remove_notification_data (db, notification, sender))
     {
@@ -697,6 +736,51 @@ static void
 database_removed (GConfDatabaseDBus *dbus_db)
 {
   /* FIXME: Free stuff */
+}
+
+static gchar *
+get_rule_for_service (const gchar *service)
+{
+  gchar *rule;
+  
+  rule = g_strdup_printf ("type='signal',member='NameOwnerChanged',arg0='%s'", service);
+
+  return rule;
+}
+
+static ListeningClientData *
+database_add_listening_client (GConfDatabaseDBus *db, 
+			       const gchar       *service)
+{
+  ListeningClientData *client;
+  gchar               *rule;
+
+  client = g_new0 (ListeningClientData, 1);
+  client->service = g_strdup (service);
+  client->nr_of_notifications = 1;
+
+  g_hash_table_insert (db->listening_clients, client->service, client);
+  
+  rule = get_rule_for_service (service);
+  dbus_bus_add_match (db->conn, rule, NULL);
+  g_free (rule);
+
+  return client;
+}
+
+static void
+database_remove_listening_client (GConfDatabaseDBus   *db,
+				  ListeningClientData *client)
+{
+  gchar *rule;
+
+  rule = get_rule_for_service (client->service);
+  dbus_bus_remove_match (db->conn, rule, NULL);
+  g_free (rule);
+
+  g_hash_table_remove (db->listening_clients, client->service);
+  g_free (client->service);
+  g_free (client);
 }
 
 static void
@@ -760,11 +844,12 @@ gconf_database_dbus_get (DBusConnection *conn, const gchar *address,
 					&database_vtable, dbus_db);
 
   dbus_db->notifications = g_hash_table_new (g_str_hash, g_str_equal);
+  dbus_db->listening_clients = g_hash_table_new (g_str_hash, g_str_equal);
  
   dbus_connection_add_filter (conn,
 			      (DBusHandleMessageFunction)database_filter_func,
 			      dbus_db, NULL);
-  
+
   return dbus_db;
 }
 

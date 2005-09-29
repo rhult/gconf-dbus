@@ -41,8 +41,10 @@
 
 #define d(x) 
 
-#define BUS_RULE    "type='signal',sender='org.freedesktop.DBus',interface='org.freedesktop.DBus'"
-#define NOTIFY_RULE "type='method_call',interface='org.gnome.GConf.Database'"
+#define DAEMON_NAME_OWNER_CHANGED_RULE \
+    "type='signal',member='NameOwnerChanged',arg0='org.gnome.GConf'"
+#define NOTIFY_RULE \
+    "type='method_call',interface='org.gnome.GConf.Database'"
 
 struct _GConfEngine {
   guint refcount;
@@ -421,7 +423,7 @@ ensure_dbus_connection (void)
 
   dbus_connection_setup_with_g_main (global_conn, NULL);
 
-  dbus_bus_add_match (global_conn, BUS_RULE, NULL);
+  dbus_bus_add_match (global_conn, DAEMON_NAME_OWNER_CHANGED_RULE, NULL);
   dbus_bus_add_match (global_conn, NOTIFY_RULE, NULL);
 
   dbus_connection_add_filter (global_conn, gconf_dbus_message_filter,
@@ -2064,15 +2066,6 @@ gconf_dbus_message_filter (DBusConnection    *dbus_conn,
 			   DBusMessage       *message,
 			   gpointer           user_data)
 {
-  DBusMessageIter iter;
-  char *service;
-
-#if 0
-  d(g_print ("Message: %s, from %s\n",
-	     dbus_message_get_member (message),
-	     dbus_message_get_sender (message)));
-#endif
-  
   if (dbus_message_is_method_call (message,
 				   GCONF_DBUS_CLIENT_INTERFACE,
 				   "Notify"))
@@ -2097,25 +2090,29 @@ gconf_dbus_message_filter (DBusConnection    *dbus_conn,
     }
   else if (dbus_message_is_signal (message,
 				   DBUS_INTERFACE_DBUS,
-				   "ServiceOwnerChanged"))
+				   "NameOwnerChanged"))
     {
-      char *owner;
+      char *service;
+      char *old_owner;
+      char *new_owner;
 
-      dbus_message_iter_init (message, &iter);
+      dbus_message_get_args (message,
+			     NULL,
+			     DBUS_TYPE_STRING, &service,
+			     DBUS_TYPE_STRING, &old_owner,
+			     DBUS_TYPE_STRING, &new_owner,
+			     DBUS_TYPE_INVALID);
       
-      dbus_message_iter_get_basic (&iter, &service);
       if (strcmp (service, GCONF_DBUS_SERVICE) != 0)
 	{
 	  return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 	}
-
-      dbus_message_iter_next (&iter);
-      dbus_message_iter_get_basic (&iter, &owner); 
-      if (strcmp (owner, "") == 0) 
+      
+      if (strcmp (old_owner, "") == 0) 
 	{
 	  /* GConfd is back. */
 	  service_running = TRUE;
-
+	  
 	  if (needs_reconnect)
 	    {
 	      needs_reconnect = FALSE;
@@ -2125,15 +2122,12 @@ gconf_dbus_message_filter (DBusConnection    *dbus_conn,
 	  d(g_print ("*** Gconf Service created\n"));
 	}
 
-      dbus_message_iter_next (&iter);
-      
-      dbus_message_iter_get_basic (&iter, &owner);
-      if (strcmp (owner, "") == 0) 
+      if (strcmp (new_owner, "") == 0) 
 	{
 	  /* GConfd is gone, set the state so we can detect that we're down. */
 	  service_running = FALSE;
 	  needs_reconnect = TRUE;
-
+  
 	  d(g_print ("*** GConf Service deleted\n"));
 	}
       

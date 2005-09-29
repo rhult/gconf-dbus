@@ -31,10 +31,6 @@ static DBusConnection *bus_conn;
 static const char *server_path = "/org/gnome/GConf/Server";
 static gint nr_of_connections = 0;
 
-#define SERVICE_OWNER_CHANGED_RULE "type='signal',member='ServiceOwnerChanged'," \
-	"sender='org.freedesktop.DBus',interface='org.freedesktop.DBus'"
-
-
 static void              server_unregistered_func (DBusConnection *connection,
 						   void           *user_data);
 static DBusHandlerResult server_message_func      (DBusConnection  *connection,
@@ -180,7 +176,7 @@ server_handle_get_db (DBusConnection *connection, DBusMessage *message)
 static void
 server_handle_shutdown (DBusConnection *connection, DBusMessage *message)
 {
-  DBusMessage     *reply;
+  DBusMessage *reply;
 
   if (gconfd_dbus_check_in_shutdown (connection, message))
     return;
@@ -228,9 +224,6 @@ gconfd_dbus_init (void)
 			      (DBusHandleMessageFunction) server_filter_func,
 			      NULL, NULL);
   
-  /* Add rule for ServiceOwnerChanged so we get notified when the clients go away. */
-  dbus_bus_add_match (bus_conn, SERVICE_OWNER_CHANGED_RULE, NULL);
-
   ret = dbus_bus_request_name (bus_conn,
 			       GCONF_DBUS_SERVICE,
 			       DBUS_NAME_FLAG_PROHIBIT_REPLACEMENT,

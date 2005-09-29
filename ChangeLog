@@ -1,5 +1,7 @@
 2005-09-29  Richard Hult  <richard@imendio.com>
 
+	* gconf/gconf-dbus.c (handle_notify): Fix a leak of the key.
+
 	* gconf/gconf-client.c (clear_cache_foreach): Fix leak from
 	upstream gconf.
 

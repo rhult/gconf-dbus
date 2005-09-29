@@ -2228,7 +2228,7 @@ handle_notify (DBusConnection *connection,
 	{
 	  d(g_print ("yes: %s\n", key));
 	  
-	  entry = gconf_entry_new (g_strdup (key), value);
+	  entry = gconf_entry_new (key, value);
 	  gconf_cnxn_notify (cnxn, entry);
 	  gconf_entry_free (entry);
 	  

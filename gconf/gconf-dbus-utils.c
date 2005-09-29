@@ -3,737 +3,1069 @@
 #include <config.h>
 #include <string.h>
 #include <dbus/dbus.h>
-#include "gconf-dbus-utils.h"
+
+#include "gconf/gconf.h"
 #include "gconf-internals.h"
+#include "gconf-dbus-utils.h"
 
-GConfValue *
-gconf_value_from_dict (DBusMessageIter *iter,
-		       const char      *key)
+#define d(x)
+
+/* Entry:
+ *
+ * struct {
+ *   string  key;
+ *   struct  value;
+ *
+ *   boolean schema_name_set;
+ *   string  schema_name;
+ *
+ *   boolean is_default;
+ *   boolean is_writable;
+ * };
+ *
+ */
+
+/* Pair:
+ *
+ * struct {
+ *   int32 car_type;
+ *   <fundamental> car_value;
+
+ *   int32 cdr_type;
+ *   <fundamental> cdr_value;
+ * };
+ *
+ */
+
+/* List:
+ *
+ * struct {
+ *   int32 list_type;
+ *   array<fundamental> values;
+ * };
+ *
+ */
+
+/* Value:
+ *
+ * struct {
+ *   int32 type;
+ *   <int, string, float, bool, list, pair, schema> value;
+ * };
+ *
+ */
+
+/* Schema:
+ *
+ * struct {
+ *   int32  type;
+ *   int32  list_type;
+ *   int32  car_type;
+ *   int32  cdr_type;
+
+ *   boolean locale_set;
+ *   string  locale;
+
+ *   boolean short_desc_set;
+ *   string  short_desc;
+
+ *   boolean long_desc_set;
+ *   string  long_desc;
+
+ *   boolean owner_set;
+ *   string  owner;
+
+ *   string  default_value;
+ * };
+ *
+ */
+
+static void         utils_append_value_helper_fundamental (DBusMessageIter   *iter,
+							   const GConfValue  *value);
+static void         utils_append_value_helper_pair        (DBusMessageIter   *main_iter,
+							   const GConfValue  *value);
+static void         utils_append_value_helper_list        (DBusMessageIter   *main_iter,
+							   const GConfValue  *value);
+static void         utils_append_schema                   (DBusMessageIter   *main_iter,
+							   const GConfSchema *schema);
+static void         utils_append_value                    (DBusMessageIter   *main_iter,
+							   const GConfValue  *value);
+
+static GConfValue * utils_get_value_helper_fundamental    (DBusMessageIter   *iter,
+							   GConfValueType     value_type);
+static GConfValue * utils_get_value_helper_pair           (DBusMessageIter   *iter);
+static GConfValue * utils_get_value_helper_list           (DBusMessageIter   *iter);
+static GConfValue * utils_get_value                       (DBusMessageIter   *main_iter);
+static GConfSchema *utils_get_schema                      (DBusMessageIter   *main_iter);
+static GConfValue * utils_get_schema_value                (DBusMessageIter   *iter);
+
+
+/*
+ * Utilities
+ */
+
+/* A boolean followed by a string. */
+static void
+utils_append_optional_string (DBusMessageIter *iter,
+			      const gchar     *str)
 {
-  DBusMessageIter dict;
-  gchar *str;
-  gboolean found = FALSE;
-  GConfValue *value;
-
-  g_return_val_if_fail (iter != NULL, NULL);
-  g_return_val_if_fail (key != NULL, NULL);
+  gboolean is_set;
   
-  g_assert (dbus_message_iter_get_arg_type (iter) == DBUS_TYPE_DICT);
-     
-  dbus_message_iter_init_dict_iterator (iter, &dict);
-
-  while (1)
+  if (str)
+    is_set = TRUE;
+  else
     {
-      str = dbus_message_iter_get_dict_key (&dict);
-
-      if (str != NULL && strcmp (str, key) == 0)
-	{
-	  dbus_free (str);
-	  found = TRUE;
-	  break;
-	}
-
-      dbus_free (str);
-
-      if (!dbus_message_iter_next (&dict))
-	break;
-    } 
-
-  if (!found)
-    {
-      g_error ("Unknown dict key.");
-      return NULL;
+      is_set = FALSE;
+      str = "";
     }
-  
-  switch (dbus_message_iter_get_arg_type (&dict))
-    {
-    case DBUS_TYPE_STRING:
-      {
-	gchar *str;
-	value = gconf_value_new (GCONF_VALUE_STRING);
 
-	str = dbus_message_iter_get_string (&dict);
-	gconf_value_set_string (value, str);
-	dbus_free (str);
-
-	return value;
-      }
-    case DBUS_TYPE_INT32:
-      {
-	dbus_int32_t val;
-	
-	value = gconf_value_new (GCONF_VALUE_INT);
-
-	val = dbus_message_iter_get_int32 (&dict);
-	gconf_value_set_int (value, val);
-
-	return value;
-      }
-    case DBUS_TYPE_DOUBLE:
-      {
-	double val;
-	
-	value = gconf_value_new (GCONF_VALUE_FLOAT);
-
-	val = dbus_message_iter_get_double (&dict);
-	gconf_value_set_float (value, val);
-
-	return value;
-      }
-    case DBUS_TYPE_BOOLEAN:
-      {
-	dbus_bool_t val;
-	
-	value = gconf_value_new (GCONF_VALUE_BOOL);
-
-	val = dbus_message_iter_get_boolean (&dict);
-	gconf_value_set_bool (value, val);
-
-	return value;
-      }
-
-    case DBUS_TYPE_NIL:
-      return NULL;
-      
-    default:
-      return NULL;
-    }
+  dbus_message_iter_append_basic (iter, DBUS_TYPE_BOOLEAN, &is_set);
+  dbus_message_iter_append_basic (iter, DBUS_TYPE_STRING, &str);
 }
 
-void
-set_dict_value_from_gconf_value (DBusMessageIter *dict,
-				 const char      *key,
-				 GConfValue      *value)
+/* A boolean followed by a string. */
+static const gchar *
+utils_get_optional_string (DBusMessageIter *iter)
 {
-  dbus_message_iter_append_dict_key (dict, key);
-
-  if (value == NULL)
-    {
-      dbus_message_iter_append_nil (dict);
-      return;
-    }
+  gboolean     is_set;
+  const gchar *str;
   
-  switch (value->type)
-    {
-    case GCONF_VALUE_STRING:
-      dbus_message_iter_append_string (dict, gconf_value_get_string (value));
-      break;
-    case GCONF_VALUE_INT:
-      dbus_message_iter_append_int32 (dict, gconf_value_get_int (value));
-      break;
-    case GCONF_VALUE_FLOAT:
-      dbus_message_iter_append_double (dict, gconf_value_get_float (value));
-      break;
-    case GCONF_VALUE_BOOL:
-      dbus_message_iter_append_boolean (dict, gconf_value_get_bool (value));
-      break;
+  dbus_message_iter_get_basic (iter, &is_set);
+  dbus_message_iter_next (iter);
+  dbus_message_iter_get_basic (iter, &str);
 
-      /* Note: This is only used for setting the values in a pair, and lists and
-       * pairs are not allowed inside a pair.
-       */
-    case GCONF_VALUE_PAIR:
-    case GCONF_VALUE_LIST:
-    default:
-      g_assert_not_reached ();
-    }
+  if (is_set)
+    return str;
+  else
+    return NULL;
 }
 
-void
-gconf_dbus_message_iter_append_gconf_schema (DBusMessageIter *iter,
-					     const GConfSchema *schema)
-{
-  DBusMessageIter dict;
-  GConfValue *default_val;
 
-  if (!schema)
-    {
-      dbus_message_iter_append_nil (iter);
-      return;
-    }
-  
-  dbus_message_iter_append_dict (iter, &dict);
+/*
+ * Setters
+ */
 
-  dbus_message_iter_append_dict_key (&dict, "type");
-  dbus_message_iter_append_int32 (&dict, gconf_schema_get_type (schema));
 
-  dbus_message_iter_append_dict_key (&dict, "list_type");
-  dbus_message_iter_append_int32 (&dict, gconf_schema_get_list_type (schema));
-
-  dbus_message_iter_append_dict_key (&dict, "car_type");
-  dbus_message_iter_append_int32 (&dict, gconf_schema_get_car_type (schema));
-
-  dbus_message_iter_append_dict_key (&dict, "cdr_type");
-  dbus_message_iter_append_int32 (&dict, gconf_schema_get_cdr_type (schema));
-
-  dbus_message_iter_append_dict_key (&dict, "locale");
-  dbus_message_iter_append_string (&dict, gconf_schema_get_locale (schema) ?
-				   gconf_schema_get_locale (schema) : "");
-  
-  dbus_message_iter_append_dict_key (&dict, "short_desc");
-  dbus_message_iter_append_string (&dict, gconf_schema_get_short_desc (schema) ?
-				   gconf_schema_get_short_desc (schema) : "");
-
-  dbus_message_iter_append_dict_key (&dict, "long_desc");
-  dbus_message_iter_append_string (&dict, gconf_schema_get_long_desc (schema) ?
-				   gconf_schema_get_long_desc (schema) : "");
-
-  dbus_message_iter_append_dict_key (&dict, "owner");
-  dbus_message_iter_append_string (&dict, gconf_schema_get_owner (schema) ?
-				   gconf_schema_get_owner (schema) : "");
-  
-  default_val = gconf_schema_get_default_value (schema);
-  
-  /* We don't need to do this, but it's much simpler */
-  if (default_val)
-    {
-      gchar *encoded = gconf_value_encode (default_val);
-      g_assert (encoded != NULL);
-
-      dbus_message_iter_append_dict_key (&dict, "default_value");
-      dbus_message_iter_append_string (&dict, encoded);
-
-      g_free (encoded);
-    }
-}
-
-GConfValue *
-gconf_dbus_create_gconf_value_from_dict (DBusMessageIter *dict)
-{
-  DBusMessageIter child_iter;
-  gchar *name;
-  GConfValue *value = NULL;
-
-  g_assert (dbus_message_iter_get_arg_type (dict) == DBUS_TYPE_DICT);
-  
-  dbus_message_iter_init_dict_iterator (dict, &child_iter);
-  name = dbus_message_iter_get_dict_key (&child_iter);
-
-  /* Check if we've got a schema dict */
-  if (strcmp (name, "type") == 0)
-    {
-      dbus_int32_t type, list_type, car_type, cdr_type;
-      gchar *tmp;
-      GConfSchema *schema;
-
-      type = dbus_message_iter_get_int32 (&child_iter);
-      dbus_message_iter_next (&child_iter);
-
-      list_type = dbus_message_iter_get_int32 (&child_iter);
-      dbus_message_iter_next (&child_iter);
-
-      car_type = dbus_message_iter_get_int32 (&child_iter);
-      dbus_message_iter_next (&child_iter);
-
-      cdr_type = dbus_message_iter_get_int32 (&child_iter);
-      dbus_message_iter_next (&child_iter);
-
-      schema = gconf_schema_new ();
-
-      gconf_schema_set_type (schema, type);
-      gconf_schema_set_list_type (schema, list_type);
-      gconf_schema_set_car_type (schema, car_type);
-      gconf_schema_set_cdr_type (schema, cdr_type);
-      
-      value = gconf_value_new (GCONF_VALUE_SCHEMA);
-      gconf_value_set_schema_nocopy (value, schema);
-      
-      tmp = dbus_message_iter_get_string (&child_iter);
-      dbus_message_iter_next (&child_iter);
-      if (*tmp != '\0')
-	gconf_schema_set_locale (schema, tmp);
-      dbus_free (tmp);
-
-      tmp = dbus_message_iter_get_string (&child_iter);
-      dbus_message_iter_next (&child_iter);
-      if (*tmp != '\0')
-	gconf_schema_set_short_desc (schema, tmp);
-      dbus_free (tmp);
-
-      tmp = dbus_message_iter_get_string (&child_iter);
-      dbus_message_iter_next (&child_iter);
-      if (*tmp != '\0')
-	gconf_schema_set_long_desc (schema, tmp);
-      dbus_free (tmp);
-
-      tmp = dbus_message_iter_get_string (&child_iter);
-      dbus_message_iter_next (&child_iter);
-      if (*tmp != '\0')
-	gconf_schema_set_owner (schema, tmp);
-      dbus_free (tmp);
-
-      tmp = dbus_message_iter_get_string (&child_iter);
-      dbus_message_iter_next (&child_iter);
-
-      {
-	GConfValue *val;
-
-	val = gconf_value_decode (tmp);
-
-	if (val)
-	  gconf_schema_set_default_value_nocopy (schema, val);
-      }
-
-      dbus_free (tmp);
-    }
-  else if (strcmp (name, "car") == 0)
-    {
-      value = gconf_value_new (GCONF_VALUE_PAIR);
-
-      gconf_value_set_car_nocopy (value, gconf_value_from_dict (dict, "car"));
-      gconf_value_set_cdr_nocopy (value, gconf_value_from_dict (dict, "cdr"));
-    }
-
-  dbus_free (name);
-  
-  return value;
-}
-
-void
-gconf_dbus_message_append_gconf_value (DBusMessage      *message,
+/* Helper for utils_append_value, writes a int/string/float/bool/schema.
+ */
+static void
+utils_append_value_helper_fundamental (DBusMessageIter  *iter,
 				       const GConfValue *value)
 {
-  DBusMessageIter iter;
+  gint32       i;
+  gboolean     b;
+  const gchar *s;
+  gdouble      d;
+
+  d(g_print ("Append value (fundamental)\n"));
   
-  dbus_message_append_iter_init (message, &iter);
- 
-  gconf_dbus_message_iter_append_gconf_value (&iter, value);
-}
-
-void
-gconf_dbus_message_iter_append_gconf_value (DBusMessageIter *iter, 
-					    const GConfValue *value)
-{
-  if (!value)
-    {
-      dbus_message_iter_append_nil (iter);
-      return;
-    }
-
   switch (value->type)
     {
     case GCONF_VALUE_INT:
-      dbus_message_iter_append_int32 (iter, gconf_value_get_int (value));
+      i = gconf_value_get_int (value);
+      dbus_message_iter_append_basic (iter, DBUS_TYPE_INT32, &i);
       break;
+
     case GCONF_VALUE_STRING:
-      dbus_message_iter_append_string (iter, gconf_value_get_string (value));
+      s = gconf_value_get_string (value);
+      dbus_message_iter_append_basic (iter, DBUS_TYPE_STRING, &s);
       break;
+
     case GCONF_VALUE_FLOAT:
-      dbus_message_iter_append_double (iter, gconf_value_get_float (value));
+      d = gconf_value_get_float (value);
+      dbus_message_iter_append_basic (iter, DBUS_TYPE_DOUBLE, &d);
       break;
+
     case GCONF_VALUE_BOOL:
-      dbus_message_iter_append_boolean (iter, gconf_value_get_bool (value));
+      b = gconf_value_get_bool (value);
+      dbus_message_iter_append_basic (iter, DBUS_TYPE_BOOLEAN, &b);
       break;
-    case GCONF_VALUE_INVALID:
-      dbus_message_iter_append_nil (iter);
-      break;
-    case GCONF_VALUE_LIST:
-      {
-	guint i, len;
-        GSList* list;
 
-        list = gconf_value_get_list (value);
-        len = g_slist_length (list);
-
-	switch (gconf_value_get_list_type (value))
-	  {
-	  case GCONF_VALUE_STRING:
-	    {
-	      const char **str;
-
-	      str = (const char **)g_new (char *, len + 1);
-	      str[len] = NULL;
-
-	      i = 0;
-	      while (list)
-		{
-		  GConfValue *value = list->data;
-
-		  str[i] = (gchar *)gconf_value_get_string (value);
-		    
-		  list = list->next;
-		  ++i;
-		}
-
-	      dbus_message_iter_append_string_array (iter, str, len);
-	      g_free (str);
-	      break;
-	    }
-	  case GCONF_VALUE_INT:
-	    {
-	      int *array;
-
-	      array = g_new (dbus_int32_t, len + 1);
-
-	      i = 0;
-	      while (list)
-		{
-		  GConfValue *value = list->data;
-		  
-		  array[i] = gconf_value_get_int (value);
-		    
-		  list = list->next;
-		  ++i;
-		}
-
-	      dbus_message_iter_append_int32_array (iter, array, len);
-	      g_free (array);
-	      break;
-	    }
-	  case GCONF_VALUE_FLOAT:
-	    {
-	      double *array;
-
-	      array = g_new (double, len + 1);
-
-	      i = 0;
-	      while (list)
-		{
-		  GConfValue *value = list->data;
-		  
-		  array[i] = gconf_value_get_float (value);
-		    
-		  list = list->next;
-		  ++i;
-		}
-
-	      dbus_message_iter_append_double_array (iter, array, len);
-	      g_free (array);
-	      break;
-	    }
-	  case GCONF_VALUE_BOOL:
-	    {
-	      unsigned char *array;
-
-	      array = g_new (unsigned char, len + 1);
-
-	      i = 0;
-	      while (list)
-		{
-		  GConfValue *value = list->data;
-		  
-		  array[i] = gconf_value_get_bool (value);
-		    
-		  list = list->next;
-		  ++i;
-		}
-
-	      dbus_message_iter_append_boolean_array (iter, array, len);
-	      g_free (array);
-	      break;
-	    }
-	  default:
-	    g_error ("unsupported gconf list value type %d", gconf_value_get_list_type (value));
-	  }
-	break;	
-      }
-    case GCONF_VALUE_PAIR:
-      {
-	DBusMessageIter dict;
-
-	dbus_message_iter_append_dict (iter, &dict);
-
-	set_dict_value_from_gconf_value (&dict, "car", gconf_value_get_car (value));
-	set_dict_value_from_gconf_value (&dict, "cdr", gconf_value_get_cdr (value));
-
-	break;
-      }
     case GCONF_VALUE_SCHEMA:
-      gconf_dbus_message_iter_append_gconf_schema (iter, gconf_value_get_schema (value));
+      utils_append_schema (iter, gconf_value_get_schema (value));
       break;
 
-    default:
-      g_error ("unsupported gconf value type %d", value->type);
-    }
-}
-
-GConfValue *
-gconf_dbus_create_gconf_value_from_message_iter (DBusMessageIter *iter)
-{
-  int arg_type;
-  GConfValue *gval;
-  GConfValueType type = GCONF_VALUE_INVALID;
-  
-  arg_type = dbus_message_iter_get_arg_type (iter);
-
-  switch (arg_type)
-    {
-    case DBUS_TYPE_NIL:
-      return NULL;
-    case DBUS_TYPE_BOOLEAN:
-      type = GCONF_VALUE_BOOL;
-      break;
-    case DBUS_TYPE_INT32:
-      type = GCONF_VALUE_INT;
-      break;
-    case DBUS_TYPE_DOUBLE:
-      type = GCONF_VALUE_FLOAT;
-      break;
-    case DBUS_TYPE_STRING:
-      type = GCONF_VALUE_STRING;
-      break;
-    case DBUS_TYPE_ARRAY:
-      type = GCONF_VALUE_LIST;
-      break;
-    case DBUS_TYPE_DICT:
-      return gconf_dbus_create_gconf_value_from_dict (iter);
-      break;
-    default:
-      g_error ("unsupported arg type %d\n", arg_type);
-    }
-
-  g_assert (GCONF_VALUE_TYPE_VALID (type));
-
-  gval = gconf_value_new (type);
-
-  switch (gval->type)
-    {
-    case GCONF_VALUE_BOOL:
-      gconf_value_set_bool (gval, dbus_message_iter_get_boolean (iter));
-      break;
-    case GCONF_VALUE_INT:
-      gconf_value_set_int (gval, dbus_message_iter_get_int32 (iter));
-      break;
-    case GCONF_VALUE_FLOAT:
-      gconf_value_set_float (gval, dbus_message_iter_get_double (iter));
-      break;
-    case GCONF_VALUE_STRING:
-      {
-	char *str;
-	str = dbus_message_iter_get_string (iter);
-
-	gconf_value_set_string (gval, str);
-	dbus_free (str);
-	break;
-      }
-    case GCONF_VALUE_LIST:
-      {
-	GSList *list = NULL;
-	guint i = 0;
-
-	switch (dbus_message_iter_get_array_type (iter))
-	  {
-	  case DBUS_TYPE_BOOLEAN:
-	    {
-	      unsigned char *array;
-	      int len;
-
-	      dbus_message_iter_get_boolean_array (iter, &array, &len);
-
-	      for (i = 0; i < len; i++)
-		{
-		  GConfValue *value = gconf_value_new (GCONF_VALUE_BOOL);
-		  
-		  gconf_value_set_bool (value, array[i]);
-		  
-		  list = g_slist_prepend (list, value);
-		}
-	      list = g_slist_reverse (list);
-	      dbus_free (array);
-
-	      gconf_value_set_list_type (gval, GCONF_VALUE_BOOL);
-	      gconf_value_set_list_nocopy (gval, list);
-	      break;
-	    }
-	  case DBUS_TYPE_DOUBLE:
-	    {
-	      double *array;
-	      int len;
-
-	      dbus_message_iter_get_double_array (iter, &array, &len);
-
-	      for (i = 0; i < len; i++)
-		{
-		  GConfValue *value = gconf_value_new (GCONF_VALUE_FLOAT);
-		  
-		  gconf_value_set_float (value, array[i]);
-		  
-		  list = g_slist_prepend (list, value);
-		}
-	      list = g_slist_reverse (list);
-	      dbus_free (array);
-
-	      gconf_value_set_list_type (gval, GCONF_VALUE_FLOAT);
-	      gconf_value_set_list_nocopy (gval, list);
-	      break;
-	    }
-	  case DBUS_TYPE_INT32:
-	    {
-	      dbus_int32_t *array;
-	      int len;
-
-	      dbus_message_iter_get_int32_array (iter, &array, &len);
-
-	      for (i = 0; i < len; i++)
-		{
-		  GConfValue *value = gconf_value_new (GCONF_VALUE_INT);
-		  
-		  gconf_value_set_int (value, array[i]);
-		  
-		  list = g_slist_prepend (list, value);
-		}
-	      list = g_slist_reverse (list);
-	      dbus_free (array);
-
-	      gconf_value_set_list_type (gval, GCONF_VALUE_INT);
-	      gconf_value_set_list_nocopy (gval, list);
-	      break;
-	    }
-	  case DBUS_TYPE_STRING:
-	    {
-	      char **array;
-	      int len;
-	      
-	      dbus_message_iter_get_string_array (iter, &array, &len);
-	      
-	      for (i = 0; i < len; i++)
-		{
-		  GConfValue *value = gconf_value_new (GCONF_VALUE_STRING);
-		  
-		  gconf_value_set_string (value, array[i]);
-		  
-		  list = g_slist_prepend (list, value);
-		}
-	      list = g_slist_reverse (list);
-	      dbus_free_string_array (array);
-
-	      gconf_value_set_list_type (gval, GCONF_VALUE_STRING);
-	      gconf_value_set_list_nocopy (gval, list);
-	      break;
-	    }
-	  default:
-	    g_error ("unknown list arg type %d", arg_type);
-	  }
-	break;
-      }
     default:
       g_assert_not_reached ();
-      break;
     }
-
-  return gval;
 }
 
-void
-gconf_dbus_message_append_entry (DBusMessage      *message,
-				 const gchar      *key,
-				 const GConfValue *value,
-				 gboolean          is_default,
-				 gboolean          is_writable,
-				 const gchar      *schema_name)
+/* Helper for utils_append_value, writes a pair. The pair is a struct with the
+ * two values and two fundamental values (type, value, type value).
+ */
+static void
+utils_append_value_helper_pair (DBusMessageIter  *main_iter,
+				const GConfValue *value)
 {
-  DBusMessageIter iter, dict;
+  DBusMessageIter  struct_iter;
+  GConfValue      *car, *cdr;
+  gint32           type;
 
-  dbus_message_append_iter_init (message, &iter);
-  dbus_message_iter_append_dict (&iter, &dict);
+  d(g_print ("Append value (pair)\n"));
+
+  g_assert (value->type == GCONF_VALUE_PAIR);
+    
+  dbus_message_iter_open_container (main_iter,
+				    DBUS_TYPE_STRUCT,
+				    NULL, /* for struct */
+				    &struct_iter);
+
+  car = gconf_value_get_car (value);
+  cdr = gconf_value_get_cdr (value);
   
-  dbus_message_iter_append_dict_key (&dict, "key");
-  dbus_message_iter_append_string (&dict, key);
-
-  dbus_message_iter_append_dict_key (&dict, "value");
-  gconf_dbus_message_iter_append_gconf_value (&dict, value);
+  /* The pair types. */
+  type = car->type;
+  dbus_message_iter_append_basic (&struct_iter, DBUS_TYPE_INT32, &type);
   
-  dbus_message_iter_append_dict_key (&dict, "is_default");
-  dbus_message_iter_append_boolean (&dict, is_default);
+  type = cdr->type;
+  dbus_message_iter_append_basic (&struct_iter, DBUS_TYPE_INT32, &type);
 
-  dbus_message_iter_append_dict_key (&dict, "is_writable");
-  dbus_message_iter_append_boolean (&dict, is_writable);
+  /* The values. */
+  utils_append_value_helper_fundamental (&struct_iter, car);
+  utils_append_value_helper_fundamental (&struct_iter, cdr);
 
-  if (!schema_name) {
-    schema_name = "";
-  }
-
-  dbus_message_iter_append_dict_key (&dict, "schema_name");
-  dbus_message_iter_append_string (&dict, schema_name);
+  dbus_message_iter_close_container (main_iter, &struct_iter);
 }
 
-#if 0
-static gboolean
-check_next_dict_key (DBusMessageIter *dict, const gchar *key)
+/* Helper for utils_append_value, writes a list. The "list" is a struct with the
+ * list type and an array with the values directly in it.
+ */
+static void
+utils_append_value_helper_list (DBusMessageIter  *main_iter,
+				const GConfValue *value)
 {
-  gchar *name;
-  gboolean ret_val = FALSE;
+  DBusMessageIter  struct_iter;
+  DBusMessageIter  array_iter;
+  GConfValueType   list_type;
+  const gchar     *array_type;
+  GSList          *list;
   
-  name = dbus_message_iter_get_dict_key (dict);
-  if (!name)
-    return FALSE;
+  d(g_print ("Append value (list)\n"));
+
+  g_assert (value->type == GCONF_VALUE_LIST);
   
-  if (strcmp (name, key) == 0) {
-    ret_val = TRUE;
-  }
-
-  g_free (name);
-  return ret_val;
-}
-#endif
-
-/* Note: The returned key and schema_name must be freed with g_free. */
-gboolean
-gconf_dbus_get_entry_values_from_message_iter (DBusMessageIter  *iter,
-					       gchar           **key,
-					       GConfValue      **value,
-					       gboolean         *is_default,
-					       gboolean         *is_writable,
-					       gchar           **schema_name)
-{
-  DBusMessageIter dict;
-  gchar *str;
-
-  if (dbus_message_iter_get_arg_type (iter) != DBUS_TYPE_DICT)
-    return FALSE;
+  dbus_message_iter_open_container (main_iter,
+				    DBUS_TYPE_STRUCT,
+				    NULL, /* for struct */
+				    &struct_iter);
   
-  dbus_message_iter_init_dict_iterator (iter, &dict);
+  /* Write the list type. */
+  list_type = gconf_value_get_list_type (value);
+  dbus_message_iter_append_basic (&struct_iter, DBUS_TYPE_INT32, &list_type);
 
-  while (1) 
+  /* And the value. */
+  switch (list_type)
     {
-      gchar *name;
-
-      name = dbus_message_iter_get_dict_key (&dict);
+    case GCONF_VALUE_INT:
+      array_type = DBUS_TYPE_INT32_AS_STRING;
+      break;
       
-      if (!name)
-	return FALSE;
-	
-      if (strcmp (name, "key") == 0)
-	{
-	  if (key)
-	    {
-	      str = dbus_message_iter_get_string (&dict);
-	      *key = g_strdup (str);
-	      dbus_free (str);
-	    }
-	}
-      else if (strcmp (name, "value") == 0)
-	{
-	  if (value)
-	    *value = gconf_dbus_create_gconf_value_from_message_iter (&dict);
-	}
-      else if (strcmp (name, "is_default") == 0) 
-	{
-	  if (is_default)
-	    *is_default = dbus_message_iter_get_boolean (&dict);
-	}
-      else if (strcmp (name, "is_writable") == 0)
-	{
-	  if (is_writable)
-	    *is_writable = dbus_message_iter_get_boolean (&dict);
-	}
-      else if (strcmp (name, "schema_name") == 0) 
-	{
-	  if (schema_name)
-	    {
-	      str = dbus_message_iter_get_string (&dict);
-	      *schema_name = g_strdup (str);
-	      dbus_free (str);
-	    }
-	}
-      else
-	g_assert_not_reached ();
-
-      dbus_free (name);
+    case GCONF_VALUE_STRING:
+      array_type = DBUS_TYPE_STRING_AS_STRING;
+      break;
       
-      if (!dbus_message_iter_next (&dict))
-	break;
+    case GCONF_VALUE_FLOAT:
+      array_type = DBUS_TYPE_DOUBLE_AS_STRING;
+      break;
+      
+    case GCONF_VALUE_BOOL:
+      array_type = DBUS_TYPE_BOOLEAN_AS_STRING;
+      break;
+      
+    case GCONF_VALUE_SCHEMA:
+      array_type = DBUS_TYPE_STRUCT_AS_STRING;
+      break;
+
+    default:
+      array_type = NULL;
+      g_assert_not_reached ();
     }
+  
+  dbus_message_iter_open_container (&struct_iter,
+				    DBUS_TYPE_ARRAY,
+				    array_type,
+				    &array_iter);
+  
+  list = gconf_value_get_list (value);
+  
+  switch (list_type)
+    {
+    case GCONF_VALUE_STRING:
+      while (list)
+	{
+	  const gchar *s;
+
+	  s = gconf_value_get_string (list->data);
+	  dbus_message_iter_append_basic (&array_iter,
+					  DBUS_TYPE_STRING,
+					  &s);
+	  
+	  list = list->next;
+	}
+      break;
+
+    case GCONF_VALUE_INT:
+      while (list)
+	{
+	  gint32 i;
+
+	  i = gconf_value_get_int (list->data);
+	  dbus_message_iter_append_basic (&array_iter,
+					  DBUS_TYPE_INT32,
+					  &i);
+	  
+	  list = list->next;
+	}
+      break;
+      
+    case GCONF_VALUE_FLOAT:
+      while (list)
+	{
+	  gdouble d;
+
+	  d = gconf_value_get_float (list->data);
+	  dbus_message_iter_append_basic (&array_iter,
+					  DBUS_TYPE_DOUBLE,
+					  &d);
+
+	  list = list->next;
+	}
+      break;
+
+    case GCONF_VALUE_BOOL:
+      while (list)
+	{
+	  gboolean b;
+
+	  b = gconf_value_get_bool (list->data);
+	  dbus_message_iter_append_basic (&array_iter,
+					  DBUS_TYPE_BOOLEAN,
+					  &b);
+	  
+	  list = list->next;
+	}
+      break;
+      
+    case GCONF_VALUE_SCHEMA:
+      while (list)
+	{
+	  GConfSchema *schema;
+
+	  schema = gconf_value_get_schema (list->data);
+	  utils_append_schema (&array_iter, schema);
+	  
+	  list = list->next;
+	}
+      break;
+
+    default:
+      g_assert_not_reached ();
+    }
+  
+  dbus_message_iter_close_container (&struct_iter, &array_iter);
+  dbus_message_iter_close_container (main_iter, &struct_iter);
+}
+
+/* Writes a schema, which is a struct. */
+static void
+utils_append_schema (DBusMessageIter   *main_iter,
+		     const GConfSchema *schema)
+{
+  DBusMessageIter  struct_iter;
+  gint32           i;
+  const gchar     *s;
+  GConfValue      *default_value;
+
+  dbus_message_iter_open_container (main_iter,
+				    DBUS_TYPE_STRUCT,
+				    NULL, /* for structs */
+				    &struct_iter);
+  
+  i = gconf_schema_get_type (schema);
+  dbus_message_iter_append_basic (&struct_iter, DBUS_TYPE_INT32, &i);
+
+  i = gconf_schema_get_list_type (schema);
+  dbus_message_iter_append_basic (&struct_iter, DBUS_TYPE_INT32, &i);
+
+  i = gconf_schema_get_car_type (schema);
+  dbus_message_iter_append_basic (&struct_iter, DBUS_TYPE_INT32, &i);
+  
+  i = gconf_schema_get_cdr_type (schema);
+  dbus_message_iter_append_basic (&struct_iter, DBUS_TYPE_INT32, &i);
+
+  s = gconf_schema_get_locale (schema);
+  utils_append_optional_string (&struct_iter, s);
+  
+  s = gconf_schema_get_short_desc (schema);
+  utils_append_optional_string (&struct_iter, s);
+
+  s = gconf_schema_get_long_desc (schema);
+  utils_append_optional_string (&struct_iter, s);
+
+  s = gconf_schema_get_owner (schema);
+  utils_append_optional_string (&struct_iter, s);
+  
+  default_value = gconf_schema_get_default_value (schema);
+
+  /* We don't need to do this, but it's much simpler */
+  if (default_value)
+    {
+      gchar *encoded;
+      
+      encoded = gconf_value_encode (default_value);
+      g_assert (encoded != NULL);
+
+      dbus_message_iter_append_basic (&struct_iter, DBUS_TYPE_STRING, &encoded);
+      g_free (encoded);
+    }
+  else
+    {
+      s = "";
+      dbus_message_iter_append_basic (&struct_iter, DBUS_TYPE_STRING, &s);
+    }
+  
+  if (!dbus_message_iter_close_container (main_iter, &struct_iter))
+    g_error ("Out of memory");
+}
+
+static void
+utils_append_value (DBusMessageIter  *main_iter,
+		    const GConfValue *value)
+{
+  DBusMessageIter struct_iter;
+  gint32          type;
+
+  /* A value is stored as a struct with the type and the actual value. */
+  dbus_message_iter_open_container (main_iter,
+				    DBUS_TYPE_STRUCT,
+				    NULL, /* for structs */
+				    &struct_iter);
+  type = value->type;
+  dbus_message_iter_append_basic (&struct_iter, DBUS_TYPE_INT32, &type);
+  
+  switch (type)
+    {
+    case GCONF_VALUE_INT:
+    case GCONF_VALUE_STRING:
+    case GCONF_VALUE_FLOAT:
+    case GCONF_VALUE_BOOL:
+    case GCONF_VALUE_SCHEMA:
+      utils_append_value_helper_fundamental (&struct_iter, value);
+      break;
+      
+    case GCONF_VALUE_LIST:
+      utils_append_value_helper_list (&struct_iter, value);
+      break;
+
+    case GCONF_VALUE_PAIR:
+      utils_append_value_helper_pair (&struct_iter, value);
+      break;
+
+    default:
+      g_assert_not_reached ();
+    }
+
+  dbus_message_iter_close_container (main_iter, &struct_iter);
+}
+
+/* Writes an entry, which is a struct. */
+static void
+utils_append_entry_values (DBusMessageIter  *main_iter,
+			   const gchar      *key,
+			   const GConfValue *value,
+			   gboolean          is_default,
+			   gboolean          is_writable,
+			   const gchar      *schema_name)   
+{
+  DBusMessageIter  struct_iter;
+
+  d(g_print ("Appending entry %s\n", key));
+  
+  dbus_message_iter_open_container (main_iter,
+				    DBUS_TYPE_STRUCT,
+				    NULL, /* for structs */
+				    &struct_iter);
+
+  dbus_message_iter_append_basic (&struct_iter, DBUS_TYPE_STRING, &key);
+
+  utils_append_value (&struct_iter, value);
+
+  utils_append_optional_string (&struct_iter, schema_name);
+
+  dbus_message_iter_append_basic (&struct_iter, DBUS_TYPE_BOOLEAN, &is_default);
+
+  dbus_message_iter_append_basic (&struct_iter, DBUS_TYPE_BOOLEAN, &is_writable);
+  
+  if (!dbus_message_iter_close_container (main_iter, &struct_iter))
+    g_error ("Out of memory");
+}
+
+/* Writes an entry, which is a struct. */
+static void
+utils_append_entry_values_stringified (DBusMessageIter  *main_iter,
+				       const gchar      *key,
+				       const GConfValue *value,
+				       gboolean          is_default,
+				       gboolean          is_writable,
+				       const gchar      *schema_name)   
+{
+  DBusMessageIter  struct_iter;
+  gchar           *value_str;
+
+  d(g_print ("Appending entry %s\n", key));
+  
+  dbus_message_iter_open_container (main_iter,
+				    DBUS_TYPE_STRUCT,
+				    NULL, /* for structs */
+				    &struct_iter);
+
+  dbus_message_iter_append_basic (&struct_iter, DBUS_TYPE_STRING, &key);
+
+  if (value)
+    value_str = gconf_value_encode ((GConfValue *) value);
+  else
+    value_str = g_strdup ("");
+  dbus_message_iter_append_basic (&struct_iter, DBUS_TYPE_STRING, &value_str);
+  g_free (value_str);
+
+  utils_append_optional_string (&struct_iter, schema_name);
+
+  dbus_message_iter_append_basic (&struct_iter, DBUS_TYPE_BOOLEAN, &is_default);
+
+  dbus_message_iter_append_basic (&struct_iter, DBUS_TYPE_BOOLEAN, &is_writable);
+  
+  if (!dbus_message_iter_close_container (main_iter, &struct_iter))
+    g_error ("Out of memory");
+}
+
+static gboolean
+utils_get_entry_values (DBusMessageIter  *main_iter,
+			gchar           **key_p,
+			GConfValue      **value_p,
+			gboolean         *is_default_p,
+			gboolean         *is_writable_p,
+			gchar           **schema_name_p)
+{
+  DBusMessageIter  struct_iter;
+  gchar           *key;
+  GConfValue      *value;
+  gboolean         is_default;
+  gboolean         is_writable;
+  gchar           *schema_name;
+
+  g_return_val_if_fail (dbus_message_iter_get_arg_type (main_iter) == DBUS_TYPE_STRUCT,
+			FALSE);
+
+  dbus_message_iter_recurse (main_iter, &struct_iter);
+  dbus_message_iter_get_basic (&struct_iter, &key);
+
+  d(g_print ("Getting entry %s\n", key));
+    
+  dbus_message_iter_next (&struct_iter);
+  value = utils_get_value (&struct_iter);
+
+  dbus_message_iter_next (&struct_iter);
+  schema_name = (gchar *) utils_get_optional_string (&struct_iter);
+
+  dbus_message_iter_next (&struct_iter);
+  dbus_message_iter_get_basic (&struct_iter, &is_default);
+
+  dbus_message_iter_next (&struct_iter);
+  dbus_message_iter_get_basic (&struct_iter, &is_writable);
+
+  if (key_p)
+    *key_p = key;
+
+  if (value_p)
+    *value_p = value;
+  else
+    gconf_value_free (value);
+
+  if (schema_name_p)
+    *schema_name_p = schema_name;
+  
+  if (is_default_p)
+    *is_default_p = is_default;
+
+  if (is_writable_p)
+    *is_writable_p = is_writable;
 
   return TRUE;
 }
 
+static gboolean
+utils_get_entry_values_stringified (DBusMessageIter  *main_iter,
+				    gchar           **key_p,
+				    GConfValue      **value_p,
+				    gboolean         *is_default_p,
+				    gboolean         *is_writable_p,
+				    gchar           **schema_name_p)
+{
+  DBusMessageIter  struct_iter;
+  gchar           *key;
+  gchar           *value_str;
+  GConfValue      *value;
+  gboolean         is_default;
+  gboolean         is_writable;
+  gchar           *schema_name;
+
+  g_return_val_if_fail (dbus_message_iter_get_arg_type (main_iter) == DBUS_TYPE_STRUCT,
+			FALSE);
+
+  dbus_message_iter_recurse (main_iter, &struct_iter);
+  dbus_message_iter_get_basic (&struct_iter, &key);
+
+  d(g_print ("Getting entry %s\n", key));
+    
+  dbus_message_iter_next (&struct_iter);
+  dbus_message_iter_get_basic (&struct_iter, &value_str);
+  if (value_str[0] != '\0')
+    value = gconf_value_decode (value_str);
+  else
+    value = NULL;
+
+  dbus_message_iter_next (&struct_iter);
+  schema_name = (gchar *) utils_get_optional_string (&struct_iter);
+
+  dbus_message_iter_next (&struct_iter);
+  dbus_message_iter_get_basic (&struct_iter, &is_default);
+
+  dbus_message_iter_next (&struct_iter);
+  dbus_message_iter_get_basic (&struct_iter, &is_writable);
+
+  if (key_p)
+    *key_p = key;
+
+  if (value_p)
+    *value_p = value;
+  else
+    gconf_value_free (value);
+
+  if (schema_name_p)
+    *schema_name_p = schema_name;
+  
+  if (is_default_p)
+    *is_default_p = is_default;
+
+  if (is_writable_p)
+    *is_writable_p = is_writable;
+
+  return TRUE;
+}
+
+
+/*
+ * Getters
+ */
+
+/* Helper for utils_get_value, reads int/string/float/bool/schema. */
+static GConfValue *
+utils_get_value_helper_fundamental (DBusMessageIter *iter,
+				    GConfValueType   value_type)
+{
+  GConfValue  *value;
+  GConfSchema *schema;
+  gint32       i;
+  const gchar *s;
+  gdouble      d;
+  gboolean     b;
+
+  d(g_print ("Get value (fundamental)\n"))
+
+  value = gconf_value_new (value_type);
+  
+  switch (value_type)
+    {
+    case GCONF_VALUE_INT:
+      dbus_message_iter_get_basic (iter, &i);
+      gconf_value_set_int (value, i);
+      break;
+
+    case GCONF_VALUE_STRING:
+      dbus_message_iter_get_basic (iter, &s);
+      gconf_value_set_string (value, s);
+      break;
+
+    case GCONF_VALUE_FLOAT:
+      dbus_message_iter_get_basic (iter, &d);
+      gconf_value_set_float (value, d);
+      break;
+
+    case GCONF_VALUE_BOOL:
+      dbus_message_iter_get_basic (iter, &b);
+      gconf_value_set_bool (value, b);
+      break;
+
+    case GCONF_VALUE_SCHEMA:
+      schema = utils_get_schema (iter);
+      gconf_value_set_schema_nocopy (value, schema);
+      break;
+
+    default:
+      g_assert_not_reached ();
+    }
+
+  return value;
+}
+
+/* Helper for utils_get_value, reads a pair. The pair is a struct with the two
+ * values and two fundamental values (type, value, type, value).
+ */
+static GConfValue *
+utils_get_value_helper_pair (DBusMessageIter *iter)
+{
+  GConfValue      *value;
+  DBusMessageIter  struct_iter;
+  gint32           car_type, cdr_type;
+  GConfValue      *car_value, *cdr_value;
+
+  d(g_print ("Get value (pair)\n"));
+
+  value = gconf_value_new (GCONF_VALUE_PAIR);
+
+  /* Get the pair types. */
+  dbus_message_iter_recurse (iter, &struct_iter);
+  dbus_message_iter_get_basic (&struct_iter, &car_type);
+  dbus_message_iter_next (&struct_iter);
+  dbus_message_iter_get_basic (&struct_iter, &cdr_type);
+
+  /* Get the values. */
+  dbus_message_iter_next (&struct_iter);
+  if (car_type != GCONF_VALUE_SCHEMA) 
+    car_value = utils_get_value_helper_fundamental (&struct_iter, car_type);
+  else
+    car_value = utils_get_schema_value (&struct_iter);
+
+  dbus_message_iter_next (&struct_iter);
+  if (cdr_type != GCONF_VALUE_SCHEMA) 
+    cdr_value = utils_get_value_helper_fundamental (&struct_iter, cdr_type);
+  else 
+    cdr_value = utils_get_schema_value (&struct_iter);
+
+  gconf_value_set_car_nocopy (value, car_value);
+  gconf_value_set_cdr_nocopy (value, cdr_value);
+
+  return value;
+}
+
+/* Helper for utils_get_value, reads a list. The "list" is a struct with the
+ * list type and an array with the values directly in it.
+ */
+static GConfValue *
+utils_get_value_helper_list (DBusMessageIter *iter)
+{
+  DBusMessageIter  struct_iter;
+  DBusMessageIter  array_iter;
+  GConfValue      *value;
+  gint32           list_type;
+  GSList          *list;
+  GConfValue      *child_value;
+  
+  d(g_print ("Get value (list)\n"));
+
+  value = gconf_value_new (GCONF_VALUE_LIST);
+
+  dbus_message_iter_recurse (iter, &struct_iter);
+
+  /* Get the list type. */
+  dbus_message_iter_get_basic (&struct_iter, &list_type);
+  gconf_value_set_list_type (value, list_type);
+
+  /* Get the array. */
+  dbus_message_iter_next (&struct_iter);
+  dbus_message_iter_recurse (&struct_iter, &array_iter);
+
+  /* And the values from the array. */
+  list = NULL;
+  switch (list_type)
+    {
+    case GCONF_VALUE_STRING:
+      while (dbus_message_iter_get_arg_type (&array_iter) == DBUS_TYPE_STRING)
+	{
+	  const gchar *str;
+	  
+	  dbus_message_iter_get_basic (&array_iter, &str);
+
+	  child_value = gconf_value_new (GCONF_VALUE_STRING);
+	  gconf_value_set_string (child_value, str);
+	  list = g_slist_prepend (list, child_value);
+
+	  dbus_message_iter_next (&array_iter);
+	}
+      break;
+
+    case GCONF_VALUE_INT:
+      while (dbus_message_iter_get_arg_type (&array_iter) == DBUS_TYPE_INT32)
+	{
+	  gint32 i;
+	  
+	  dbus_message_iter_get_basic (&array_iter, &i);
+
+	  child_value = gconf_value_new (GCONF_VALUE_INT);
+	  gconf_value_set_int (child_value, i);
+	  list = g_slist_prepend (list, child_value);
+
+	  dbus_message_iter_next (&array_iter);
+	}
+      break;
+
+    case GCONF_VALUE_FLOAT:
+      while (dbus_message_iter_get_arg_type (&array_iter) == DBUS_TYPE_DOUBLE)
+	{
+	  gdouble d;
+	  
+	  dbus_message_iter_get_basic (&array_iter, &d);
+
+	  child_value = gconf_value_new (GCONF_VALUE_FLOAT);
+	  gconf_value_set_float (child_value, d);
+	  list = g_slist_prepend (list, child_value);
+
+	  dbus_message_iter_next (&array_iter);
+	}
+      break;
+
+    case GCONF_VALUE_BOOL:
+      while (dbus_message_iter_get_arg_type (&array_iter) == DBUS_TYPE_BOOLEAN)
+	{
+	  gboolean b;
+	  
+	  dbus_message_iter_get_basic (&array_iter, &b);
+
+	  child_value = gconf_value_new (GCONF_VALUE_BOOL);
+	  gconf_value_set_bool (child_value, b);
+	  list = g_slist_prepend (list, child_value);
+
+	  dbus_message_iter_next (&array_iter);
+	}
+      break;
+
+    case GCONF_VALUE_SCHEMA:
+      while (dbus_message_iter_get_arg_type (&array_iter) == DBUS_TYPE_STRUCT)
+	{
+	  child_value = utils_get_schema_value (&array_iter);
+	  list = g_slist_prepend (list, child_value);
+
+	  dbus_message_iter_next (&array_iter);
+	}
+      break;
+      
+    default:
+      g_assert_not_reached ();
+    }
+
+  list = g_slist_reverse (list);
+  gconf_value_set_list_nocopy (value, list);
+  
+  return value;
+}
+
+static GConfValue *
+utils_get_value (DBusMessageIter *main_iter)
+{
+  DBusMessageIter  struct_iter;
+  gint32           type;
+  GConfValue      *value;
+  
+  g_assert (dbus_message_iter_get_arg_type (main_iter) == DBUS_TYPE_STRUCT);
+  
+  /* A value is stored as a struct with the type and a variant with the actual
+   * value.
+   */
+
+  dbus_message_iter_recurse (main_iter, &struct_iter);
+  dbus_message_iter_get_basic (&struct_iter, &type);
+
+  dbus_message_iter_next (&struct_iter);
+
+  switch (type)
+    {
+    case GCONF_VALUE_INT:
+    case GCONF_VALUE_STRING:
+    case GCONF_VALUE_BOOL:
+    case GCONF_VALUE_FLOAT:
+      value = utils_get_value_helper_fundamental (&struct_iter, type);
+      break;
+      
+    case GCONF_VALUE_PAIR:
+      value = utils_get_value_helper_pair (&struct_iter);
+      break;
+      
+    case GCONF_VALUE_LIST:
+      value = utils_get_value_helper_list (&struct_iter);
+      break;
+      
+    case GCONF_VALUE_SCHEMA:
+      value = utils_get_schema_value (&struct_iter);
+      break;
+      
+    default:
+      value = NULL;
+      g_assert_not_reached ();
+    }
+  
+  return value;
+}
+
+static GConfSchema *
+utils_get_schema (DBusMessageIter *main_iter)
+{
+  DBusMessageIter  struct_iter;
+  gint32           type, list_type, car_type, cdr_type;
+  const gchar     *locale, *short_desc, *long_desc, *owner;
+  const gchar     *encoded;
+  GConfSchema     *schema;
+  GConfValue      *default_value;
+  
+  g_assert (dbus_message_iter_get_arg_type (main_iter) == DBUS_TYPE_STRUCT);
+  
+  dbus_message_iter_recurse (main_iter, &struct_iter);
+  dbus_message_iter_get_basic (&struct_iter, &type);
+  
+  dbus_message_iter_next (&struct_iter);
+  dbus_message_iter_get_basic (&struct_iter, &list_type);
+
+  dbus_message_iter_next (&struct_iter);
+  dbus_message_iter_get_basic (&struct_iter, &car_type);
+
+  dbus_message_iter_next (&struct_iter);
+  dbus_message_iter_get_basic (&struct_iter, &cdr_type);
+
+  dbus_message_iter_next (&struct_iter);
+  locale = utils_get_optional_string (&struct_iter);
+
+  dbus_message_iter_next (&struct_iter);
+  short_desc = utils_get_optional_string (&struct_iter);
+
+  dbus_message_iter_next (&struct_iter);
+  long_desc = utils_get_optional_string (&struct_iter);
+
+  dbus_message_iter_next (&struct_iter);
+  owner = utils_get_optional_string (&struct_iter);
+
+  dbus_message_iter_next (&struct_iter);
+  dbus_message_iter_get_basic (&struct_iter, &encoded);
+
+  schema = gconf_schema_new ();
+  
+  gconf_schema_set_type (schema, type);
+  gconf_schema_set_list_type (schema, list_type);
+  gconf_schema_set_car_type (schema, car_type);
+  gconf_schema_set_cdr_type (schema, cdr_type);
+
+  if (locale)
+    gconf_schema_set_locale (schema, locale);
+  
+  if (short_desc)
+    gconf_schema_set_short_desc (schema, short_desc);
+  
+  if (long_desc)
+    gconf_schema_set_long_desc (schema, long_desc);
+  
+  if (owner)
+    gconf_schema_set_owner (schema, owner);
+  
+  if (*encoded != '\0')
+    {
+      default_value = gconf_value_decode (encoded);
+      if (default_value)
+	gconf_schema_set_default_value_nocopy (schema, default_value);
+    }
+
+  return schema;
+}
+
+static GConfValue *
+utils_get_schema_value (DBusMessageIter *iter)
+{
+  GConfSchema *schema;
+  GConfValue  *value;
+
+  schema = utils_get_schema (iter);
+
+  value = gconf_value_new (GCONF_VALUE_SCHEMA);
+  gconf_value_set_schema_nocopy (value, schema);
+
+  return value;
+}
+
+
+/*
+ * Public API
+ */
+
+void
+gconf_dbus_utils_append_value (DBusMessageIter  *iter,
+			       const GConfValue *value)
+{
+  utils_append_value (iter, value);
+}
+
+GConfValue *
+gconf_dbus_utils_get_value (DBusMessageIter  *iter)
+{
+  return utils_get_value (iter);
+}
+
+void
+gconf_dbus_utils_append_entry_values (DBusMessageIter  *iter,
+				      const gchar      *key,
+				      const GConfValue *value,
+				      gboolean          is_default,
+				      gboolean          is_writable,
+				      const gchar      *schema_name)
+{
+  utils_append_entry_values (iter,
+			     key,
+			     value,
+			     is_default,
+			     is_writable,
+			     schema_name);
+}
+
+gboolean
+gconf_dbus_utils_get_entry_values (DBusMessageIter   *iter,
+				   gchar            **key,
+				   GConfValue       **value,
+				   gboolean          *is_default,
+				   gboolean          *is_writable,
+				   gchar            **schema_name)
+{
+  return utils_get_entry_values (iter,
+				 key,
+				 value,
+				 is_default,
+				 is_writable,
+				 schema_name);
+}
+
+gboolean
+gconf_dbus_utils_get_entry_values_stringified (DBusMessageIter   *iter,
+					       gchar            **key,
+					       GConfValue       **value,
+					       gboolean          *is_default,
+					       gboolean          *is_writable,
+					       gchar            **schema_name)
+{
+  return utils_get_entry_values_stringified (iter,
+					     key,
+					     value,
+					     is_default,
+					     is_writable,
+					     schema_name);
+}
+
+void
+gconf_dbus_utils_append_entry_values_stringified (DBusMessageIter  *iter,
+						  const gchar      *key,
+						  const GConfValue *value,
+						  gboolean          is_default,
+						  gboolean          is_writable,
+						  const gchar      *schema_name)
+{
+  utils_append_entry_values_stringified (iter,
+					 key,
+					 value,
+					 is_default,
+					 is_writable,
+					 schema_name);
+}

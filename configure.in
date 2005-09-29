@@ -203,7 +203,7 @@ fi
 PC_REQUIRES=ORBit-2.0
 
 if test x$with_ipc = xdbus -o x$with_ipc = xboth; then
-  PKG_CHECK_MODULES(GCONF_DBUS, dbus-glib-1 >= 0.22, have_dbus=yes, have_dbus=no)
+  PKG_CHECK_MODULES(GCONF_DBUS, dbus-glib-1 >= 0.50, have_dbus=yes, have_dbus=no)
   if test x$have_dbus = xyes; then
     AC_DEFINE(HAVE_DBUS, 1, D-BUS support in the daemon)
     PC_REQUIRES="dbus-1 dbus-glib-1"

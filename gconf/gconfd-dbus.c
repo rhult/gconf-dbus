@@ -111,7 +111,7 @@ server_filter_func (DBusConnection  *connection,
 		    void            *user_data)
 {
   if (dbus_message_is_signal (message,
-			      DBUS_INTERFACE_ORG_FREEDESKTOP_LOCAL,
+			      DBUS_INTERFACE_LOCAL,
 			      "Disconnected")) {
 	  /* Exit cleanly. */
 	  gconf_main_quit ();
@@ -129,6 +129,7 @@ server_real_handle_get_db (DBusConnection *connection,
   GConfDatabaseDBus *db;
   DBusMessage       *reply;
   GError            *gerror = NULL;
+  gchar             *str;
  
   if (gconfd_dbus_check_in_shutdown (connection, message))
     return;
@@ -141,11 +142,13 @@ server_real_handle_get_db (DBusConnection *connection,
   reply = dbus_message_new_method_return (message);
   if (reply == NULL) 
       g_error ("No memory");
-                                                                                
-  dbus_message_append_iter_init (reply, &iter);
-                                                                                
-  if (!dbus_message_iter_append_string (&iter, 
-					gconf_database_dbus_get_path (db)))
+
+  dbus_message_iter_init_append (reply, &iter);
+
+  str = gconf_database_dbus_get_path (db);
+  if (!dbus_message_iter_append_basic (&iter,
+				       DBUS_TYPE_STRING,
+				       &str))
     g_error ("No memory");
 
   if (!dbus_connection_send (connection, reply, NULL)) 
@@ -168,11 +171,10 @@ server_handle_get_db (DBusConnection *connection, DBusMessage *message)
 
   if (!gconfd_dbus_get_message_args (connection, message, 
 				     DBUS_TYPE_STRING, &address,
-				     0))
+				     DBUS_TYPE_INVALID))
     return;
 
   server_real_handle_get_db (connection, message, address);
-  dbus_free (address);
 }
 
 static void
@@ -199,7 +201,8 @@ server_handle_shutdown (DBusConnection *connection, DBusMessage *message)
 gboolean
 gconfd_dbus_init (void)
 {
-  DBusError   error;
+  DBusError error;
+  gint      ret;
 
   dbus_error_init (&error);
 
@@ -210,12 +213,12 @@ gconfd_dbus_init (void)
 #endif
 
   if (!bus_conn) 
-    {
-      gconf_log (GCL_ERR, _("Daemon failed to connect to the D-BUS daemon:\n%s"),
-		 error.message);
-      dbus_error_free (&error);
-      return FALSE;
-    }
+   {
+     gconf_log (GCL_ERR, _("Daemon failed to connect to the D-BUS daemon:\n%s"),
+		error.message);
+     dbus_error_free (&error);
+     return FALSE;
+   }
 
   /* We handle exiting ourselves on disconnect. */
   dbus_connection_set_exit_on_disconnect (bus_conn, FALSE);
@@ -228,7 +231,17 @@ gconfd_dbus_init (void)
   /* Add rule for ServiceOwnerChanged so we get notified when the clients go away. */
   dbus_bus_add_match (bus_conn, SERVICE_OWNER_CHANGED_RULE, NULL);
 
-  dbus_bus_acquire_service (bus_conn, GCONF_DBUS_SERVICE, 0, &error);
+  ret = dbus_bus_request_name (bus_conn,
+			       GCONF_DBUS_SERVICE,
+			       DBUS_NAME_FLAG_PROHIBIT_REPLACEMENT,
+			       &error);
+
+  if (ret != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER)
+    {
+      gconf_log (GCL_ERR, "Daemon could not become primary owner");
+      return FALSE;
+    }
+  
   if (dbus_error_is_set (&error)) 
     {
       gconf_log (GCL_ERR, _("Daemon failed to acquire gconf service:\n%s"),

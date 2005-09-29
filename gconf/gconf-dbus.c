@@ -231,7 +231,7 @@ gconf_handle_dbus_exception (DBusMessage *message, DBusError *derr, GError **ger
 
   dbus_message_get_args (message, NULL,
 			 DBUS_TYPE_STRING, &error_string,
-			 0);
+			 DBUS_TYPE_INVALID);
   
   if (g_str_has_prefix (name, "org.freedesktop.DBus.Error"))
     {
@@ -435,7 +435,6 @@ ensure_service (gboolean  start_if_not_found,
 		GError   **err)
 {
   DBusError error;
-  DBusMessage *message, *reply;
 
   if (global_conn == NULL)
     {
@@ -457,25 +456,13 @@ ensure_service (gboolean  start_if_not_found,
     {
       d(g_print ("* activate_service, activating\n"));
 
-      message = dbus_message_new_method_call (DBUS_SERVICE_ORG_FREEDESKTOP_DBUS,
-					      DBUS_PATH_ORG_FREEDESKTOP_DBUS,
-					      DBUS_INTERFACE_ORG_FREEDESKTOP_DBUS,
-					      "ActivateService");
-      
-      dbus_message_append_args (message,
-				DBUS_TYPE_STRING, GCONF_DBUS_SERVICE,
-				DBUS_TYPE_UINT32, 0,
-				0);
-
       dbus_error_init (&error);
       
-      reply = dbus_connection_send_with_reply_and_block (global_conn,
-							 message, -1,
-							 &error);
-      
-      dbus_message_unref (message);
-
-      if (reply == NULL)
+      if (!dbus_bus_start_service_by_name (global_conn,
+					   GCONF_DBUS_SERVICE,
+					   0,
+					   NULL,
+					   &error))
 	{
 	  const gchar *msg;
 	  
@@ -488,34 +475,15 @@ ensure_service (gboolean  start_if_not_found,
 		       GCONF_ERROR_NO_SERVER,
 		       _("Failed to activate configuration server: %s\n"),
 		       msg);
-
+	  
 	  if (dbus_error_is_set (&error))
 	    dbus_error_free (&error);
 	  
 	  return FALSE;
 	}
       
-      if (dbus_message_get_type (reply) == DBUS_MESSAGE_TYPE_ERROR)
-	{
-	  gchar *error_message;
-
-	  dbus_message_get_args (reply, NULL,
-				 DBUS_TYPE_STRING, &error_message,
-				 0);
-	  g_set_error (err, GCONF_ERROR,
-		       GCONF_ERROR_NO_SERVER,
-		       _("Failed to activate configuration server: %s\n"),
-		       error_message);
-	  dbus_free (error_message);
-	  dbus_message_unref (reply);
-
-	  return FALSE;
-	}
-
       service_running = TRUE;
       
-      dbus_message_unref (reply);
-
       return TRUE;
     }
   
@@ -562,7 +530,7 @@ ensure_database (GConfEngine *conf,
 					      GCONF_DBUS_SERVER_INTERFACE,
 					      GCONF_DBUS_SERVER_GET_DB);
       dbus_message_append_args (message,
-				DBUS_TYPE_STRING, conf->address,
+				DBUS_TYPE_STRING, &conf->address,
 				DBUS_TYPE_INVALID);
     }
 
@@ -593,8 +561,6 @@ ensure_database (GConfEngine *conf,
     }
 
   gconf_engine_set_database (conf, db);
-
-  dbus_free (db);
 
   return TRUE;
 }
@@ -939,7 +905,7 @@ send_notify_add (GConfEngine *conf,
 					  GCONF_DBUS_DATABASE_ADD_NOTIFY);
   
   dbus_message_append_args (message,
-			    DBUS_TYPE_STRING, cnxn->namespace_section,
+			    DBUS_TYPE_STRING, &cnxn->namespace_section,
 			    DBUS_TYPE_INVALID);
 
   dbus_error_init (&error);
@@ -1026,7 +992,7 @@ gconf_engine_notify_remove (GConfEngine* conf,
 					  GCONF_DBUS_DATABASE_REMOVE_NOTIFY);
   
   dbus_message_append_args (message,
-			    DBUS_TYPE_STRING, namespace_section,
+			    DBUS_TYPE_STRING, &namespace_section,
 			    DBUS_TYPE_INVALID);
 
   dbus_error_init (&error);
@@ -1119,11 +1085,13 @@ gconf_engine_get_fuller (GConfEngine *conf,
 					  db,
 					  GCONF_DBUS_DATABASE_INTERFACE,
 					  GCONF_DBUS_DATABASE_LOOKUP_EXTENDED);
+
+  locale = locale ? locale : gconf_current_locale();
   
   dbus_message_append_args (message,
-			    DBUS_TYPE_STRING, key,
-			    DBUS_TYPE_STRING, (locale ? locale : gconf_current_locale()),
-			    DBUS_TYPE_BOOLEAN, use_schema_default,
+			    DBUS_TYPE_STRING, &key,
+			    DBUS_TYPE_STRING, &locale,
+			    DBUS_TYPE_BOOLEAN, &use_schema_default,
 			    DBUS_TYPE_INVALID);
 
   dbus_error_init (&error);
@@ -1134,12 +1102,20 @@ gconf_engine_get_fuller (GConfEngine *conf,
     return NULL;
 
   dbus_message_iter_init (reply, &iter);
-  success = gconf_dbus_get_entry_values_from_message_iter (&iter,
-							   NULL,
-							   &val,
-							   &is_default,
-							   &is_writable,
-							   &schema_name);
+
+  /* If there is no struct (entry) here, there is no value. */
+  if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_STRUCT)
+    {
+      dbus_message_unref (reply);
+      return NULL;
+    }
+  
+  success = gconf_dbus_utils_get_entry_values (&iter,
+					       NULL,
+					       &val,
+					       &is_default,
+					       &is_writable,
+					       &schema_name);
   
   dbus_message_unref (reply);
   
@@ -1149,8 +1125,6 @@ gconf_engine_get_fuller (GConfEngine *conf,
 	g_set_error (err, GCONF_ERROR,
 		     GCONF_ERROR_FAILED,
 		     _("Couldn't get value"));
-      
-      g_free (schema_name);
       
       return NULL;
     }
@@ -1163,14 +1137,11 @@ gconf_engine_get_fuller (GConfEngine *conf,
   
   if (schema_name && schema_name[0] != '/')
     {
-      g_free (schema_name);
       schema_name = NULL;
     }
   
   if (schema_name_p)
-    *schema_name_p = schema_name;
-  else 
-    g_free (schema_name);
+    *schema_name_p = g_strdup (schema_name);
   
   return val;
 }
@@ -1266,6 +1237,7 @@ gconf_engine_set (GConfEngine* conf, const gchar* key,
   const gchar *db;
   DBusMessage *message, *reply;
   DBusError error;
+  DBusMessageIter iter;
 
   g_return_val_if_fail(conf != NULL, FALSE);
   g_return_val_if_fail(key != NULL, FALSE);
@@ -1322,10 +1294,11 @@ gconf_engine_set (GConfEngine* conf, const gchar* key,
 					  GCONF_DBUS_DATABASE_SET);
   
   dbus_message_append_args (message,
-			    DBUS_TYPE_STRING, key,
+			    DBUS_TYPE_STRING, &key,
 			    DBUS_TYPE_INVALID);
 
-  gconf_dbus_message_append_gconf_value (message, value);
+  dbus_message_iter_init_append (message, &iter);
+  gconf_dbus_utils_append_value (&iter, value);
 
   dbus_error_init (&error);
   reply = dbus_connection_send_with_reply_and_block (global_conn, message, -1, &error);
@@ -1347,6 +1320,7 @@ gconf_engine_unset (GConfEngine* conf, const gchar* key, GError** err)
   const gchar *db;
   DBusMessage *message, *reply;
   DBusError error;
+  const gchar *empty;
 
   g_return_val_if_fail (conf != NULL, FALSE);
   g_return_val_if_fail (key != NULL, FALSE);
@@ -1392,10 +1366,11 @@ gconf_engine_unset (GConfEngine* conf, const gchar* key, GError** err)
 					  db,
 					  GCONF_DBUS_DATABASE_INTERFACE,
 					  GCONF_DBUS_DATABASE_UNSET);
-  
+
+  empty = "";
   dbus_message_append_args (message,
-			    DBUS_TYPE_STRING, key,
-			    DBUS_TYPE_STRING, "",
+			    DBUS_TYPE_STRING, &key,
+			    DBUS_TYPE_STRING, &empty,
 			    DBUS_TYPE_INVALID);
 
   dbus_error_init (&error);
@@ -1435,6 +1410,7 @@ gconf_engine_recursive_unset (GConfEngine    *conf,
   DBusMessage *message, *reply;
   DBusError error;
   guint dbus_flags;
+  const gchar *empty;
   
   g_return_val_if_fail (conf != NULL, FALSE);
   g_return_val_if_fail (key != NULL, FALSE);
@@ -1485,11 +1461,12 @@ gconf_engine_recursive_unset (GConfEngine    *conf,
 					  db,
 					  GCONF_DBUS_DATABASE_INTERFACE,
 					  GCONF_DBUS_DATABASE_RECURSIVE_UNSET);
-  
+
+  empty = "";
   dbus_message_append_args (message,
-			    DBUS_TYPE_STRING, key,
-			    DBUS_TYPE_STRING, "",
-			    DBUS_TYPE_UINT32, dbus_flags,
+			    DBUS_TYPE_STRING, &key,
+			    DBUS_TYPE_STRING, &empty,
+			    DBUS_TYPE_UINT32, &dbus_flags,
 			    DBUS_TYPE_INVALID);
 
   dbus_error_init (&error);
@@ -1561,9 +1538,11 @@ gconf_engine_associate_schema  (GConfEngine* conf, const gchar* key,
 					  GCONF_DBUS_DATABASE_SET_SCHEMA);
 
    /* Empty schema string means unset. */
+  schema_key = schema_key ? schema_key : "";
+  
   dbus_message_append_args (message,
-			    DBUS_TYPE_STRING, key,
-			    DBUS_TYPE_STRING, schema_key ? schema_key : "",
+			    DBUS_TYPE_STRING, &key,
+			    DBUS_TYPE_STRING, &schema_key,
 			    DBUS_TYPE_INVALID);
 
   dbus_error_init (&error);
@@ -1607,9 +1586,7 @@ gconf_engine_all_entries (GConfEngine* conf, const gchar* dir, GError** err)
   DBusMessage *message, *reply;
   DBusError error;
   DBusMessageIter iter;
-  gchar *key, *schema_name;
-  gboolean is_default;
-  gboolean is_writable;
+  const gchar *locale;
 
   g_return_val_if_fail(conf != NULL, NULL);
   g_return_val_if_fail(dir != NULL, NULL);
@@ -1671,9 +1648,10 @@ gconf_engine_all_entries (GConfEngine* conf, const gchar* dir, GError** err)
 					  GCONF_DBUS_DATABASE_INTERFACE,
 					  GCONF_DBUS_DATABASE_GET_ALL_ENTRIES);
 
+  locale = gconf_current_locale ();
   dbus_message_append_args (message,
-			    DBUS_TYPE_STRING, dir,
-			    DBUS_TYPE_STRING, gconf_current_locale (),
+			    DBUS_TYPE_STRING, &dir,
+			    DBUS_TYPE_STRING, &locale,
 			    DBUS_TYPE_INVALID);
   
   dbus_error_init (&error);
@@ -1687,36 +1665,36 @@ gconf_engine_all_entries (GConfEngine* conf, const gchar* dir, GError** err)
 
   dbus_message_iter_init (reply, &iter);
 
-  while (1)
+  /* Loop through while there are structs (entries). */
+  while (dbus_message_iter_get_arg_type (&iter) == DBUS_TYPE_STRUCT)
     {
-      GConfEntry *entry;
+      gchar      *key;
       GConfValue *value;
+      gboolean    is_default;
+      gboolean    is_writable;
+      gchar      *schema_name;
+      GConfEntry *entry;
 
-      if (!gconf_dbus_get_entry_values_from_message_iter (&iter,
+      if (!gconf_dbus_utils_get_entry_values_stringified (&iter,
 							  &key,
 							  &value,
 							  &is_default,
 							  &is_writable,
 							  &schema_name))
 	break;
-
-      entry =  gconf_entry_new_nocopy (gconf_concat_dir_and_key (dir, key),
-				       value);
       
+      entry = gconf_entry_new_nocopy (gconf_concat_dir_and_key (dir, key),
+				      value);
+
       gconf_entry_set_is_default (entry, is_default);
       gconf_entry_set_is_writable (entry, is_writable);
 
-      /* Empty string means no schema name. */
-      if (*schema_name != '\0')
+      if (schema_name)
 	gconf_entry_set_schema_name (entry, schema_name);
-
+      
       entries = g_slist_prepend (entries, entry);
 
-      g_free (key);
-      g_free (schema_name);
-
-      if (!dbus_message_iter_next (&iter))
-	break;
+      dbus_message_iter_next (&iter);
     }
 
   dbus_message_unref (reply);
@@ -1750,7 +1728,6 @@ gconf_engine_all_dirs(GConfEngine* conf, const gchar* dir, GError** err)
   DBusMessage *message, *reply;
   DBusError error;
   DBusMessageIter iter;
-  gchar *key;
   
   g_return_val_if_fail(conf != NULL, NULL);
   g_return_val_if_fail(dir != NULL, NULL);
@@ -1806,7 +1783,7 @@ gconf_engine_all_dirs(GConfEngine* conf, const gchar* dir, GError** err)
 					  GCONF_DBUS_DATABASE_GET_ALL_DIRS);
 
   dbus_message_append_args (message,
-			    DBUS_TYPE_STRING, dir,
+			    DBUS_TYPE_STRING, &dir,
 			    DBUS_TYPE_INVALID);
   
   dbus_error_init (&error);
@@ -1822,14 +1799,13 @@ gconf_engine_all_dirs(GConfEngine* conf, const gchar* dir, GError** err)
 
   while (dbus_message_iter_get_arg_type (&iter) == DBUS_TYPE_STRING)
     {
-      gchar* s;
-            
-      key = dbus_message_iter_get_string (&iter);
+      const gchar *key;
+      gchar       *s;
+      
+      dbus_message_iter_get_basic (&iter, &key);
       
       s = gconf_concat_dir_and_key (dir, key);
       subdirs = g_slist_prepend (subdirs, s);
-      
-      dbus_free (key);
       
       if (!dbus_message_iter_next (&iter))
 	break;
@@ -1977,7 +1953,7 @@ gconf_engine_dir_exists (GConfEngine *conf, const gchar *dir, GError** err)
 					  GCONF_DBUS_DATABASE_DIR_EXISTS);
   
   dbus_message_append_args (message,
-			    DBUS_TYPE_STRING, dir,
+			    DBUS_TYPE_STRING, &dir,
 			    DBUS_TYPE_INVALID);
   
   dbus_error_init (&error);
@@ -2104,7 +2080,7 @@ gconf_dbus_message_filter (DBusConnection    *dbus_conn,
       return handle_notify (dbus_conn, message, NULL);
     }
   else if (dbus_message_is_signal (message,
-				   DBUS_INTERFACE_ORG_FREEDESKTOP_LOCAL,
+				   DBUS_INTERFACE_LOCAL,
 				   "Disconnected"))
     {
       /* Note: This is a terminal situation. We can't live without the bus and
@@ -2120,31 +2096,21 @@ gconf_dbus_message_filter (DBusConnection    *dbus_conn,
       return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;      
     }
   else if (dbus_message_is_signal (message,
-				   DBUS_INTERFACE_ORG_FREEDESKTOP_DBUS,
+				   DBUS_INTERFACE_DBUS,
 				   "ServiceOwnerChanged"))
     {
       char *owner;
 
       dbus_message_iter_init (message, &iter);
       
-      service = dbus_message_iter_get_string (&iter);
-      
+      dbus_message_iter_get_basic (&iter, &service);
       if (strcmp (service, GCONF_DBUS_SERVICE) != 0)
 	{
-	  dbus_free (service);
 	  return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 	}
 
-      dbus_free (service);
-
-      if (!dbus_message_iter_next (&iter)) 
-	{
-	  d(g_print ("Malformed ServiceOwnerChanged signal\n"));
-	  return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-	}
-     
-      
-      owner = dbus_message_iter_get_string (&iter); 
+      dbus_message_iter_next (&iter);
+      dbus_message_iter_get_basic (&iter, &owner); 
       if (strcmp (owner, "") == 0) 
 	{
 	  /* GConfd is back. */
@@ -2159,14 +2125,9 @@ gconf_dbus_message_filter (DBusConnection    *dbus_conn,
 	  d(g_print ("*** Gconf Service created\n"));
 	}
 
-      dbus_free (owner);
-
-      if (!dbus_message_iter_next (&iter)) {
-	d(g_print ("Malformed ServiceOwnerChanged signal\n"));
-	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-      }
+      dbus_message_iter_next (&iter);
       
-      owner = dbus_message_iter_get_string (&iter);
+      dbus_message_iter_get_basic (&iter, &owner);
       if (strcmp (owner, "") == 0) 
 	{
 	  /* GConfd is gone, set the state so we can detect that we're down. */
@@ -2176,8 +2137,6 @@ gconf_dbus_message_filter (DBusConnection    *dbus_conn,
 	  d(g_print ("*** GConf Service deleted\n"));
 	}
       
-      dbus_free (owner);
-
       return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;      
     }
 
@@ -2227,20 +2186,17 @@ handle_notify (DBusConnection *connection,
 
   dbus_message_iter_init (message, &iter);
 
-  db = dbus_message_iter_get_string (&iter);
+  dbus_message_iter_get_basic (&iter, &db);
 
   if (!dbus_message_iter_next (&iter))
     {
-      dbus_free (db);
       return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
     }
   
-  namespace_section = dbus_message_iter_get_string (&iter);
+  dbus_message_iter_get_basic (&iter, &namespace_section);
 
   if (!dbus_message_iter_next (&iter))
     {
-      dbus_free (db);
-      dbus_free (namespace_section);
       return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
     }
 
@@ -2250,24 +2206,18 @@ handle_notify (DBusConnection *connection,
   if (conf == NULL)
     return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
   
-  dbus_free (db);
-  
-  if (!gconf_dbus_get_entry_values_from_message_iter (&iter,
-						      &key,
-						      &value,
-						      &is_default,
-						      &is_writable,
-						      &schema_name))
+  if (!gconf_dbus_utils_get_entry_values (&iter,
+					  &key,
+					  &value,
+					  &is_default,
+					  &is_writable,
+					  &schema_name))
     {
-      dbus_free (namespace_section);
       return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
     }
   
   if (value == NULL)
     {
-      g_free (key);
-      g_free (schema_name);
-      dbus_free (namespace_section);
       return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
     }
   
@@ -2294,10 +2244,6 @@ handle_notify (DBusConnection *connection,
 
   gconf_value_free (value);
 
-  g_free (key);
-  g_free (schema_name);
-  dbus_free (namespace_section);
-  
   if (!match)
     return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
   

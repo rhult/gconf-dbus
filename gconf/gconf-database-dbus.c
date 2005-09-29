@@ -59,7 +59,7 @@ database_filter_func                             (DBusConnection  *connection,
 						  DBusMessage     *message,
 						  GConfDatabaseDBus *db);
 static DBusHandlerResult
-database_handle_service_owner_changed            (DBusConnection  *connection,
+database_handle_name_owner_changed               (DBusConnection  *connection,
 						  DBusMessage     *message,
 						  GConfDatabaseDBus *db);
 static void           database_handle_lookup     (DBusConnection  *conn,
@@ -205,58 +205,45 @@ database_filter_func (DBusConnection  *connection,
 		      GConfDatabaseDBus *db)
 {
   if (dbus_message_is_signal (message,
-			      DBUS_INTERFACE_ORG_FREEDESKTOP_DBUS,
-                              "ServiceOwnerChanged"))
-    return database_handle_service_owner_changed (connection, message, db);
+			      DBUS_INTERFACE_DBUS,
+                              "NameOwnerChanged"))
+    return database_handle_name_owner_changed (connection, message, db);
 
   return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
 static DBusHandlerResult
-database_handle_service_owner_changed (DBusConnection *connection,
-				       DBusMessage *message,
-				       GConfDatabaseDBus *db)
+database_handle_name_owner_changed (DBusConnection *connection,
+				    DBusMessage *message,
+				    GConfDatabaseDBus *db)
 {  
   DBusMessageIter iter;
   char *service;
+  char *old_owner;
+  char *new_owner;
   GList *notifications = NULL, *l;
   NotificationData *notification;
-  char *owner;
   
-  /* FIXME: This might be a bit too slow to do like this. We could add a hash
-   * table that maps client base service names to notification data, instead of
-   * going through the entire list of notifications and clients.
-   */
-  dbus_message_iter_init (message, &iter);
-  service = dbus_message_iter_get_string (&iter);
-
-  if (!dbus_message_iter_next (&iter))
-    {
-      g_warning ("Misformated ServiceOwnerChanged message");
-      dbus_free (service);
-      return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-    }
+  dbus_message_get_args (message,
+			 NULL,
+			 DBUS_TYPE_STRING, &service,
+			 DBUS_TYPE_STRING, &old_owner,
+			 DBUS_TYPE_STRING, &new_owner,
+			 DBUS_TYPE_INVALID);
   
-  if (!dbus_message_iter_next (&iter))
-    {
-      g_warning ("Misformated ServiceOwnerChanged message");
-      dbus_free (service);
-      return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-    }
-
-  owner = dbus_message_iter_get_string (&iter);
-  if (strcmp (owner, "") != 0) 
+  if (strcmp (new_owner, "") != 0) 
     {
       /* Service still exist, don't remove notifications */
-      dbus_free (service);
-      dbus_free (owner);
       return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
     }
-  dbus_free (owner);
   
   g_hash_table_foreach (db->notifications, get_all_notifications_func,
 			&notifications);
   
+  /* Note: This might be a bit too slow to do like this. We could add a hash
+   * table that maps client base service names to notification data, instead of
+   * going through the entire list of notifications and clients.
+   */
   for (l = notifications; l; l = l->next)
     {
       notification = l->data;
@@ -265,9 +252,8 @@ database_handle_service_owner_changed (DBusConnection *connection,
     }
   
   g_list_free (notifications);
-  dbus_free (service);
 
-  return DBUS_HANDLER_RESULT_HANDLED;
+  return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
     
 static void
@@ -282,28 +268,29 @@ database_handle_lookup (DBusConnection  *conn,
   GConfLocaleList *locales;
   gboolean use_schema_default;
   GError *gerror = NULL;
+  DBusMessageIter iter;
   
   if (!gconfd_dbus_get_message_args (conn, message,
 				     DBUS_TYPE_STRING, &key,
 				     DBUS_TYPE_STRING, &locale,
 				     DBUS_TYPE_BOOLEAN, &use_schema_default,
-				     0))
+				     DBUS_TYPE_INVALID))
     return;
   
   locales = gconfd_locale_cache_lookup (locale);
-  dbus_free (locale);
   
   value = gconf_database_query_value (db->db, key, locales->list, 
 				      use_schema_default,
 				      NULL, NULL, NULL, &gerror);
 
-  dbus_free (key);
-
   if (gconfd_dbus_set_exception (conn, message, &gerror))
     goto fail;
 
   reply = dbus_message_new_method_return (message);
-  gconf_dbus_message_append_gconf_value (reply, value);
+
+  dbus_message_iter_init_append (reply, &iter);
+  gconf_dbus_utils_append_value (&iter, value);
+
   dbus_connection_send (conn, reply, NULL);
   dbus_message_unref (reply);
   
@@ -327,16 +314,16 @@ database_handle_lookup_ext (DBusConnection  *conn,
   GConfLocaleList *locales;
   gboolean use_schema_default;
   GError *gerror = NULL;
+  DBusMessageIter iter;
   
   if (!gconfd_dbus_get_message_args (conn, message,
 				     DBUS_TYPE_STRING, &key,
 				     DBUS_TYPE_STRING, &locale,
 				     DBUS_TYPE_BOOLEAN, &use_schema_default,
-				     0))
+				     DBUS_TYPE_INVALID))
     return;
   
   locales = gconfd_locale_cache_lookup (locale);
-  dbus_free (locale);
   
   value = gconf_database_query_value (db->db, key, locales->list,
 				      use_schema_default,
@@ -347,23 +334,23 @@ database_handle_lookup_ext (DBusConnection  *conn,
     goto fail;
   
   reply = dbus_message_new_method_return (message);
-  gconf_dbus_message_append_entry (reply,
-				   key,
-				   value,
-				   value_is_default,
-				   value_is_writable,
-				   schema_name);
+
+  dbus_message_iter_init_append (reply, &iter);
+
+  if (value)
+    gconf_dbus_utils_append_entry_values (&iter,
+					  key,
+					  value,
+					  value_is_default,
+					  value_is_writable,
+					  schema_name);
   
   dbus_connection_send (conn, reply, NULL);
   dbus_message_unref (reply);
 
  fail:
-  dbus_free (key);
-  
   if (value)
     gconf_value_free (value);
-  
-  g_free (schema_name);
 }
 
 static void
@@ -378,13 +365,12 @@ database_handle_set (DBusConnection *conn,
   DBusMessageIter iter;
 
   dbus_message_iter_init (message, &iter);
+  dbus_message_iter_get_basic (&iter, &key);
 
-  key = dbus_message_iter_get_string (&iter);
   dbus_message_iter_next (&iter);
-  value = gconf_dbus_create_gconf_value_from_message_iter (&iter);
+  value = gconf_dbus_utils_get_value (&iter);
 
   gconf_database_set (db->db, key, value, &gerror);
-  dbus_free (key);
   gconf_value_free (value);
 
   if (gconfd_dbus_set_exception (conn, message, &gerror))
@@ -408,18 +394,15 @@ database_handle_unset (DBusConnection *conn,
   if (!gconfd_dbus_get_message_args (conn, message,
 				     DBUS_TYPE_STRING, &key,
 				     DBUS_TYPE_STRING, &locale,
-				     0))
+				     DBUS_TYPE_INVALID))
     return;
 
   if (locale[0] == '\0')
     {
-      dbus_free (locale);
       locale = NULL;
     }
   
   gconf_database_unset (db->db, key, locale, &gerror);
-  dbus_free (key);
-  dbus_free (locale);
   
   gconf_database_sync (db->db, NULL);
   
@@ -447,18 +430,15 @@ database_handle_recursive_unset  (DBusConnection *conn,
 				     DBUS_TYPE_STRING, &key,
 				     DBUS_TYPE_STRING, &locale,
 				     DBUS_TYPE_UINT32, &unset_flags,
-				     0))
+				     DBUS_TYPE_INVALID))
     return;
 
   if (locale[0] == '\0')
     {
-      dbus_free (locale);
       locale = NULL;
     }
   
   gconf_database_recursive_unset (db->db, key, locale, unset_flags, &gerror);
-  dbus_free (key);
-  dbus_free (locale);
   
   gconf_database_sync (db->db, NULL);
   
@@ -476,25 +456,24 @@ database_handle_dir_exists (DBusConnection *conn,
                             GConfDatabaseDBus *db)
 {
   gboolean     exists;
-  gchar *dir;
+  gchar       *dir;
   GError      *gerror = NULL;
   DBusMessage *reply;
  
   if (!gconfd_dbus_get_message_args (conn, message, 
 				     DBUS_TYPE_STRING, &dir,
-				     0))
+				     DBUS_TYPE_INVALID))
     return;
 
   exists = gconf_database_dir_exists (db->db, dir, &gerror);
-  dbus_free (dir);
 
   if (gconfd_dbus_set_exception (conn, message, &gerror))
     return;
 
   reply = dbus_message_new_method_return (message);
   dbus_message_append_args (reply,
-			    DBUS_TYPE_BOOLEAN, exists,
-			    0);
+			    DBUS_TYPE_BOOLEAN, &exists,
+			    DBUS_TYPE_INVALID);
   dbus_connection_send (conn, reply, NULL);
   dbus_message_unref (reply);
 }
@@ -514,34 +493,38 @@ database_handle_get_all_entries (DBusConnection *conn,
   if (!gconfd_dbus_get_message_args (conn, message, 
 				     DBUS_TYPE_STRING, &dir,
 				     DBUS_TYPE_STRING, &locale,
-				     0)) 
+				     DBUS_TYPE_INVALID)) 
     return;
 
   locales = gconfd_locale_cache_lookup (locale);
-  dbus_free (locale);
 
   entries = gconf_database_all_entries (db->db, dir, 
 					locales->list, &gerror);
-  dbus_free (dir);
 
   if (gconfd_dbus_set_exception (conn, message, &gerror))
     return;
 
   reply = dbus_message_new_method_return (message);
+
+  DBusMessageIter iter;
+  dbus_message_iter_init_append (reply, &iter);
   
   for (l = entries; l; l = l->next)
     {
       GConfEntry *entry = l->data;
 
-      gconf_dbus_message_append_entry (reply,
-				       entry->key,
-				       gconf_entry_get_value (entry),
-				       gconf_entry_get_is_default (entry),
-				       gconf_entry_get_is_writable (entry),
-				       gconf_entry_get_schema_name (entry));
+      gconf_dbus_utils_append_entry_values_stringified
+	(&iter,
+	 entry->key,
+	 gconf_entry_get_value (entry),
+	 gconf_entry_get_is_default (entry),
+	 gconf_entry_get_is_writable (entry),
+	 gconf_entry_get_schema_name (entry));
+      
       gconf_entry_free (entry);
+
     }
-  
+
   dbus_connection_send (conn, reply, NULL);
   dbus_message_unref (reply);
 
@@ -561,24 +544,24 @@ database_handle_get_all_dirs (DBusConnection *conn,
 
   if (!gconfd_dbus_get_message_args (conn, message,
 				     DBUS_TYPE_STRING, &dir,
-				     0)) 
+				     DBUS_TYPE_INVALID)) 
     return;
 
   dirs = gconf_database_all_dirs (db->db, dir, &gerror);
-
-  dbus_free (dir);
 
   if (gconfd_dbus_set_exception (conn, message, &gerror))
     return;
   
   reply = dbus_message_new_method_return (message);
-  
-  dbus_message_append_iter_init (reply, &iter);
+
+  dbus_message_iter_init_append (reply, &iter);
   for (l = dirs; l; l = l->next) 
     {
       gchar *str = (gchar *) l->data;
       
-      dbus_message_iter_append_string (&iter, str);
+      dbus_message_iter_append_basic (&iter,
+				      DBUS_TYPE_STRING,
+				      &str);
       
       g_free (l->data);
     }
@@ -602,12 +585,10 @@ database_handle_set_schema (DBusConnection *conn,
   if (!gconfd_dbus_get_message_args (conn, message,
 				     DBUS_TYPE_STRING, &key,
 				     DBUS_TYPE_STRING, &schema_key,
-				     0)) 
+				     DBUS_TYPE_INVALID)) 
     return;
 
   gconf_database_set_schema (db->db, key, schema_key, &gerror);
-  dbus_free (key);
-  dbus_free (schema_key);
 
   if (gconfd_dbus_set_exception (conn, message, &gerror))
     return;
@@ -629,7 +610,7 @@ database_handle_add_notify (DBusConnection    *conn,
 
   if (!gconfd_dbus_get_message_args (conn, message,
 				     DBUS_TYPE_STRING, &namespace_section,
-				     0)) 
+				     DBUS_TYPE_INVALID)) 
     return;
 
   sender = dbus_message_get_sender (message);
@@ -648,8 +629,6 @@ database_handle_add_notify (DBusConnection    *conn,
   notification->clients = g_list_prepend (notification->clients,
 					  g_strdup (sender));
   
-  dbus_free (namespace_section);
-
   reply = dbus_message_new_method_return (message);
   dbus_connection_send (conn, reply, NULL);
   dbus_message_unref (reply);
@@ -695,13 +674,12 @@ database_handle_remove_notify (DBusConnection    *conn,
   
   if (!gconfd_dbus_get_message_args (conn, message,
 				     DBUS_TYPE_STRING, &namespace_section,
-				     0)) 
+				     DBUS_TYPE_INVALID)) 
     return;
 
   sender = dbus_message_get_sender (message);
   
   notification = g_hash_table_lookup (db->notifications, namespace_section);
-  dbus_free (namespace_section);
 
   /* Notification can be NULL if the client and server get out of sync. */
   if (notification == NULL || !database_remove_notification_data (db, notification, sender))
@@ -853,6 +831,7 @@ gconf_database_dbus_notify_listeners (GConfDatabase    *db,
 	  for (l = notification->clients; l; l = l->next)
 	    {
 	      const char *base_service = l->data;
+	      DBusMessageIter iter;
 	      
 	      message = dbus_message_new_method_call (base_service,
 						      GCONF_DBUS_CLIENT_OBJECT,
@@ -860,16 +839,18 @@ gconf_database_dbus_notify_listeners (GConfDatabase    *db,
 						      "Notify");
 
 	      dbus_message_append_args (message,
-					DBUS_TYPE_STRING, dbus_db->object_path,
-					DBUS_TYPE_STRING, dir,
+					DBUS_TYPE_STRING, &dbus_db->object_path,
+					DBUS_TYPE_STRING, &dir,
 					DBUS_TYPE_INVALID);
+
+	      dbus_message_iter_init_append (message, &iter);
 	      
-	      gconf_dbus_message_append_entry (message,
-					       key,
-					       value,
-					       is_default,
-					       is_writable,
-					       NULL);
+	      gconf_dbus_utils_append_entry_values (&iter,
+						    key,
+						    value,
+						    is_default,
+						    is_writable,
+						    NULL);
 	      
 	      dbus_message_set_no_reply (message, TRUE);
 	      

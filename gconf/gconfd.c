@@ -62,7 +62,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-/*#define DAEMON_DEBUG*/
+#define DAEMON_DEBUG
 
 /* This makes hash table safer when debugging */
 #ifndef GCONF_ENABLE_DEBUG

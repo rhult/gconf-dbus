@@ -71,24 +71,34 @@
 #define GCONF_DBUS_ERROR_OVERRIDDEN           "org.gnome.GConf.Error.Overriden"
 #define GCONF_DBUS_ERROR_LOCK_FAILED          "org.gnome.GConf.Error.LockFailed"
 
+void        gconf_dbus_utils_append_value     (DBusMessageIter   *iter,
+					       const GConfValue  *value);
+GConfValue *gconf_dbus_utils_get_value        (DBusMessageIter   *iter);
 
-void         gconf_dbus_message_append_gconf_value      (DBusMessage      *message,
-							 const GConfValue *value);
-void         gconf_dbus_message_iter_append_gconf_value (DBusMessageIter *iter, 
-							 const GConfValue *value);
-GConfValue * gconf_dbus_create_gconf_value_from_message_iter (DBusMessageIter  *iter);
+void        gconf_dbus_utils_append_entry_values (DBusMessageIter   *iter,
+						 const gchar       *key,
+						 const GConfValue  *value,
+						 gboolean           is_default,
+						 gboolean           is_writable,
+						 const gchar       *schema_name);
+gboolean    gconf_dbus_utils_get_entry_values   (DBusMessageIter   *iter,
+						 gchar            **key,
+						 GConfValue       **value,
+						 gboolean          *is_default,
+						 gboolean          *is_writable,
+						 gchar            **schema_name);
 
-void         gconf_dbus_message_append_entry            (DBusMessage      *message,
-							 const gchar      *key,
-							 const GConfValue *value,
-							 gboolean          is_default,
-							 gboolean          is_writable,
-							 const gchar      *schema_name);
-gboolean gconf_dbus_get_entry_values_from_message_iter  (DBusMessageIter  *iter,
-							 gchar           **key,
-							 GConfValue      **value,
-							 gboolean         *is_default,
-							 gboolean         *is_writable,
-							 gchar           **schema_name);
+void     gconf_dbus_utils_append_entry_values_stringified (DBusMessageIter   *iter,
+							   const gchar       *key,
+							   const GConfValue  *value,
+							   gboolean           is_default,
+							   gboolean           is_writable,
+							   const gchar       *schema_name);
+gboolean gconf_dbus_utils_get_entry_values_stringified   (DBusMessageIter   *iter,
+							  gchar            **key,
+							  GConfValue       **value,
+							  gboolean          *is_default,
+							  gboolean          *is_writable,
+							  gchar            **schema_name);
 
 #endif/* GCONF_DBUS_UTILS_H */

@@ -1,5 +1,8 @@
 2005-09-29  Richard Hult  <richard@imendio.com>
 
+	* gconf/gconf-client.c (clear_cache_foreach): Fix leak from
+	upstream gconf.
+
 	* Change ServiceOwner to NameOwner, and change the match rules
 	used to take advantage of argument matching rules, this makes both
 	the daemon and client wake up less, when other services come and

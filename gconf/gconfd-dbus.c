@@ -121,11 +121,10 @@ server_real_handle_get_db (DBusConnection *connection,
 			   DBusMessage    *message,
 			   const char     *address)
 {
-  DBusMessageIter    iter;
   GConfDatabaseDBus *db;
   DBusMessage       *reply;
   GError            *gerror = NULL;
-  gchar             *str;
+  const gchar       *str;
  
   if (gconfd_dbus_check_in_shutdown (connection, message))
     return;
@@ -139,14 +138,11 @@ server_real_handle_get_db (DBusConnection *connection,
   if (reply == NULL) 
       g_error ("No memory");
 
-  dbus_message_iter_init_append (reply, &iter);
-
   str = gconf_database_dbus_get_path (db);
-  if (!dbus_message_iter_append_basic (&iter,
-				       DBUS_TYPE_STRING,
-				       &str))
-    g_error ("No memory");
-
+  dbus_message_append_args (reply,
+			    DBUS_TYPE_STRING, &str,
+			    DBUS_TYPE_INVALID);
+  
   if (!dbus_connection_send (connection, reply, NULL)) 
     g_error ("No memory");
 

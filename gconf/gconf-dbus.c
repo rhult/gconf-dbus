@@ -399,7 +399,7 @@ ensure_dbus_connection (void)
 
   dbus_error_init (&error);
 
-  global_conn = dbus_connection_open (address, &error);
+  global_conn = dbus_connection_open_private (address, &error);
   if (!global_conn) 
     {
       g_warning ("Client failed to connect to the D-BUS daemon:\n%s", error.message);

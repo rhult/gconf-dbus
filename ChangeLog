@@ -1,3 +1,12 @@
+2005-09-30  Richard Hult  <richard@imendio.com>
+
+	* gconf/gconf-dbus.c (ensure_dbus_connection): Use _open_private
+	to open a separate connection. We might be able to use a shared
+	one now that threading is improved in dbus.
+
+	* gconf/gconfd-dbus.c (server_real_handle_get_db): Simplify and
+	fix warning.
+
 2005-09-29  Richard Hult  <richard@imendio.com>
 
 	* gconf/gconf-dbus.c (handle_notify): Fix a leak of the key.

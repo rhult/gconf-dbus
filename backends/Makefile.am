@@ -21,9 +21,7 @@ libgconfbackend_oldxml_la_LIBADD  = $(DEPENDENT_WITH_XML_LIBS) $(top_builddir)/g
 libgconfbackend_xml_la_SOURCES =	\
 	markup-backend.c		\
 	markup-tree.h			\
-	markup-tree.c			\
-	markup-write-state.c		\
-	markup-write-state.h
+	markup-tree.c
 
 libgconfbackend_xml_la_LDFLAGS = -avoid-version -module -no-undefined
 libgconfbackend_xml_la_LIBADD  = $(DEPENDENT_LIBS) $(top_builddir)/gconf/libgconf-$(MAJOR_VERSION).la

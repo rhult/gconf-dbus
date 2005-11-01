@@ -130,9 +130,7 @@ fi
 
 PKG_CHECK_MODULES(GCONF_IPC, dbus-glib-1 >= 0.50)
 
-#AC_DEFINE(HAVE_ORBIT, , D-BUS support in the daemon)
-#AC_DEFINE(HAVE_DBUS, 1, D-BUS support in the daemon)
-
+AC_DEFINE(HAVE_DBUS, 1, D-BUS support in the daemon)
 AM_CONDITIONAL(HAVE_ORBIT, false)
 AM_CONDITIONAL(HAVE_DBUS, true)
 

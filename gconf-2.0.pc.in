@@ -8,6 +8,6 @@ gconf_serverdir=@libexecdir@
 Name: gconf
 Description: GNOME Config System.
 Version: @VERSION@
-Requires: @PC_REQUIRES@
+Requires: dbus-1 dbus-glib-1
 Libs: -L${libdir} -lgconf-@MAJOR_VERSION@
 Cflags: -I${includedir}/gconf/@MAJOR_VERSION@

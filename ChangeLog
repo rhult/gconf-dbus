@@ -1,10 +1,10 @@
 2005-11-01  Richard Hult  <richard@imendio.com>
 
-	* gconf/gconfd.c (main): From HEAD, add missing closelog().
-
 	* Release 2.6.4.12, which is a first version for testing with
 	D-BUS 0.30+.
 	
+	* gconf/gconfd.c (main): From HEAD, add missing closelog().
+
 	* autogen.sh: Bring up to date from upstream.
 
 	* backends/Makefile.am: Link the test with the backend instead of

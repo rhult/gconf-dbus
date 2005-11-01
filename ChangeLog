@@ -1,3 +1,16 @@
+2005-11-01  Richard Hult  <richard@imendio.com>
+
+	* Release 2.6.4.12, which is a first version for testing with
+	D-BUS 0.30+.
+	
+	* autogen.sh: Bring up to date from upstream.
+
+	* backends/Makefile.am: Link the test with the backend instead of
+	compiling the source twice, removes warning from libtool.
+	
+	* configure.in: Bump version, and bring the gtk-doc check up to
+	date.
+
 2005-09-30  Richard Hult  <richard@imendio.com>
 
 	* gconf/gconf-dbus.c (ensure_dbus_connection): Use _open_private

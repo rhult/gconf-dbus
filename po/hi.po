@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GConf2.hi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-15 12:45+0200\n"
+"POT-Creation-Date: 2005-11-01 17:24+0100\n"
 "PO-Revision-Date: 2003-08-25 18:47+0530\n"
 "Last-Translator: G Karunakar <karunakar@freedomink.org>\n"
 "Language-Team: Hindi <indlinux-hindi-gnome@lists.sourceforge.net>\n"
@@ -32,22 +32,22 @@ msgstr "डॉयरेक्ट्री '%s' नही बना पाए : %
 msgid "Can't read from or write to the %s root directory in the address `%s'"
 msgstr "पता %s, रुट डॉयरोक्ट्री में फाइल %s में लिख पढ नही सके"
 
-#: backends/gconf-merge-tree.c:79
+#: backends/gconf-merge-tree.c:78
 #, fuzzy, c-format
 msgid "Cannot find directory %s\n"
 msgstr "डॉयरेक्ट्री '%s' नही बना पाए : %s"
 
-#: backends/gconf-merge-tree.c:95
+#: backends/gconf-merge-tree.c:94
 #, fuzzy, c-format
 msgid "Error saving GConf tree to '%s': %s\n"
 msgstr "डॉयरेक्ट्री नही बना पाए '%s': %s"
 
-#: backends/gconf-merge-tree.c:121
+#: backends/gconf-merge-tree.c:120
 #, c-format
 msgid "Usage: %s <dir>\n"
 msgstr ""
 
-#: backends/gconf-merge-tree.c:127
+#: backends/gconf-merge-tree.c:126
 #, c-format
 msgid ""
 "Usage: %s <dir>\n"
@@ -329,12 +329,12 @@ msgstr ""
 msgid "GConf Error: %s\n"
 msgstr "जीकॉन्फ त्रुटी: %s\n"
 
-#: gconf/gconf-client.c:895
+#: gconf/gconf-client.c:896
 #, c-format
 msgid "GConf warning: failure listing pairs in `%s': %s"
 msgstr ""
 
-#: gconf/gconf-client.c:1180
+#: gconf/gconf-client.c:1181
 #, c-format
 msgid "Expected `%s' got `%s' for key %s"
 msgstr ""
@@ -1020,7 +1020,7 @@ msgstr ""
 msgid "Exiting"
 msgstr ""
 
-#: gconf/gconfd.c:644
+#: gconf/gconfd.c:646
 msgid "GConf server is not in use, shutting down."
 msgstr ""
 

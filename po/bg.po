@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gconf\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-15 12:45+0200\n"
+"POT-Creation-Date: 2005-11-01 17:24+0100\n"
 "PO-Revision-Date: 2003-01-14 18:48+0200\n"
 "Last-Translator: Alexander Shopov <al_shopov@yahoo.com>\n"
 "Language-Team: Bulgarian <dict@linux.zonebg.com>\n"
@@ -30,22 +30,22 @@ msgstr "Не успях да създам директория \"%s\": %s"
 msgid "Can't read from or write to the %s root directory in the address `%s'"
 msgstr "Не мога да чета или пиша в главната директория %s в адреса: \"%s\""
 
-#: backends/gconf-merge-tree.c:79
+#: backends/gconf-merge-tree.c:78
 #, fuzzy, c-format
 msgid "Cannot find directory %s\n"
 msgstr "Не успях да създам директория \"%s\": %s"
 
-#: backends/gconf-merge-tree.c:95
+#: backends/gconf-merge-tree.c:94
 #, fuzzy, c-format
 msgid "Error saving GConf tree to '%s': %s\n"
 msgstr "Грешка при получаване на схема на \"%s\": %s\n"
 
-#: backends/gconf-merge-tree.c:121
+#: backends/gconf-merge-tree.c:120
 #, c-format
 msgid "Usage: %s <dir>\n"
 msgstr ""
 
-#: backends/gconf-merge-tree.c:127
+#: backends/gconf-merge-tree.c:126
 #, c-format
 msgid ""
 "Usage: %s <dir>\n"
@@ -334,12 +334,12 @@ msgstr "Не успях да спра модул за обработка"
 msgid "GConf Error: %s\n"
 msgstr "GConf грешка: %s\n"
 
-#: gconf/gconf-client.c:895
+#: gconf/gconf-client.c:896
 #, c-format
 msgid "GConf warning: failure listing pairs in `%s': %s"
 msgstr "GConf предупреждение: неуспех при изброяването на двойка в \"%s\": %s"
 
-#: gconf/gconf-client.c:1180
+#: gconf/gconf-client.c:1181
 #, c-format
 msgid "Expected `%s' got `%s' for key %s"
 msgstr "Очаквах \"%s\", а получих \"%s\" за ключа %s"
@@ -1087,7 +1087,7 @@ msgstr "Грешка при освобождаване на файл-ключа�
 msgid "Exiting"
 msgstr "Приключвам"
 
-#: gconf/gconfd.c:644
+#: gconf/gconfd.c:646
 msgid "GConf server is not in use, shutting down."
 msgstr "Не се използва GConf сървър, приключвам."
 

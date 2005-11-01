@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gconf\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-15 12:45+0200\n"
+"POT-Creation-Date: 2005-11-01 17:24+0100\n"
 "PO-Revision-Date: 2002-12-21 02:04+0200\n"
 "Last-Translator: Artis Trops <hornet@navigators.lv>\n"
 "Language-Team: Latvian <ll10nt@os.lv>\n"
@@ -30,22 +30,22 @@ msgstr "Nevarēju izveidot direktoriju `%s' : %s"
 msgid "Can't read from or write to the %s root directory in the address `%s'"
 msgstr "Nevaru nolasīt vai ierakstīt %s saknes direktorijā adresē `%s'"
 
-#: backends/gconf-merge-tree.c:79
+#: backends/gconf-merge-tree.c:78
 #, fuzzy, c-format
 msgid "Cannot find directory %s\n"
 msgstr "Nevarēju izveidot direktoriju `%s' : %s"
 
-#: backends/gconf-merge-tree.c:95
+#: backends/gconf-merge-tree.c:94
 #, fuzzy, c-format
 msgid "Error saving GConf tree to '%s': %s\n"
 msgstr "Kļūda dabūnot shēmu no '%s': %s\n"
 
-#: backends/gconf-merge-tree.c:121
+#: backends/gconf-merge-tree.c:120
 #, c-format
 msgid "Usage: %s <dir>\n"
 msgstr ""
 
-#: backends/gconf-merge-tree.c:127
+#: backends/gconf-merge-tree.c:126
 #, c-format
 msgid ""
 "Usage: %s <dir>\n"
@@ -333,12 +333,12 @@ msgstr "Neizdevās izslēgt balstu"
 msgid "GConf Error: %s\n"
 msgstr "GConf Kļūda: %s\n"
 
-#: gconf/gconf-client.c:895
+#: gconf/gconf-client.c:896
 #, c-format
 msgid "GConf warning: failure listing pairs in `%s': %s"
 msgstr "Gconf brīdinājums: kļūda, veidojot pāru sarakstu `%s': %s"
 
-#: gconf/gconf-client.c:1180
+#: gconf/gconf-client.c:1181
 #, c-format
 msgid "Expected `%s' got `%s' for key %s"
 msgstr "Gadīju `%s', dabuju `%s' atslēgai %s"
@@ -1081,7 +1081,7 @@ msgstr "Kļūda atlaižot slēdzējfailu: %s"
 msgid "Exiting"
 msgstr "Izeju"
 
-#: gconf/gconfd.c:644
+#: gconf/gconfd.c:646
 msgid "GConf server is not in use, shutting down."
 msgstr "GConf serveris nav lietošanā, izslēdzu."
 

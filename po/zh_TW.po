@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GConf 1.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-15 12:45+0200\n"
+"POT-Creation-Date: 2005-11-01 17:24+0100\n"
 "PO-Revision-Date: 2002-06-11 15:49+1000\n"
 "Last-Translator: Ben Wu <hpwu@redhat.com>\n"
 "Language-Team: traditional Chinese <zh-l10n@linux.org.tw>\n"
@@ -29,22 +29,22 @@ msgstr "無法建立目錄 `%s'： %s"
 msgid "Can't read from or write to the %s root directory in the address `%s'"
 msgstr "無法讀取或寫入到 %s 根目錄在 `%s' 的位址"
 
-#: backends/gconf-merge-tree.c:79
+#: backends/gconf-merge-tree.c:78
 #, fuzzy, c-format
 msgid "Cannot find directory %s\n"
 msgstr "無法建立目錄 `%s'： %s"
 
-#: backends/gconf-merge-tree.c:95
+#: backends/gconf-merge-tree.c:94
 #, fuzzy, c-format
 msgid "Error saving GConf tree to '%s': %s\n"
 msgstr "在 '%s' 取得概要發生錯誤： %s\n"
 
-#: backends/gconf-merge-tree.c:121
+#: backends/gconf-merge-tree.c:120
 #, c-format
 msgid "Usage: %s <dir>\n"
 msgstr ""
 
-#: backends/gconf-merge-tree.c:127
+#: backends/gconf-merge-tree.c:126
 #, c-format
 msgid ""
 "Usage: %s <dir>\n"
@@ -327,12 +327,12 @@ msgstr "關閉後端失敗"
 msgid "GConf Error: %s\n"
 msgstr "GConf 發生錯誤： %s\n"
 
-#: gconf/gconf-client.c:895
+#: gconf/gconf-client.c:896
 #, c-format
 msgid "GConf warning: failure listing pairs in `%s': %s"
 msgstr "GConf 警告： 列出在 `%s' 中的 pair 失敗： %s"
 
-#: gconf/gconf-client.c:1180
+#: gconf/gconf-client.c:1181
 #, c-format
 msgid "Expected `%s' got `%s' for key %s"
 msgstr "預期的 `%s' 有 `%s' 給金鑰 %s"
@@ -1041,7 +1041,7 @@ msgstr "釋放鎖定檔發生錯誤： %s"
 msgid "Exiting"
 msgstr "離開中"
 
-#: gconf/gconfd.c:644
+#: gconf/gconfd.c:646
 msgid "GConf server is not in use, shutting down."
 msgstr "GConf 伺服器不在運作，關閉中。"
 

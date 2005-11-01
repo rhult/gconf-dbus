@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gconf.HEAD.mk\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-15 12:45+0200\n"
+"POT-Creation-Date: 2005-11-01 17:24+0100\n"
 "PO-Revision-Date: 2003-06-15 21:59+0000\n"
 "Last-Translator: Vladislav Bidikov <bidikovi@mail.com.mk>\n"
 "Language-Team: Macedonian <lug@lists.linux.net.mk>\n"
@@ -38,22 +38,22 @@ msgid "Can't read from or write to the %s root directory in the address `%s'"
 msgstr ""
 "Не можам да читам од или пишувам во %s root директориумот во адресата `%s'"
 
-#: backends/gconf-merge-tree.c:79
+#: backends/gconf-merge-tree.c:78
 #, fuzzy, c-format
 msgid "Cannot find directory %s\n"
 msgstr "Не можев да го направам директориумот `%s': %s"
 
-#: backends/gconf-merge-tree.c:95
+#: backends/gconf-merge-tree.c:94
 #, fuzzy, c-format
 msgid "Error saving GConf tree to '%s': %s\n"
 msgstr "Грешка земајќи ја схемата на '%s': %s\n"
 
-#: backends/gconf-merge-tree.c:121
+#: backends/gconf-merge-tree.c:120
 #, c-format
 msgid "Usage: %s <dir>\n"
 msgstr ""
 
-#: backends/gconf-merge-tree.c:127
+#: backends/gconf-merge-tree.c:126
 #, c-format
 msgid ""
 "Usage: %s <dir>\n"
@@ -346,12 +346,12 @@ msgstr "Не успеав да ја исклучам позадината"
 msgid "GConf Error: %s\n"
 msgstr "GConf грешка: %s\n"
 
-#: gconf/gconf-client.c:895
+#: gconf/gconf-client.c:896
 #, c-format
 msgid "GConf warning: failure listing pairs in `%s': %s"
 msgstr "GConf предупредување: неуспешно листање парови во `%s': %s"
 
-#: gconf/gconf-client.c:1180
+#: gconf/gconf-client.c:1181
 #, c-format
 msgid "Expected `%s' got `%s' for key %s"
 msgstr "Очекувано `%s' добиено `%s' за клуч %s"
@@ -1113,7 +1113,7 @@ msgstr "Грешка издавајќи локдатотеки: %s"
 msgid "Exiting"
 msgstr "Езлегување"
 
-#: gconf/gconfd.c:644
+#: gconf/gconfd.c:646
 msgid "GConf server is not in use, shutting down."
 msgstr "GConf серверот не е во употреба, исклучувам."
 

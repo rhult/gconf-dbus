@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gconf.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-15 12:45+0200\n"
+"POT-Creation-Date: 2005-11-01 17:24+0100\n"
 "PO-Revision-Date: 2004-03-16 15:47+0200\n"
 "Last-Translator: Maxim Dziumanenko <mvd@mylinux.com.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -35,22 +35,22 @@ msgstr ""
 "Неможливо виконати зчитування чи запис в кореневому каталозі %s за адресою "
 "\"%s\""
 
-#: backends/gconf-merge-tree.c:79
+#: backends/gconf-merge-tree.c:78
 #, c-format
 msgid "Cannot find directory %s\n"
 msgstr "Не вдається знайти каталог %s\n"
 
-#: backends/gconf-merge-tree.c:95
+#: backends/gconf-merge-tree.c:94
 #, c-format
 msgid "Error saving GConf tree to '%s': %s\n"
 msgstr "Помилка збереження схеми на \"%s\": %s\n"
 
-#: backends/gconf-merge-tree.c:121
+#: backends/gconf-merge-tree.c:120
 #, c-format
 msgid "Usage: %s <dir>\n"
 msgstr "Використання: %s <каталог>\n"
 
-#: backends/gconf-merge-tree.c:127
+#: backends/gconf-merge-tree.c:126
 #, c-format
 msgid ""
 "Usage: %s <dir>\n"
@@ -351,12 +351,12 @@ msgstr "Не вдається вимкнути сервер"
 msgid "GConf Error: %s\n"
 msgstr "Помилка GConf: %s\n"
 
-#: gconf/gconf-client.c:895
+#: gconf/gconf-client.c:896
 #, c-format
 msgid "GConf warning: failure listing pairs in `%s': %s"
 msgstr "Попередження GConf: Не вдається отримати список пар в \"%s\": %s"
 
-#: gconf/gconf-client.c:1180
+#: gconf/gconf-client.c:1181
 #, c-format
 msgid "Expected `%s' got `%s' for key %s"
 msgstr "Очікувалось \"%s\", отримано \"%s\" для ключа %s"
@@ -1117,7 +1117,7 @@ msgstr "Помилка на звільненні файла блокування
 msgid "Exiting"
 msgstr "Завершення"
 
-#: gconf/gconfd.c:644
+#: gconf/gconfd.c:646
 msgid "GConf server is not in use, shutting down."
 msgstr "Сервер GConf не використовується, завершення роботи."
 

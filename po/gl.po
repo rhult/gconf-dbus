@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gconf\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-15 12:45+0200\n"
+"POT-Creation-Date: 2005-11-01 17:24+0100\n"
 "PO-Revision-Date: 2001-08-19 15:21+0200\n"
 "Last-Translator: Jesús Bravo Álvarez <jba@pobox.com>\n"
 "Language-Team: Galician <trasno@ceu.fi.udc.es>\n"
@@ -34,22 +34,22 @@ msgstr "Non foi posible crear o directorio `%s': %s"
 msgid "Can't read from or write to the %s root directory in the address `%s'"
 msgstr "Non se pode ler ou escribir no directorio raíz de %s no enderezo `%s'"
 
-#: backends/gconf-merge-tree.c:79
+#: backends/gconf-merge-tree.c:78
 #, fuzzy, c-format
 msgid "Cannot find directory %s\n"
 msgstr "Non foi posible crear o directorio `%s': %s"
 
-#: backends/gconf-merge-tree.c:95
+#: backends/gconf-merge-tree.c:94
 #, fuzzy, c-format
 msgid "Error saving GConf tree to '%s': %s\n"
 msgstr "Erro listando os directorios en `%s': %s"
 
-#: backends/gconf-merge-tree.c:121
+#: backends/gconf-merge-tree.c:120
 #, c-format
 msgid "Usage: %s <dir>\n"
 msgstr ""
 
-#: backends/gconf-merge-tree.c:127
+#: backends/gconf-merge-tree.c:126
 #, c-format
 msgid ""
 "Usage: %s <dir>\n"
@@ -335,12 +335,12 @@ msgstr "Fallou a desactivación do módulo"
 msgid "GConf Error: %s\n"
 msgstr "Erro do GConf: %s\n"
 
-#: gconf/gconf-client.c:895
+#: gconf/gconf-client.c:896
 #, c-format
 msgid "GConf warning: failure listing pairs in `%s': %s"
 msgstr "Aviso de GConf: fallo listando as parellas en `%s': %s"
 
-#: gconf/gconf-client.c:1180
+#: gconf/gconf-client.c:1181
 #, c-format
 msgid "Expected `%s' got `%s' for key %s"
 msgstr "Agardábase `%s' e obteuse `%s' para a clave %s"
@@ -1055,7 +1055,7 @@ msgstr "Erro ao liberar o ficheiro de bloqueo: %s"
 msgid "Exiting"
 msgstr "Saíndo"
 
-#: gconf/gconfd.c:644
+#: gconf/gconfd.c:646
 msgid "GConf server is not in use, shutting down."
 msgstr "Non se está a usar o servidor GConf, saíndo."
 

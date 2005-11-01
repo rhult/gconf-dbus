@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gconf-1-0 1.0.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-15 12:45+0200\n"
+"POT-Creation-Date: 2005-11-01 17:24+0100\n"
 "PO-Revision-Date: 2001-05-25 13:35+0200\n"
 "Last-Translator: Unmantained\n"
 "Language-Team: Euskara\n"
@@ -29,22 +29,22 @@ msgstr "Ezin izan du `%s' direktorioa egin: %s "
 msgid "Can't read from or write to the %s root directory in the address `%s'"
 msgstr "Ezin da `%s' helbidean %s erro-direktorioan idatzi edo irakurri"
 
-#: backends/gconf-merge-tree.c:79
+#: backends/gconf-merge-tree.c:78
 #, fuzzy, c-format
 msgid "Cannot find directory %s\n"
 msgstr "Ezin izan du `%s' direktorioa egin: %s "
 
-#: backends/gconf-merge-tree.c:95
+#: backends/gconf-merge-tree.c:94
 #, fuzzy, c-format
 msgid "Error saving GConf tree to '%s': %s\n"
 msgstr "Errorea `%s'(e)n eskema lortzean: %s\n"
 
-#: backends/gconf-merge-tree.c:121
+#: backends/gconf-merge-tree.c:120
 #, c-format
 msgid "Usage: %s <dir>\n"
 msgstr ""
 
-#: backends/gconf-merge-tree.c:127
+#: backends/gconf-merge-tree.c:126
 #, c-format
 msgid ""
 "Usage: %s <dir>\n"
@@ -334,12 +334,12 @@ msgstr "Huts egin du euskarria ixterakoan"
 msgid "GConf Error: %s\n"
 msgstr "GConf-en errorea: %s\n"
 
-#: gconf/gconf-client.c:895
+#: gconf/gconf-client.c:896
 #, c-format
 msgid "GConf warning: failure listing pairs in `%s': %s"
 msgstr "Gconf-en abisua: huts egin du `%s'(e)n bikoteak zerrendatzean: %s "
 
-#: gconf/gconf-client.c:1180
+#: gconf/gconf-client.c:1181
 #, c-format
 msgid "Expected `%s' got `%s' for key %s"
 msgstr "`%s' espero nuen, `%s' lortu dut %s gakoarentzat"
@@ -1061,7 +1061,7 @@ msgstr "Errorea blokeo-fitxategi hau askatzean: %s "
 msgid "Exiting"
 msgstr "Irteten"
 
-#: gconf/gconfd.c:644
+#: gconf/gconfd.c:646
 msgid "GConf server is not in use, shutting down."
 msgstr "GConf zerbitzaria ez dago martxan, ixten."
 

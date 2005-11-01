@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-15 12:45+0200\n"
+"POT-Creation-Date: 2005-11-01 17:24+0100\n"
 "PO-Revision-Date: 2004-01-02 15:40+0100\n"
 "Last-Translator: Åsmund Skjæveland <aasmunds@fys.uio.no>\n"
 "Language-Team: Norwegian Nynorsk <i18n-nn@lister.ping.uio.no>\n"
@@ -33,22 +33,22 @@ msgstr "Kunne ikkje laga katalogen «%s»: %s"
 msgid "Can't read from or write to the %s root directory in the address `%s'"
 msgstr "Klarte ikkje å lesa eller skriva til rotkatalogen %s i addressa «%s»"
 
-#: backends/gconf-merge-tree.c:79
+#: backends/gconf-merge-tree.c:78
 #, c-format
 msgid "Cannot find directory %s\n"
 msgstr "Kan ikkje finna katalogen «%s»\n"
 
-#: backends/gconf-merge-tree.c:95
+#: backends/gconf-merge-tree.c:94
 #, c-format
 msgid "Error saving GConf tree to '%s': %s\n"
 msgstr "Feil under lagring av GConf-tre til «%s»: %s\n"
 
-#: backends/gconf-merge-tree.c:121
+#: backends/gconf-merge-tree.c:120
 #, c-format
 msgid "Usage: %s <dir>\n"
 msgstr "Bruk: %s <katalog>\n"
 
-#: backends/gconf-merge-tree.c:127
+#: backends/gconf-merge-tree.c:126
 #, c-format
 msgid ""
 "Usage: %s <dir>\n"
@@ -344,12 +344,12 @@ msgstr "Klarte ikkje å stenga ned motoren"
 msgid "GConf Error: %s\n"
 msgstr "GConf-feil: %s\n"
 
-#: gconf/gconf-client.c:895
+#: gconf/gconf-client.c:896
 #, c-format
 msgid "GConf warning: failure listing pairs in `%s': %s"
 msgstr "GConf-åtvaring: Feil under listing av par i «%s»: %s"
 
-#: gconf/gconf-client.c:1180
+#: gconf/gconf-client.c:1181
 #, c-format
 msgid "Expected `%s' got `%s' for key %s"
 msgstr "Venta «%s» fekk «%s» for nøkkel %s"
@@ -1095,7 +1095,7 @@ msgstr "Klarte ikkje å frigjera låsfil: %s"
 msgid "Exiting"
 msgstr "Avsluttar"
 
-#: gconf/gconfd.c:644
+#: gconf/gconfd.c:646
 msgid "GConf server is not in use, shutting down."
 msgstr "GConf-tenarar er ikkje bruk, koplar ned."
 

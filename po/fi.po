@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gconf 1.1.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-15 12:45+0200\n"
+"POT-Creation-Date: 2005-11-01 17:24+0100\n"
 "PO-Revision-Date: 2004-02-05 23:33+0200\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@hut.fi>\n"
 "Language-Team: Gnome Finnish Translation Team <gnome-fi-laatu@lists."
@@ -40,22 +40,22 @@ msgstr ""
 "%s-juurihakemistosta osoitteessa \"%s\" ei voi lukea, eikä sinne voi "
 "kirjoittaa"
 
-#: backends/gconf-merge-tree.c:79
+#: backends/gconf-merge-tree.c:78
 #, c-format
 msgid "Cannot find directory %s\n"
 msgstr "Hakemistoa \"%s\" ei löydy\n"
 
-#: backends/gconf-merge-tree.c:95
+#: backends/gconf-merge-tree.c:94
 #, c-format
 msgid "Error saving GConf tree to '%s': %s\n"
 msgstr "GConf-puun tallennus tiedostoon \"%s\" epäonnistui: %s\n"
 
-#: backends/gconf-merge-tree.c:121
+#: backends/gconf-merge-tree.c:120
 #, c-format
 msgid "Usage: %s <dir>\n"
 msgstr "Käyttö: %s <hakemisto>\n"
 
-#: backends/gconf-merge-tree.c:127
+#: backends/gconf-merge-tree.c:126
 #, c-format
 msgid ""
 "Usage: %s <dir>\n"
@@ -354,12 +354,12 @@ msgstr "Taustamoduulin sammutus epäonnistui"
 msgid "GConf Error: %s\n"
 msgstr "GConf-virhe: %s\n"
 
-#: gconf/gconf-client.c:895
+#: gconf/gconf-client.c:896
 #, c-format
 msgid "GConf warning: failure listing pairs in `%s': %s"
 msgstr "GConf-varoitus: Hakemiston \"%s\" parien luettelointi epäonnistui: %s"
 
-#: gconf/gconf-client.c:1180
+#: gconf/gconf-client.c:1181
 #, c-format
 msgid "Expected `%s' got `%s' for key %s"
 msgstr "Odotettu: \"%s\", saatu: \"%s\", avain: %s"
@@ -1125,7 +1125,7 @@ msgstr "Lukitustiedoston vapautus epäonnistui: %s"
 msgid "Exiting"
 msgstr "Poistuu"
 
-#: gconf/gconfd.c:644
+#: gconf/gconfd.c:646
 msgid "GConf server is not in use, shutting down."
 msgstr "GConf-palvelin ei ole käytössä, joten se sammuu."
 

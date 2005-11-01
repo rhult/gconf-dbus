@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GConf cvs\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-08-15 12:45+0200\n"
+"POT-Creation-Date: 2005-11-01 17:24+0100\n"
 "PO-Revision-Date: 2004-03-21 11:20+0100\n"
 "Last-Translator: Daniel van Eeden <daniel_e@dds.nl>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
@@ -33,22 +33,22 @@ msgstr "Kan map `%s' niet aanmaken: %s"
 msgid "Can't read from or write to the %s root directory in the address `%s'"
 msgstr "Kan niet lezen of schrijven naar de %s root-map op het adres `%s'"
 
-#: backends/gconf-merge-tree.c:79
+#: backends/gconf-merge-tree.c:78
 #, c-format
 msgid "Cannot find directory %s\n"
 msgstr "Kan map niet vinden: %s\n"
 
-#: backends/gconf-merge-tree.c:95
+#: backends/gconf-merge-tree.c:94
 #, c-format
 msgid "Error saving GConf tree to '%s': %s\n"
 msgstr "Fout bij het opslaan van GConf boom voor `%s': %s\n"
 
-#: backends/gconf-merge-tree.c:121
+#: backends/gconf-merge-tree.c:120
 #, c-format
 msgid "Usage: %s <dir>\n"
 msgstr "Gebruik: %s <map>\n"
 
-#: backends/gconf-merge-tree.c:127
+#: backends/gconf-merge-tree.c:126
 #, c-format
 msgid ""
 "Usage: %s <dir>\n"
@@ -348,12 +348,12 @@ msgstr "Fout bij stoppen van backend"
 msgid "GConf Error: %s\n"
 msgstr "GConf Fout: %s\n"
 
-#: gconf/gconf-client.c:895
+#: gconf/gconf-client.c:896
 #, c-format
 msgid "GConf warning: failure listing pairs in `%s': %s"
 msgstr "GConf waarschuwing: fout bij het weergeven van paren in `%s': %s"
 
-#: gconf/gconf-client.c:1180
+#: gconf/gconf-client.c:1181
 #, c-format
 msgid "Expected `%s' got `%s' for key %s"
 msgstr "Verwachte `%s' kreeg `%s' voor sleutel %s"
@@ -1120,7 +1120,7 @@ msgstr "Fout bij vrijgeven vergrendelings bestand: %s"
 msgid "Exiting"
 msgstr "Gestopt"
 
-#: gconf/gconfd.c:644
+#: gconf/gconfd.c:646
 msgid "GConf server is not in use, shutting down."
 msgstr "GConf server wordt niet gebruikt, bezig met afsluiten."
 

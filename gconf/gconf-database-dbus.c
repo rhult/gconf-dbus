@@ -507,6 +507,7 @@ database_handle_get_all_entries (DBusConnection *conn,
   GError *gerror = NULL;
   GConfLocaleList* locales;
   DBusMessage *reply;
+  DBusMessageIter iter;
 
   if (!gconfd_dbus_get_message_args (conn, message, 
 				     DBUS_TYPE_STRING, &dir,
@@ -524,25 +525,17 @@ database_handle_get_all_entries (DBusConnection *conn,
 
   reply = dbus_message_new_method_return (message);
 
-  DBusMessageIter iter;
   dbus_message_iter_init_append (reply, &iter);
-  
+
+  gconf_dbus_utils_append_entries (&iter, entries);
+
   for (l = entries; l; l = l->next)
     {
       GConfEntry *entry = l->data;
-
-      gconf_dbus_utils_append_entry_values_stringified
-	(&iter,
-	 entry->key,
-	 gconf_entry_get_value (entry),
-	 gconf_entry_get_is_default (entry),
-	 gconf_entry_get_is_writable (entry),
-	 gconf_entry_get_schema_name (entry));
       
       gconf_entry_free (entry);
-
     }
-
+  
   dbus_connection_send (conn, reply, NULL);
   dbus_message_unref (reply);
 

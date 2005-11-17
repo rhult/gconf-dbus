@@ -521,10 +521,13 @@ utils_append_entry_values_stringified (DBusMessageIter  *main_iter,
 
   dbus_message_iter_append_basic (&struct_iter, DBUS_TYPE_STRING, &key);
 
+  value_str = NULL;
   if (value)
     value_str = gconf_value_encode ((GConfValue *) value);
-  else
+
+  if (!value_str)
     value_str = g_strdup ("");
+
   dbus_message_iter_append_basic (&struct_iter, DBUS_TYPE_STRING, &value_str);
   g_free (value_str);
 
@@ -538,13 +541,13 @@ utils_append_entry_values_stringified (DBusMessageIter  *main_iter,
     g_error ("Out of memory");
 }
 
-static gboolean
-utils_get_entry_values (DBusMessageIter  *main_iter,
-			gchar           **key_p,
-			GConfValue      **value_p,
-			gboolean         *is_default_p,
-			gboolean         *is_writable_p,
-			gchar           **schema_name_p)
+gboolean
+gconf_dbus_utils_get_entry_values (DBusMessageIter  *main_iter,
+				   gchar           **key_p,
+				   GConfValue      **value_p,
+				   gboolean         *is_default_p,
+				   gboolean         *is_writable_p,
+				   gchar           **schema_name_p)
 {
   DBusMessageIter  struct_iter;
   gchar           *key;
@@ -608,9 +611,6 @@ utils_get_entry_values_stringified (DBusMessageIter  *main_iter,
   gboolean         is_default;
   gboolean         is_writable;
   gchar           *schema_name;
-
-  g_return_val_if_fail (dbus_message_iter_get_arg_type (main_iter) == DBUS_TYPE_STRUCT,
-			FALSE);
 
   dbus_message_iter_recurse (main_iter, &struct_iter);
   dbus_message_iter_get_basic (&struct_iter, &key);
@@ -1022,50 +1022,83 @@ gconf_dbus_utils_append_entry_values (DBusMessageIter  *iter,
 			     schema_name);
 }
 
-gboolean
-gconf_dbus_utils_get_entry_values (DBusMessageIter   *iter,
-				   gchar            **key,
-				   GConfValue       **value,
-				   gboolean          *is_default,
-				   gboolean          *is_writable,
-				   gchar            **schema_name)
-{
-  return utils_get_entry_values (iter,
-				 key,
-				 value,
-				 is_default,
-				 is_writable,
-				 schema_name);
-}
-
-gboolean
-gconf_dbus_utils_get_entry_values_stringified (DBusMessageIter   *iter,
-					       gchar            **key,
-					       GConfValue       **value,
-					       gboolean          *is_default,
-					       gboolean          *is_writable,
-					       gchar            **schema_name)
-{
-  return utils_get_entry_values_stringified (iter,
-					     key,
-					     value,
-					     is_default,
-					     is_writable,
-					     schema_name);
-}
-
+/* Append the list of entries as an array. */
 void
-gconf_dbus_utils_append_entry_values_stringified (DBusMessageIter  *iter,
-						  const gchar      *key,
-						  const GConfValue *value,
-						  gboolean          is_default,
-						  gboolean          is_writable,
-						  const gchar      *schema_name)
+gconf_dbus_utils_append_entries (DBusMessageIter *iter,
+				 GSList          *entries)
 {
-  utils_append_entry_values_stringified (iter,
-					 key,
-					 value,
-					 is_default,
-					 is_writable,
-					 schema_name);
+  DBusMessageIter array_iter;
+  GSList *l;
+
+  dbus_message_iter_open_container (iter,
+				    DBUS_TYPE_ARRAY,
+				    DBUS_STRUCT_BEGIN_CHAR_AS_STRING
+				    DBUS_TYPE_STRING_AS_STRING
+				    DBUS_TYPE_STRING_AS_STRING
+				    DBUS_TYPE_BOOLEAN_AS_STRING
+				    DBUS_TYPE_STRING_AS_STRING
+				    DBUS_TYPE_BOOLEAN_AS_STRING
+				    DBUS_TYPE_BOOLEAN_AS_STRING
+				    DBUS_STRUCT_END_CHAR_AS_STRING,
+				    &array_iter);
+
+  for (l = entries; l; l = l->next)
+    {
+      GConfEntry *entry = l->data;
+
+      utils_append_entry_values_stringified (&array_iter,
+					     entry->key,
+					     gconf_entry_get_value (entry),
+					     gconf_entry_get_is_default (entry),
+					     gconf_entry_get_is_writable (entry),
+					     gconf_entry_get_schema_name (entry));
+    }
+
+  dbus_message_iter_close_container (iter, &array_iter);
 }
+
+/* Get a list of entries from an array. */
+GSList *
+gconf_dbus_utils_get_entries (DBusMessageIter *iter, const gchar *dir)
+{
+  GSList *entries;
+  DBusMessageIter array_iter;
+
+  entries = NULL;
+
+  dbus_message_iter_recurse (iter, &array_iter);
+
+  /* Loop through while there are structs (entries). */
+  while (dbus_message_iter_get_arg_type (iter) == DBUS_TYPE_STRUCT)
+    {
+      gchar      *key;
+      GConfValue *value;
+      gboolean    is_default;
+      gboolean    is_writable;
+      gchar      *schema_name;
+      GConfEntry *entry;
+
+      if (!utils_get_entry_values_stringified (iter,
+					       &key,
+					       &value,
+					       &is_default,
+					       &is_writable,
+					       &schema_name))
+	break;
+      
+      entry = gconf_entry_new_nocopy (gconf_concat_dir_and_key (dir, key), value);
+
+      gconf_entry_set_is_default (entry, is_default);
+      gconf_entry_set_is_writable (entry, is_writable);
+      
+      if (schema_name)
+	gconf_entry_set_schema_name (entry, schema_name);
+      
+      entries = g_slist_prepend (entries, entry);
+      
+      dbus_message_iter_next (iter);
+    }
+
+  return entries;
+}
+

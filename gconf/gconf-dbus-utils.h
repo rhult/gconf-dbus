@@ -88,17 +88,10 @@ gboolean    gconf_dbus_utils_get_entry_values   (DBusMessageIter   *iter,
 						 gboolean          *is_writable,
 						 gchar            **schema_name);
 
-void     gconf_dbus_utils_append_entry_values_stringified (DBusMessageIter   *iter,
-							   const gchar       *key,
-							   const GConfValue  *value,
-							   gboolean           is_default,
-							   gboolean           is_writable,
-							   const gchar       *schema_name);
-gboolean gconf_dbus_utils_get_entry_values_stringified   (DBusMessageIter   *iter,
-							  gchar            **key,
-							  GConfValue       **value,
-							  gboolean          *is_default,
-							  gboolean          *is_writable,
-							  gchar            **schema_name);
+void gconf_dbus_utils_append_entries (DBusMessageIter *iter,
+				      GSList          *entries);
+
+GSList *gconf_dbus_utils_get_entries (DBusMessageIter *iter, const gchar *dir);
+
 
 #endif/* GCONF_DBUS_UTILS_H */

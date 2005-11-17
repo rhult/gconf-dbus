@@ -1,3 +1,19 @@
+2005-11-17  Richard Hult  <richard@imendio.com>
+
+	* configure.in: Bump to 2.6.4.13.
+
+	* gconf/gconf-dbus.c (gconf_engine_all_entries): Use the new
+	function in utils to get the array of entries.
+
+	* gconf/gconf-database-dbus.c (database_handle_get_all_entries):
+	Use the new funcion in utils to append the array of entries.
+
+	* gconf/gconf-dbus-utils.c
+	(utils_append_entry_values_stringified): Handle invalid values
+	here, fixes crash for example when schemas are invalid.
+	- Refactor a bit, use an array of entries instead of just
+	appending them, makes our signatures a lot smaller.
+
 2005-11-01  Richard Hult  <richard@imendio.com>
 
 	* Release 2.6.4.12, which is a first version for testing with

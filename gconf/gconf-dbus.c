@@ -1666,39 +1666,9 @@ gconf_engine_all_entries (GConfEngine* conf, const gchar* dir, GError** err)
   g_return_val_if_fail (err == NULL || *err == NULL, FALSE);
 
   dbus_message_iter_init (reply, &iter);
-
-  /* Loop through while there are structs (entries). */
-  while (dbus_message_iter_get_arg_type (&iter) == DBUS_TYPE_STRUCT)
-    {
-      gchar      *key;
-      GConfValue *value;
-      gboolean    is_default;
-      gboolean    is_writable;
-      gchar      *schema_name;
-      GConfEntry *entry;
-
-      if (!gconf_dbus_utils_get_entry_values_stringified (&iter,
-							  &key,
-							  &value,
-							  &is_default,
-							  &is_writable,
-							  &schema_name))
-	break;
-      
-      entry = gconf_entry_new_nocopy (gconf_concat_dir_and_key (dir, key),
-				      value);
-
-      gconf_entry_set_is_default (entry, is_default);
-      gconf_entry_set_is_writable (entry, is_writable);
-
-      if (schema_name)
-	gconf_entry_set_schema_name (entry, schema_name);
-      
-      entries = g_slist_prepend (entries, entry);
-
-      dbus_message_iter_next (&iter);
-    }
-
+  
+  entries = gconf_dbus_utils_get_entries (&iter, dir);
+  
   dbus_message_unref (reply);
 
   return entries;

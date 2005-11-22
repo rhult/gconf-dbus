@@ -440,7 +440,12 @@ utils_append_value (DBusMessageIter  *main_iter,
 				    DBUS_TYPE_STRUCT,
 				    NULL, /* for structs */
 				    &struct_iter);
-  type = value->type;
+
+  if (!value)
+    type = GCONF_VALUE_INVALID;
+  else
+    type = value->type;
+
   dbus_message_iter_append_basic (&struct_iter, DBUS_TYPE_INT32, &type);
   
   switch (type)
@@ -461,6 +466,9 @@ utils_append_value (DBusMessageIter  *main_iter,
       utils_append_value_helper_pair (&struct_iter, value);
       break;
 
+    case GCONF_VALUE_INVALID:
+      break;
+      
     default:
       g_assert_not_reached ();
     }
@@ -581,7 +589,7 @@ gconf_dbus_utils_get_entry_values (DBusMessageIter  *main_iter,
 
   if (value_p)
     *value_p = value;
-  else
+  else if (value)
     gconf_value_free (value);
 
   if (schema_name_p)
@@ -670,8 +678,11 @@ utils_get_value_helper_fundamental (DBusMessageIter *iter,
   gdouble      d;
   gboolean     b;
 
-  d(g_print ("Get value (fundamental)\n"))
+  d(g_print ("Get value (fundamental)\n"));
 
+  if (value_type == GCONF_VALUE_INVALID)
+    return NULL;
+    
   value = gconf_value_new (value_type);
   
   switch (value_type)
@@ -896,6 +907,10 @@ utils_get_value (DBusMessageIter *main_iter)
       
     case GCONF_VALUE_SCHEMA:
       value = utils_get_schema_value (&struct_iter);
+      break;
+
+    case GCONF_VALUE_INVALID:
+      value = NULL;
       break;
       
     default:

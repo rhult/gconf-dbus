@@ -2180,11 +2180,6 @@ handle_notify (DBusConnection *connection,
       return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
     }
   
-  if (value == NULL)
-    {
-      return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-    }
-  
   d(g_print ("Got notify on %s (%s)\n", key, namespace_section));
 
   list = gconf_cnxn_lookup_dir (conf, namespace_section);
@@ -2206,7 +2201,8 @@ handle_notify (DBusConnection *connection,
 	}
     }
 
-  gconf_value_free (value);
+  if (value)
+    gconf_value_free (value);
 
   if (!match)
     return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;

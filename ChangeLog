@@ -1,3 +1,15 @@
+2005-11-22  Richard Hult  <richard@imendio.com>
+
+	* gconf/gconf-dbus-utils.c: (utils_append_value):
+	(gconf_dbus_utils_get_entry_values):
+	(utils_get_value_helper_fundamental):
+	(utils_get_value): Handle NULL values, map to
+	GCONF_VALUE_INVALID. This is needed to handle NULL values in
+	notification.
+
+	* gconf/gconf-dbus.c: (handle_notify): Allow NULL values, this
+	happens when unsetting a key and there's no schema.
+
 2005-11-17  Richard Hult  <richard@imendio.com>
 
 	* configure.in: Bump to 2.6.4.13.

@@ -487,7 +487,6 @@ main(int argc, char** argv)
 #endif
   
   gconfd_dir = gconf_get_daemon_dir ();
-  lock_dir = gconf_get_lock_dir ();
   
   if (mkdir (gconfd_dir, 0700) < 0 && errno != EEXIST)
     gconf_log (GCL_WARNING, _("Failed to create %s: %s"),
@@ -506,7 +505,9 @@ main(int argc, char** argv)
     {
       err = NULL;
 
+      lock_dir = gconf_get_lock_dir ();
       daemon_lock = gconf_get_lock_or_current_holder (lock_dir, NULL, &err);
+      g_free (lock_dir);
     }
 #else
   /* FIXME: get rid of locks completely for dbus case, just get a fake one for
@@ -514,6 +515,8 @@ main(int argc, char** argv)
    */
   daemon_lock = gconf_get_lock (NULL, NULL);
 #endif
+
+ g_free (gconfd_dir);
   
   if (daemon_lock != NULL)
     {

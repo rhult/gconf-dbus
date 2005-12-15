@@ -1,3 +1,7 @@
+2005-12-15  Richard Hult  <richard@imendio.com>
+
+	* gconf/gconfd.c: (main): Plug two small leaks, from maemo gconf.
+
 2005-11-22  Richard Hult  <richard@imendio.com>
 
 	* gconf/gconf-dbus-utils.c: (utils_append_value):

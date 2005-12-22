@@ -1,5 +1,7 @@
 GCONFD_BINARY_NAME=gconfd-2
 
+address=`pkg-config dbus-1 --variable system_bus_default_address`
+
 INCLUDES=								\
 	-I$(top_srcdir)							\
 	-I$(top_builddir)						\
@@ -18,7 +20,7 @@ INCLUDES=								\
 	-DVERSION=\""$(VERSION)"\"					\
 	-DGCONF_ENABLE_INTERNALS=1					\
 	-DGCONFD=\""$(GCONFD_BINARY_NAME)"\"				\
-	-DGCONF_SYSTEM_BUS_ADDRESS=\"unix:path="$(localstatedir)/run/dbus/system_bus_socket"\" \
+        -DGCONF_SYSTEM_BUS_ADDRESS=\""$address"\"                       \
 	-DDBUS_API_SUBJECT_TO_CHANGE=\"1\"
 
 if GTK

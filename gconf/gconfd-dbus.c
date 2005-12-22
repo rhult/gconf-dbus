@@ -222,7 +222,7 @@ gconfd_dbus_init (void)
   
   ret = dbus_bus_request_name (bus_conn,
 			       GCONF_DBUS_SERVICE,
-			       DBUS_NAME_FLAG_PROHIBIT_REPLACEMENT,
+			       0,
 			       &error);
 
   if (ret != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER)

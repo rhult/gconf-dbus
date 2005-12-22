@@ -1,3 +1,13 @@
+2005-12-22  Richard Hult  <richard@imendio.com>
+
+	* gconf/Makefile.am: Use pkg-config to get the default system bus
+	address.
+
+	* configure.in: Require dbus 0.60.
+
+	* gconf/gconfd-dbus.c (gconfd_dbus_init): Replace the inhibit
+	replacement flag with 0 (no replace is default in dbus 0.60+).
+
 2005-12-15  Richard Hult  <richard@imendio.com>
 
 	* gconf/gconfd.c: (main): Plug two small leaks, from maemo gconf.

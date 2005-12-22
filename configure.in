@@ -128,7 +128,7 @@ if test x$enable_system_bus = xyes; then
   AC_DEFINE(USE_SYSTEM_BUS, 1, Use the system bus)
 fi
 
-PKG_CHECK_MODULES(GCONF_IPC, dbus-glib-1 >= 0.50)
+PKG_CHECK_MODULES(GCONF_IPC, dbus-glib-1 >= 0.60)
 
 AC_DEFINE(HAVE_DBUS, 1, D-BUS support in the daemon)
 AM_CONDITIONAL(HAVE_ORBIT, false)

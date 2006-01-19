@@ -1,3 +1,9 @@
+2006-01-19  Richard Hult  <richard@imendio.com>
+
+	* gconf/gconf-dbus-utils.c: (gconf_dbus_utils_get_entries): Use
+	the right iter, bug introduced by the move to an array instead of
+	just prepending entries.
+
 2005-12-22  Richard Hult  <richard@imendio.com>
 
 	* gconf/Makefile.am: Use pkg-config to get the default system bus

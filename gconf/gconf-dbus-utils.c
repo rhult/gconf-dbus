@@ -1084,7 +1084,7 @@ gconf_dbus_utils_get_entries (DBusMessageIter *iter, const gchar *dir)
   dbus_message_iter_recurse (iter, &array_iter);
 
   /* Loop through while there are structs (entries). */
-  while (dbus_message_iter_get_arg_type (iter) == DBUS_TYPE_STRUCT)
+  while (dbus_message_iter_get_arg_type (&array_iter) == DBUS_TYPE_STRUCT)
     {
       gchar      *key;
       GConfValue *value;
@@ -1093,14 +1093,14 @@ gconf_dbus_utils_get_entries (DBusMessageIter *iter, const gchar *dir)
       gchar      *schema_name;
       GConfEntry *entry;
 
-      if (!utils_get_entry_values_stringified (iter,
+      if (!utils_get_entry_values_stringified (&array_iter,
 					       &key,
 					       &value,
 					       &is_default,
 					       &is_writable,
 					       &schema_name))
 	break;
-      
+
       entry = gconf_entry_new_nocopy (gconf_concat_dir_and_key (dir, key), value);
 
       gconf_entry_set_is_default (entry, is_default);
@@ -1111,7 +1111,7 @@ gconf_dbus_utils_get_entries (DBusMessageIter *iter, const gchar *dir)
       
       entries = g_slist_prepend (entries, entry);
       
-      dbus_message_iter_next (iter);
+      dbus_message_iter_next (&array_iter);
     }
 
   return entries;

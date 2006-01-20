@@ -1,3 +1,9 @@
+2006-01-20  Richard Hult  <richard@imendio.com>
+
+	* gconf/gconf-client.c (clear_cache_foreach): Remove extra free
+	that caused double-freeing. Patch from maemo, and already fixed
+	upstream.
+
 2006-01-19  Richard Hult  <richard@imendio.com>
 
 	* gconf/gconf-dbus-utils.c: (gconf_dbus_utils_get_entries): Use

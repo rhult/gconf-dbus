@@ -1,5 +1,7 @@
 2006-01-20  Richard Hult  <richard@imendio.com>
 
+	* Release 2.6.4.13.
+
 	* gconf/gconf-client.c (clear_cache_foreach): Remove extra free
 	that caused double-freeing. Patch from maemo, and already fixed
 	upstream.

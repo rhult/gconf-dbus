@@ -1,3 +1,8 @@
+2006-01-26  Richard Hult  <richard@imendio.com>
+
+	* gconf/Makefile.am: Patch from Kimmo Hamalainen to fix typo for
+	system bus address.
+
 2006-01-20  Richard Hult  <richard@imendio.com>
 
 	* Release 2.6.4.13.

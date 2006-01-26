@@ -20,7 +20,7 @@ INCLUDES=								\
 	-DVERSION=\""$(VERSION)"\"					\
 	-DGCONF_ENABLE_INTERNALS=1					\
 	-DGCONFD=\""$(GCONFD_BINARY_NAME)"\"				\
-        -DGCONF_SYSTEM_BUS_ADDRESS=\""$address"\"                       \
+        -DGCONF_SYSTEM_BUS_ADDRESS=\""$(address)"\"                       \
 	-DDBUS_API_SUBJECT_TO_CHANGE=\"1\"
 
 if GTK

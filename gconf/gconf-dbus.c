@@ -378,28 +378,19 @@ gconf_engine_detach (GConfEngine *conf)
 static gboolean
 ensure_dbus_connection (void)
 {
-  const gchar *address;
   DBusError error;
 
   if (global_conn != NULL)
     return TRUE;
  
-#ifdef USE_SYSTEM_BUS
-  address = g_getenv ("DBUS_SYSTEM_BUS_ADDRESS");
-
-  if (!address)
-    address = GCONF_SYSTEM_BUS_ADDRESS;
-#else
-  address = g_getenv ("DBUS_SESSION_BUS_ADDRESS");
-#endif
-
-  if (!address) {
-    return FALSE;
-  }
-
   dbus_error_init (&error);
 
-  global_conn = dbus_connection_open_private (address, &error);
+#ifdef USE_SYSTEM_BUS
+  global_conn = dbus_bus_get_private (DBUS_BUS_SYSTEM, &error);
+#else
+  global_conn = dbus_bus_get_private (DBUS_BUS_SESSION, &error);
+#endif
+  
   if (!global_conn) 
     {
       g_warning ("Client failed to connect to the D-BUS daemon:\n%s", error.message);
@@ -408,19 +399,6 @@ ensure_dbus_connection (void)
       return FALSE;
     }
 	
-  if (!dbus_bus_register (global_conn, &error)) 
-    {
-      g_warning ("Client failed to register with the D-BUS daemon:\n%s", error.message);
-      
-      dbus_connection_disconnect (global_conn);
-      dbus_connection_unref (global_conn);
-      
-      global_conn = NULL;
-		
-      dbus_error_free (&error);
-      return FALSE;
-    }
-
   dbus_connection_setup_with_g_main (global_conn, NULL);
 
   dbus_bus_add_match (global_conn, DAEMON_NAME_OWNER_CHANGED_RULE, NULL);

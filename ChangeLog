@@ -1,3 +1,10 @@
+2006-02-16  Richard Hult  <richard@imendio.com>
+
+	* gconf/Makefile.am:
+	* gconf/gconf-dbus.c: (ensure_dbus_connection): Get rid of the bus
+	address environment variable since we can use dbus API from 0.60
+	to get a private bus.
+
 2006-01-26  Richard Hult  <richard@imendio.com>
 
 	* gconf/Makefile.am: Patch from Kimmo Hamalainen to fix typo for

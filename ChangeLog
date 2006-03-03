@@ -1,3 +1,16 @@
+2006-03-03  Richard Hult  <richard@imendio.com>
+
+	* gconf/gconf-internals.c: (gconf_load_source_path):
+	* gconf/gconf-internals.h: Add gconf_address_list_free. Don't copy
+	strings unneccesarily, merge from upstream.
+	
+	* gconf/gconfd.c: (gconf_server_load_sources): Use
+	gconf_address_list_free to plug tiny, once per gconfd, leak.
+
+2006-03-03  Richard Hult  <richard@imendio.com>
+
+	* gconf/gconfd.c (gconf_server_load_sources): Deep-free the list.
+
 2006-02-16  Richard Hult  <richard@imendio.com>
 
 	* gconf/Makefile.am:

@@ -57,6 +57,7 @@ GConfValueType gconf_value_type_from_string (const gchar    *str);
 
 
 GSList*       gconf_load_source_path (const gchar* filename, GError** err);
+void          gconf_address_list_free (GSList *addresses);
 
 /* shouldn't be used in applications (although implemented in gconf.c) */
 

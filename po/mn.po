@@ -1060,7 +1060,7 @@ msgstr "Идэвхитэй хэрэглэгч %s -н эзэмшигч биш б�
 #: gconf/gconfd.c:368
 #, c-format
 msgid "Bad permissions %lo on directory %s"
-msgstr "Лавлах %s дэх буруу хандалт %lo"
+msgstr "Лавлах %lo дэх буруу хандалт %s"
 
 #. openlog() does not copy logname - what total brokenness.
 #. So we free it at the end of main()

@@ -1920,6 +1920,8 @@ gconf_engine_dir_exists (GConfEngine *conf, const gchar *dir, GError** err)
 			 DBUS_TYPE_BOOLEAN, &exists,
 			 DBUS_TYPE_INVALID);
 
+  dbus_message_unref (reply);
+
   return !!exists;
 }
 

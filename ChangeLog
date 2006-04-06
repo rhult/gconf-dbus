@@ -1,5 +1,7 @@
 2006-04-06  Richard Hult  <richard@imendio.com>
 
+	* configure.in: Bump version.
+
 	* gconf/gconf-dbus.c (gconf_engine_dir_exists): Unref the reply,
 	fixes leak.
 

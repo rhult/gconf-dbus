@@ -1245,7 +1245,10 @@ get (GConfClient *client,
        * to the caller
        */
       if (gconf_entry_get_is_default (entry) && !use_default)
-        return NULL;
+        {
+          gconf_entry_free (entry);
+          return NULL;
+        }
       else
         return entry;
     }

@@ -1,3 +1,8 @@
+2006-04-06  Richard Hult  <richard@imendio.com>
+
+	* gconf/gconf-client.c (get): Free the entry if we don't return
+	it, fixes small leak. Patch from Kimmo Hamalainen.
+
 2006-03-03  Richard Hult  <richard@imendio.com>
 
 	* gconf/gconf-internals.c: (gconf_load_source_path):

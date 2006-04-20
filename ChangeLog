@@ -1,3 +1,7 @@
+2006-04-20  Richard Hult  <richard@imendio.com>
+
+	* gconf-2.m4.in: Quote the macros to silence autoconf.
+
 2006-04-06  Richard Hult  <richard@imendio.com>
 
 	* Release 2.6.4.14.

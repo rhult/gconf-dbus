@@ -228,7 +228,6 @@ database_handle_name_owner_changed (DBusConnection *connection,
 				    DBusMessage *message,
 				    GConfDatabaseDBus *db)
 {  
-  DBusMessageIter iter;
   char *service;
   char *old_owner;
   char *new_owner;

@@ -1,3 +1,13 @@
+2006-09-14  Richard Hult  <richard@imendio.com>
+
+	* configure.in: Bump version.
+
+	* gconf/gconf-database-dbus.c
+	(database_handle_name_owner_changed): Remove unused variable.
+
+	* gconf/gconf-client.c (gconf_client_notify): Merge leak fix from
+	upstream.
+
 2006-04-20  Richard Hult  <richard@imendio.com>
 
 	* gconf-2.m4.in: Quote the macros to silence autoconf.

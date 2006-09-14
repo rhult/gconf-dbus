@@ -9,6 +9,7 @@ dbusconf_DATA = $(DBUS_GCONF_CONF)
 endif
 
 EXTRA_DIST=gconf.m4.in TODO	\
+	autogen.sh		\
 	gconf-2.0.pc.in  	\
 	README.dbus		\
 	$(DBUS_GCONF_CONF)

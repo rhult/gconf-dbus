@@ -1,5 +1,8 @@
 2006-09-14  Richard Hult  <richard@imendio.com>
 
+	* Makefile.am (EXTRA_DIST): Add autogen.sh to make things easier
+	for maemo package building.
+
 	* configure.in: Bump version.
 
 	* gconf/gconf-database-dbus.c

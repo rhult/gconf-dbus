@@ -25,16 +25,33 @@
 G_BEGIN_DECLS
 
 #include "gconf-error.h"
+/*#include "GConfX.h"*/
 #include "gconf-listeners.h"
 #include "gconf-sources.h"
 #include "gconf-internals.h"
 #include "gconf-locale.h"
-  
+
+#include <dbus/dbus.h>
+
 typedef struct _GConfDatabase GConfDatabase;
-typedef struct _GConfDatabaseListener GConfDatabaseListener;
-  
+
 struct _GConfDatabase
 {
+#ifdef HAVE_ORBIT
+  /* "inherit" from the servant,
+     must be first in struct */
+  POA_ConfigDatabase3 servant;
+  ConfigDatabase objref;
+#endif
+
+  /* D-Bus specific parts: */
+  char           *object_path;
+  
+  /* Information about clients that want notification. */
+  GHashTable     *notifications;
+  GHashTable     *listening_clients;
+  /* End of D-Bus stuff. */
+	
   GConfListeners* listeners;
   GConfSources* sources;
 
@@ -43,25 +60,33 @@ struct _GConfDatabase
   guint sync_timeout;
 
   gchar *persistent_name;
-
-  gpointer corba_data;
 };
 
-typedef enum
-{
-  GCONF_DATABASE_LISTENER_CORBA,
-  GCONF_DATABASE_LISTENER_DBUS
-} GConfDatabaseListenerType;
-
-struct _GConfDatabaseListener
-{
-  GConfDatabaseListenerType type;
-  char *name;
-};
-  
-GConfDatabase* gconf_database_new     (GConfSources  *sources);
+GConfDatabase* gconf_database_new  (GConfSources  *sources);
 void           gconf_database_free (GConfDatabase *db);
 
+void                gconf_database_drop_dead_listeners (GConfDatabase *db);
+
+#ifdef HAVE_ORBIT
+CORBA_unsigned_long gconf_database_add_listener     (GConfDatabase       *db,
+                                                     ConfigListener       who,
+                                                     const char          *name,
+                                                     const gchar         *where);
+void                gconf_database_remove_listener  (GConfDatabase       *db,
+                                                     CORBA_unsigned_long  cnxn);
+
+CORBA_unsigned_long gconf_database_readd_listener   (GConfDatabase       *db,
+                                                     ConfigListener       who,
+                                                     const char          *name,
+                                                     const gchar         *where);
+void                gconf_database_notify_listeners (GConfDatabase       *db,
+                                                     GConfSources        *modified_sources,
+                                                     const gchar         *key,
+                                                     const ConfigValue   *value,
+                                                     gboolean             is_default,
+                                                     gboolean             is_writable,
+                                                     gboolean             notify_others);
+#endif
 
 GConfValue* gconf_database_query_value         (GConfDatabase  *db,
                                                 const gchar    *key,
@@ -121,19 +146,17 @@ gboolean gconf_database_synchronous_sync (GConfDatabase  *db,
 void     gconf_database_clear_cache      (GConfDatabase  *db,
                                           GError    **err);
 
+GConfLocaleList* gconfd_locale_cache_lookup(const gchar* locale);
+void gconfd_locale_cache_expire (void);
+void gconfd_locale_cache_drop  (void);
 
-void             gconfd_locale_cache_expire (void);
-void             gconfd_locale_cache_drop   (void);
-GConfLocaleList *gconfd_locale_cache_lookup  (const gchar *locale);
-
-  
 const gchar* gconf_database_get_persistent_name (GConfDatabase *db);
 
+#ifdef HAVE_CORBA
 void gconf_database_log_listeners_to_string (GConfDatabase *db,
                                              gboolean is_default,
                                              GString *str);
-
-
+#endif
 
 G_END_DECLS
 

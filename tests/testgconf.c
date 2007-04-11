@@ -799,9 +799,7 @@ list_of_floats(void)
   return retval;
 }
 
-/* FIXME: change the list of floats to bool for now since dbus doesn't work well
- * with lists of doubles.
- */
+
 static void
 check_list_storage(GConfEngine* conf)
 {
@@ -810,8 +808,7 @@ check_list_storage(GConfEngine* conf)
   guint i;
   GConfValueType list_types[] = { GCONF_VALUE_INT, GCONF_VALUE_INT,
                                   GCONF_VALUE_STRING, GCONF_VALUE_STRING,
-                                  /*GCONF_VALUE_FLOAT, GCONF_VALUE_FLOAT,*/
-				  GCONF_VALUE_BOOL, GCONF_VALUE_BOOL,
+                                  GCONF_VALUE_FLOAT, GCONF_VALUE_FLOAT,
                                   GCONF_VALUE_BOOL, GCONF_VALUE_BOOL };
   GSList* lists[] = { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
   const guint n_lists = sizeof(lists)/sizeof(lists[0]);
@@ -827,7 +824,7 @@ check_list_storage(GConfEngine* conf)
   lists[3] = NULL;
 
   /* of float */
-  lists[4] = list_of_bools(); /*list_of_floats();*/
+  lists[4] = list_of_floats();
   lists[5] = NULL;
 
   /* of bool */

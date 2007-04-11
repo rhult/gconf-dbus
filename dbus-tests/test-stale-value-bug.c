@@ -1,0 +1,307 @@
+/* Tests for a bug that made blablabla... FIXME: summary */
+
+#include <math.h>
+#include <stdlib.h>
+#include <string.h>
+#include <gconf/gconf-client.h>
+
+#define KEY_ROOT      "/foo"
+#define KEY_PRIMITIVE KEY_ROOT "/baz_primitive"
+#define KEY_PAIR      KEY_ROOT "/bar/baz_pair"
+#define KEY_LIST      KEY_ROOT "/bar/baz_list"
+
+#define DELTA         0.0001
+
+static GConfClient *client;
+static GMainLoop   *loop;
+
+static gboolean
+check_string (const gchar *key, const gchar *expected)
+{
+	gchar    *str;
+	GError   *error = NULL;
+	gboolean  ret;
+
+	str = gconf_client_get_string (client, key, &error);
+	if (error) {
+		g_error_free (error);
+		return FALSE;
+	} 
+	
+	ret = strcmp (str, expected) == 0;
+
+	g_free (str);
+
+	return ret;
+}
+
+static gboolean
+check_int (const gchar *key, gint expected)
+{
+	gint    i;
+	GError *error = NULL;
+
+	i = gconf_client_get_int (client, key, &error);
+	if (error) {
+		g_error_free (error);
+		i = 0;
+	}
+
+	return i == expected;
+}
+
+static gboolean
+check_float (const gchar *key, gdouble expected)
+{
+	gdouble  f;
+	GError  *error = NULL;
+
+	f = gconf_client_get_float (client, key, &error);
+	if (error) {
+		g_error_free (error);
+		f = 0;
+	}
+
+	return fabs (f - expected) < DELTA;
+}
+
+static gboolean
+check_pair (const gchar *key, gint expected_i, gdouble expected_f)
+{
+	gint    i;
+	gdouble  f;
+	GError *error = NULL;
+
+	gconf_client_get_pair (client, key,
+			       GCONF_VALUE_INT, GCONF_VALUE_FLOAT,
+			       &i, &f, &error);
+	if (error) {
+		g_error_free (error);
+		i = 0;
+		f = 0;
+	}
+
+	return (i == expected_i && fabs (f - expected_f) < DELTA);
+}
+
+static gboolean
+check_list (const gchar *key, gint expected_1, gint expected_2, gint expected_3)
+{
+	gint    i1, i2, i3;
+	GError *error = NULL;
+	GSList *list;
+
+	list = gconf_client_get_list (client, key, GCONF_VALUE_INT, &error);
+	if (error) {
+		g_error_free (error);
+		i1 = i2 = i3 = 0;
+	} else {
+		if (g_slist_length (list) != 3) {
+			return FALSE;
+		}
+
+		/* ye ye, efficiency ;) */
+		i1 = GPOINTER_TO_INT (g_slist_nth_data (list, 0));
+		i2 = GPOINTER_TO_INT (g_slist_nth_data (list, 1));
+		i3 = GPOINTER_TO_INT (g_slist_nth_data (list, 2));
+	}
+
+	g_slist_free (list);
+	
+	return (i1 == expected_1 && i2 == expected_2 && i3 == expected_3);
+}
+
+/* Checks that everything below "key" is gone. */
+static gboolean
+check_recursive_unset (void)
+{
+	GError     *error = NULL;
+	gboolean    exists;
+	GConfValue *value;
+
+	exists = gconf_client_dir_exists (client, KEY_ROOT, &error);
+	if (error) {
+		g_error_free (error);
+		return FALSE;
+	}
+	if (exists) {
+		/* This is the same as upstream gconf, empty subdirs are not
+		 * clean up right away when they are empty.
+		 */
+		/*g_print ("Root exists\n");
+		  return FALSE;*/
+	}
+
+	exists = gconf_client_dir_exists (client, KEY_ROOT "/bar", &error);
+	if (error) {
+		g_error_free (error);
+		return FALSE;
+	}
+	if (exists) {
+		/* This is the same as upstream gconf, empty subdirs are not
+		 * clean up right away when they are empty.
+		 */
+		/*g_print ("Subdirectory exists\n");
+		  return FALSE;*/
+	}
+
+	value = gconf_client_get (client, KEY_PRIMITIVE, &error);
+	if (error) {
+		g_error_free (error);
+		return FALSE;
+	}
+	if (value) {
+		g_print ("Primitive key exists: %s\n", gconf_value_to_string (value));
+		gconf_value_free (value);
+		return FALSE;
+	}
+	
+	value = gconf_client_get (client, KEY_PAIR, &error);
+	if (error) {
+		g_error_free (error);
+		return FALSE;
+	}
+	if (value) {
+		g_print ("Pair key exists: %s\n", gconf_value_to_string (value));
+		gconf_value_free (value);
+		return FALSE;
+	}
+	
+	value = gconf_client_get (client, KEY_LIST, &error);
+	if (error) {
+		g_error_free (error);
+		return FALSE;
+	}
+	if (value) {
+		g_print ("List key exists: %s\n", gconf_value_to_string (value));
+		gconf_value_free (value);
+		return FALSE;
+	}
+	
+	return TRUE;
+}
+
+static gboolean
+change_timeout_func (gpointer data)
+{
+	static gint  count = 0;
+	gchar       *s;
+	gint         i, i1, i2, i3;
+	gdouble      f;
+	GSList      *list;
+
+	/* String. */
+	s = g_strdup_printf ("test-%d", g_random_int_range (1, 100));
+	gconf_client_set_string (client, KEY_PRIMITIVE, s, NULL);
+	if (!check_string (KEY_PRIMITIVE, s)) {
+		g_print ("String FAILED\n");
+		exit (1);
+	}
+	g_free (s);
+	
+	/* Int. */
+	i = g_random_int_range (1, 100);
+	gconf_client_set_int (client, KEY_PRIMITIVE, i, NULL);
+	if (!check_int (KEY_PRIMITIVE, i)) {
+		g_print ("Int FAILED\n");
+		exit (1);
+	}
+	
+	/* Float. */
+	f = g_random_int_range (1, 1000) / 10.0;
+	gconf_client_set_float (client, KEY_PRIMITIVE, f, NULL);
+	if (!check_float (KEY_PRIMITIVE, f)) {
+		g_print ("Float FAILED\n");
+		exit (1);
+	}
+	
+	/* Pair (int, float). */
+	i = g_random_int_range (1, 1000);
+	f = g_random_int_range (1, 10000) / 37.2;
+
+	gconf_client_set_pair (client, KEY_PAIR,
+			       GCONF_VALUE_INT,
+			       GCONF_VALUE_FLOAT,
+			       &i, &f, NULL);
+	if (!check_pair (KEY_PAIR, i, f)) {
+		g_print ("Pair FAILED\n");
+		exit (1);
+	}
+
+	/* List of ints. */
+	i1 = g_random_int_range (1, 1000);
+	i2 = g_random_int_range (1, 1000);
+	i3 = g_random_int_range (1, 1000);
+
+	list = g_slist_append (NULL, GINT_TO_POINTER (i1));
+	list = g_slist_append (list, GINT_TO_POINTER (i2));
+	list = g_slist_append (list, GINT_TO_POINTER (i3));
+	gconf_client_set_list (client, KEY_LIST,
+			       GCONF_VALUE_INT,
+			       list, NULL);
+	if (!check_list (KEY_LIST, i1, i2, i3)) {
+		g_print ("List FAILED\n");
+		exit (1);
+	}
+
+	g_slist_free (list);
+	
+	/* Unset int. */
+	i = g_random_int_range (1, 100);
+	gconf_client_set_int (client, KEY_PRIMITIVE, i, NULL);
+	if (!check_int (KEY_PRIMITIVE, i)) {
+		g_print ("Unset FAILED\n");
+		exit (1);
+	}
+	gconf_client_unset (client, KEY_PRIMITIVE, NULL);
+	if (!check_int (KEY_PRIMITIVE, 0)) { /* We get 0 as unset... */
+		g_print ("Unset FAILED\n");
+		exit (1);
+	}
+	
+	/* Recursive unset. Unset the entire subtree and check that all the keys
+	 * are non-existing.
+	 */
+	gconf_client_recursive_unset (client, KEY_ROOT, 0, NULL);
+	if (!check_recursive_unset ()) {
+		g_print ("Recursive unset FAILED\n");
+		exit (1);
+	}
+
+	g_print ("Run %d completed.\n", ++count);
+	
+	if (count == 3 || count == 6 || count == 9) {
+		g_main_loop_quit (loop);
+		return FALSE;
+	}
+	
+	return TRUE;
+}
+
+int
+main (int argc, char **argv)
+{
+	g_type_init ();
+
+	client = gconf_client_get_default ();
+	
+	gconf_client_add_dir (client,
+			      "/foo/bar",
+			      GCONF_CLIENT_PRELOAD_RECURSIVE,
+			      NULL);
+
+	loop = g_main_loop_new (NULL, FALSE);
+	
+	g_idle_add (change_timeout_func, NULL);
+	g_main_loop_run (loop);
+
+	g_timeout_add (500, change_timeout_func, NULL);
+	g_main_loop_run (loop);
+
+	g_idle_add (change_timeout_func, NULL);
+	g_main_loop_run (loop);
+
+	g_object_unref (client);
+	
+	return 0;
+}

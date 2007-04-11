@@ -24,6 +24,7 @@
 #include <glib.h>
 #include "gconf-error.h"
 #include "gconf-value.h"
+#include "gconf-listeners.h"
 
 /* Sources are not interchangeable; different backend engines will return 
  * GConfSource with different private elements.
@@ -50,6 +51,10 @@ typedef enum {
   GCONF_SOURCE_ALL_FLAGS = ((1 << 0) | (1 << 1))
 } GConfSourceFlags;
 
+typedef void (* GConfSourceNotifyFunc) (GConfSource *source,
+					const gchar *location,
+					gpointer     user_data);
+
 GConfSource*  gconf_resolve_address         (const gchar* address,
                                              GError** err);
 
@@ -60,8 +65,14 @@ typedef struct _GConfSources GConfSources;
 
 struct _GConfSources {
   GList* sources;
-  
 };
+
+typedef struct
+{
+  GConfSources *modified_sources;
+  char         *key;
+} GConfUnsetNotify;
+
 
 /* Even on error, this gives you an empty source list, i.e.  never
    returns NULL but may set the error if some addresses weren't
@@ -82,10 +93,12 @@ GConfValue*   gconf_sources_query_value        (GConfSources  *sources,
 void          gconf_sources_set_value          (GConfSources  *sources,
                                                 const gchar   *key,
                                                 const GConfValue *value,
+						GConfSources **modified_sources,
                                                 GError   **err);
 void          gconf_sources_unset_value        (GConfSources  *sources,
                                                 const gchar   *key,
                                                 const gchar   *locale,
+						GConfSources **modified_sources,
                                                 GError   **err);
 void          gconf_sources_recursive_unset    (GConfSources  *sources,
                                                 const gchar   *key,
@@ -124,11 +137,17 @@ GConfValue*   gconf_sources_query_default_value(GConfSources* sources,
                                                 gboolean* is_writable,
                                                 GError** err);
 
+void          gconf_sources_set_notify_func    (GConfSources          *sources,
+					        GConfSourceNotifyFunc  notify_func,
+					        gpointer               user_data);
+void          gconf_sources_add_listener       (GConfSources          *sources,
+						guint                  id,
+					        const gchar           *location);
+void          gconf_sources_remove_listener    (GConfSources          *sources,
+						guint                  id);
+
+gboolean      gconf_sources_is_affected        (GConfSources *sources,
+						GConfSource  *modified_src,
+						const char   *key);
+
 #endif
-
-
-
-
-
-
-

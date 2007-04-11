@@ -24,15 +24,13 @@
 #include <glib.h>
 #include "gconf-error.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 /* 
  * A GConfValue is used to pass configuration values around
  */
 
-typedef enum { /*< prefix=GCONF_VALUE >*/
+typedef enum {
   GCONF_VALUE_INVALID,
   GCONF_VALUE_STRING,
   GCONF_VALUE_INT,
@@ -110,6 +108,9 @@ void        gconf_value_set_list             (GConfValue* value,
                                               GSList* list);
 
 gchar*      gconf_value_to_string            (const GConfValue* value);
+
+int         gconf_value_compare              (const GConfValue* value_a,
+                                              const GConfValue* value_b);
 
 /* Meta-information about a key. Not the same as a schema; this is
  * information stored on the key, the schema is a specification
@@ -190,9 +191,10 @@ void        gconf_entry_set_is_default   (GConfEntry  *entry,
 void        gconf_entry_set_is_writable  (GConfEntry  *entry,
                                           gboolean     is_writable);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+gboolean    gconf_entry_equal            (const GConfEntry *a,
+                                          const GConfEntry *b);
+
+G_END_DECLS
 
 #endif
 

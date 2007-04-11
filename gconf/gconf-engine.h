@@ -23,9 +23,7 @@
 #include <glib.h>
 #include <gconf/gconf-error.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 /* A configuration engine (stack of config sources); normally there's
  * just one of these on the system.  
@@ -36,11 +34,16 @@ GConfEngine* gconf_engine_get_default     (void);
 /* returns NULL on error; requests single specified source */
 GConfEngine* gconf_engine_get_for_address (const gchar* address,
                                            GError** err);
+GConfEngine* gconf_engine_get_for_addresses (GSList *addresses,
+                                             GError** err);
 void         gconf_engine_unref           (GConfEngine* conf);
 void         gconf_engine_ref             (GConfEngine* conf);
 
 #ifdef GCONF_ENABLE_INTERNALS
-GConfEngine* gconf_engine_get_local      (const gchar* address, GError** err);
+GConfEngine *gconf_engine_get_local               (const char  *address,
+						   GError     **err);
+GConfEngine *gconf_engine_get_local_for_addresses (GSList      *addresses,
+						   GError     **err);
 #endif
 
 /* For use by language bindings only, will be deprecated in GNOME 2.0
@@ -52,9 +55,7 @@ void         gconf_engine_set_user_data  (GConfEngine   *engine,
 gpointer     gconf_engine_get_user_data  (GConfEngine   *engine);
 
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif
 

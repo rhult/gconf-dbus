@@ -38,6 +38,7 @@
 
 #define GCONF_DBUS_DATABASE_LOOKUP          "Lookup"
 #define GCONF_DBUS_DATABASE_LOOKUP_EXTENDED "LookupExtended" 
+#define GCONF_DBUS_DATABASE_LOOKUP_DEFAULT  "LookupDefault" 
 #define GCONF_DBUS_DATABASE_SET             "Set"
 #define GCONF_DBUS_DATABASE_UNSET           "UnSet"
 #define GCONF_DBUS_DATABASE_RECURSIVE_UNSET "RecursiveUnset"

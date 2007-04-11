@@ -119,17 +119,17 @@ server_filter_func (DBusConnection  *connection,
 static void
 server_real_handle_get_db (DBusConnection *connection,
 			   DBusMessage    *message,
-			   const char     *address)
+			   GSList         *addresses)
 {
-  GConfDatabaseDBus *db;
-  DBusMessage       *reply;
-  GError            *gerror = NULL;
-  const gchar       *str;
+  GConfDatabase *db;
+  DBusMessage   *reply;
+  GError        *gerror = NULL;
+  const gchar   *str;
  
   if (gconfd_dbus_check_in_shutdown (connection, message))
     return;
 
-  db = gconf_database_dbus_get (connection, address, &gerror);
+  db = gconfd_obtain_database (addresses, &gerror);
 
   if (gconfd_dbus_set_exception (connection, message, &gerror))
     return;
@@ -159,14 +159,20 @@ server_handle_get_default_db (DBusConnection *connection,
 static void
 server_handle_get_db (DBusConnection *connection, DBusMessage *message)
 {
-  char *address;
+  char   *addresses;
+  GSList *list;
 
   if (!gconfd_dbus_get_message_args (connection, message, 
-				     DBUS_TYPE_STRING, &address,
+				     DBUS_TYPE_STRING, &addresses,
 				     DBUS_TYPE_INVALID))
     return;
 
-  server_real_handle_get_db (connection, message, address);
+  list = gconf_persistent_name_get_address_list (addresses);
+
+  server_real_handle_get_db (connection, message, list);
+
+  g_slist_foreach (list, (GFunc) g_free, NULL);
+  g_slist_free (list);
 }
 
 static void
@@ -178,8 +184,6 @@ server_handle_shutdown (DBusConnection *connection, DBusMessage *message)
     return;
 
   gconf_log(GCL_DEBUG, _("Shutdown request received"));
-
-  gconf_database_dbus_unregister_all ();
 
   reply = dbus_message_new_method_return (message);
   dbus_connection_send (connection, reply, NULL);
@@ -390,3 +394,82 @@ gconfd_dbus_get_connection (void)
   return bus_conn;
 }
 
+#if 0
+void
+gconfd_dbus_notify_other_listeners (GConfDatabase *modified_db,
+				    GConfSources  *modified_sources,
+				    const char    *key)
+{
+  GList *tmp;
+
+  if (!modified_sources)
+    return;
+  
+  tmp = db_list;
+  while (tmp != NULL)
+    {
+      GConfDatabase *db = tmp->data;
+
+      if (db != modified_db)
+	{
+	  GList *tmp2;
+
+	  tmp2 = modified_sources->sources;
+	  while (tmp2)
+	    {
+	      GConfSource *modified_source = tmp2->data;
+
+	      if (gconf_sources_is_affected (db->sources, modified_source, key))
+		{
+		  GConfValue  *value;
+		  ConfigValue *cvalue;
+		  GError      *error;
+		  gboolean     is_default;
+		  gboolean     is_writable;
+
+		  error = NULL;
+		  value = gconf_database_query_value (db,
+						      key,
+						      NULL,
+						      TRUE,
+						      NULL,
+						      &is_default,
+						      &is_writable,
+						      &error);
+		  if (error != NULL)
+		    {
+		      gconf_log (GCL_WARNING,
+				 _("Error obtaining new value for `%s': %s"),
+				 key, error->message);
+		      g_error_free (error);
+		      return;
+		    }
+
+		  if (value != NULL)
+		    {
+		      cvalue = gconf_corba_value_from_gconf_value (value);
+		      gconf_value_free (value);
+		    }
+		  else
+		    {
+		      cvalue = gconf_invalid_corba_value ();
+		    }
+
+		  gconf_database_notify_listeners (db,
+						   NULL,
+						   key,
+						   cvalue,
+						   is_default,
+						   is_writable,
+						   FALSE);
+		  CORBA_free (cvalue);
+		}
+
+	      tmp2 = tmp2->next;
+	    }
+	}
+
+      tmp = tmp->next;
+    }
+}
+#endif

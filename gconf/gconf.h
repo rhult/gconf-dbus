@@ -16,7 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
- 
+
 #ifndef GCONF_GCONF_H
 #define GCONF_GCONF_H
 
@@ -33,8 +33,7 @@ typedef void (*GConfNotifyFunc) (GConfEngine* conf,
                                  guint cnxn_id,
                                  GConfEntry *entry,
                                  gpointer user_data);
-
-	
+  
 /* Returns ID of the notification */
 /* returns 0 on error, 0 is an invalid ID */
 guint gconf_engine_notify_add    (GConfEngine      *conf,
@@ -42,7 +41,7 @@ guint gconf_engine_notify_add    (GConfEngine      *conf,
                                   const gchar      *namespace_section,
                                   GConfNotifyFunc   func,
                                   gpointer          user_data,
-                                  GError          **err);
+                                  GError      **err);
 
 void  gconf_engine_notify_remove (GConfEngine      *conf,
                                   guint             cnxn);

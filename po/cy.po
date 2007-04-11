@@ -1,53 +1,103 @@
 # gconf yn Gymraeg.
 # This file is distributed under the same license as the gconf package.
 # Chris Jackson <chris@www.linux.org.uk>, 2003.
-# Dafydd Harries <daf@parnassus.ath.cx>, 2003.
-# Rhys Jones <rhys@sucs.org>, 2004.
+# Dafydd Harries <daf@muse.19inch.net>, 2003 2004 2005.
+# Rhys Jones <rhys@sucs.org>, 2004 2005 2006.
 #
+# rhysj - Wedi gyrru'r cyfan drwy Cysill
 msgid ""
 msgstr ""
 "Project-Id-Version: gconf\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-11-01 17:24+0100\n"
-"PO-Revision-Date: 2004-03-20 09:30+0000\n"
+"POT-Creation-Date: 2006-06-28 22:58+0100\n"
+"PO-Revision-Date: 2006-06-27 22:00-0000\n"
 "Last-Translator: Rhys Jones <rhys@sucs.org>\n"
 "Language-Team: Cymraeg <gnome-cy@pengwyn.linux.org.uk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: backends/dir-utils.c:108
+#: ../backends/evoldap-backend.c:158
 #, c-format
-msgid "Couldn't find the %s root directory in the address `%s'"
-msgstr "Methu canfod y gwraidd-gyfeiriadur %s yng nghyfeiriad `%s'"
+msgid "Failed to get configuration file path from '%s'"
+msgstr "Methwyd cael llwybr ffeil cyfluniad o '%s'"
 
-#: backends/dir-utils.c:124 backends/xml-backend.c:340
+#: ../backends/evoldap-backend.c:169
 #, c-format
-msgid "Could not make directory `%s': %s"
-msgstr "Methu creu cyfeiriadur `%s': %s"
+msgid "Created Evolution/LDAP source using configuration file '%s'"
+msgstr "Crewyd ffynhonell Evolution/LDAP gan ddefnyddio'r ffeil cyfluniad '%s'"
 
-#: backends/dir-utils.c:212
+#: ../backends/evoldap-backend.c:444
 #, c-format
-msgid "Can't read from or write to the %s root directory in the address `%s'"
-msgstr ""
-"Methu darllen o neu ysgrifennu i'r cyfeiriadur gwraid %s yn y cyfeiriad `%s'"
+msgid "Unable to parse XML file '%s'"
+msgstr "Methu gramadegu'r ffeil XML '%s'"
 
-#: backends/gconf-merge-tree.c:78
+#: ../backends/evoldap-backend.c:453
+#, c-format
+msgid "Config file '%s' is empty"
+msgstr "Mae'r ffeil cyfluniad `%s' yn wag"
+
+#: ../backends/evoldap-backend.c:464
+#, c-format
+msgid "Root node of '%s' must be <evoldap>, not <%s>"
+msgstr "Rhaid i nod gwraidd '%s' fod yn <evoldap>, nid <%s>"
+
+#: ../backends/evoldap-backend.c:502
+#, c-format
+msgid "No <template> specified in '%s'"
+msgstr "Dim <template> wedi ei benodi yn '%s'"
+
+#: ../backends/evoldap-backend.c:509
+#, c-format
+msgid "No \"filter\" attribute specified on <template> in '%s'"
+msgstr "Dim priodoledd \"filter\" wedi ei benodi ar <template> yn '%s'"
+
+#: ../backends/evoldap-backend.c:570
+#, c-format
+msgid "No LDAP server or base DN specified in '%s'"
+msgstr "Dim gweinydd LDAP na DN gwraidd wedi ei benodi yn '%s'"
+
+#: ../backends/evoldap-backend.c:576
+#, c-format
+msgid "Contacting LDAP server: host '%s', port '%d', base DN '%s'"
+msgstr "Yn cysylltu â gweinydd LDAP: '%s', port '%d', base DN '%s'"
+
+#: ../backends/evoldap-backend.c:582
+#, c-format
+msgid "Failed to contact LDAP server: %s"
+msgstr "Methwyd cysylltu â gweinydd LDAP: %s"
+
+#: ../backends/evoldap-backend.c:669
+#, c-format
+msgid "Searching for entries using filter: %s"
+msgstr "Yn chwilio am gofnodion gan ddefnyddio hidl: %s"
+
+#: ../backends/evoldap-backend.c:682
+#, c-format
+msgid "Error querying LDAP server: %s"
+msgstr "Gwall wrth ymholi gweinydd LDAP: %s"
+
+#: ../backends/evoldap-backend.c:692
+#, c-format
+msgid "Got %d entries using filter: %s"
+msgstr "Cafwyd %d mynediad gan ddefnyddio hidl: %s"
+
+#: ../backends/gconf-merge-tree.c:59
 #, c-format
 msgid "Cannot find directory %s\n"
 msgstr "Methu darganfod y cyfeiriadur %s\n"
 
-#: backends/gconf-merge-tree.c:94
+#: ../backends/gconf-merge-tree.c:75
 #, c-format
 msgid "Error saving GConf tree to '%s': %s\n"
 msgstr "Gwall wrth arbed coeden GConf at '%s': %s\n"
 
-#: backends/gconf-merge-tree.c:120
+#: ../backends/gconf-merge-tree.c:101
 #, c-format
 msgid "Usage: %s <dir>\n"
 msgstr "Defnydd: %s <cyfeiriadur>\n"
 
-#: backends/gconf-merge-tree.c:126
+#: ../backends/gconf-merge-tree.c:107
 #, c-format
 msgid ""
 "Usage: %s <dir>\n"
@@ -59,593 +109,940 @@ msgid ""
 "    dir/%%gconf-tree.xml\n"
 msgstr ""
 "Defnydd: %s <cyfeiriadur>\n"
-"  Cyfuno system ffeiliau ochr gefn farciwyd i fyny, e.e:\n"
+"  Cyfuno system ffeiliau ochr gefn a farciwyd i fyny, e.e.:\n"
 "    cyf/%%gconf.xml\n"
 "        isgyf1/%%gconf.xml\n"
 "        isgyf2/%%gconf.xml\n"
 "  i mewn i:\n"
 "    cyf/%%gconf-tree.xml\n"
 
-#: backends/xml-backend.c:236
-msgid "Unloading XML backend module."
-msgstr "Dadlwytho modiwl ochr gefn XML."
+#: ../backends/markup-backend.c:164
+msgid "Unloading text markup backend module."
+msgstr "Dadlwytho modiwl ochr gefn uwchfarcio testun."
 
-#: backends/xml-backend.c:285
+#: ../backends/markup-backend.c:227 ../backends/xml-backend.c:288
 #, c-format
 msgid "Couldn't find the XML root directory in the address `%s'"
 msgstr "Methu canfod cyfeiriadur gwraidd XML yn y cyfeiriad `%s'"
 
-#: backends/xml-backend.c:439
+#: ../backends/markup-backend.c:284 ../backends/xml-backend.c:343
+#, c-format
+msgid "Could not make directory `%s': %s"
+msgstr "Methu creu cyfeiriadur `%s': %s"
+
+#: ../backends/markup-backend.c:391 ../backends/xml-backend.c:442
 #, c-format
 msgid ""
 "Can't read from or write to the XML root directory in the address \"%s\""
 msgstr ""
-"Methu darllen o neu ysgrifennu i'r gyfeiriadur gwraidd XML yn y cyfeiriad \"%"
+"Methu darllen o neu ysgrifennu i'r cyfeiriadur gwraidd XML yn y cyfeiriad \"%"
 "s\""
 
-#: backends/xml-backend.c:449
+#: ../backends/markup-backend.c:402 ../backends/xml-backend.c:452
 #, c-format
 msgid "Directory/file permissions for XML source at root %s are: %o/%o"
-msgstr ""
-"Caniatâd cyfeiriadur/ffeil i'r ffynhonnell XML wrth gwreiddyn %s: %o/%o"
+msgstr "Caniatâd cyfeiriadur/ffeil i'r ffynhonnell XML wrth wreiddyn %s: %o/%o"
 
-#: backends/xml-backend.c:615
-#, c-format
-msgid "Error syncing the XML backend directory cache: %s"
-msgstr "Methiant wrth gysoni storfa cyfeiriadur ochr gefn XML: %s"
-
-#: backends/xml-backend.c:680
+#: ../backends/markup-backend.c:741 ../backends/xml-backend.c:683
 msgid ""
 "Remove directory operation is no longer supported, just remove all the "
 "values in the directory"
 msgstr ""
-"Ni chynhelir y weithred dileu cyfeiriadur bellach; dilëwch pob gwerth yn y "
+"Ni chynhelir y weithred dileu cyfeiriadur bellach; dilëwch bob gwerth yn y "
 "cyfeiriadur yn lle hynny"
 
-#: backends/xml-backend.c:766
+#: ../backends/markup-backend.c:827 ../backends/xml-backend.c:769
 #, c-format
 msgid "Could not open lock directory for %s to remove locks: %s\n"
 msgstr "Methu agor y cyfeiriadur clo er mwyn i %s dynnu'r cloeon: %s\n"
 
-#: backends/xml-backend.c:784
+#: ../backends/markup-backend.c:840 ../backends/xml-backend.c:782
 #, c-format
 msgid "Could not remove file %s: %s\n"
 msgstr "Methu dileu ffeil %s: %s\n"
 
-#: backends/xml-backend.c:805
-msgid "Initializing XML backend module"
-msgstr "Cychwyn modiwl ochr gefn XML"
+#: ../backends/markup-backend.c:861
+msgid "Initializing Markup backend module"
+msgstr "Cychwyn modiwl ochr gefn uwchfarcio"
 
-#: backends/xml-backend.c:873
+#: ../backends/markup-backend.c:938 ../backends/xml-backend.c:880
 #, c-format
 msgid "Failed to give up lock on XML directory \"%s\": %s"
 msgstr "Methu rhoi'r clo ar gyfeiriadur XML \"%s\" i fyny: %s"
 
-#: backends/xml-cache.c:286
+#: ../backends/markup-tree.c:397
+msgid "Failed to write some configuration data to disk\n"
+msgstr "Methwyd ysgrifennu peth data cyfluniad at ddisg\n"
+
+#: ../backends/markup-tree.c:920 ../backends/xml-dir.c:1274
+#, c-format
+msgid "Could not make directory \"%s\": %s"
+msgstr "Methu creu cyfeiriadur \"%s\": %s"
+
+#: ../backends/markup-tree.c:960 ../backends/markup-tree.c:967
+#, c-format
+msgid "Could not remove \"%s\": %s\n"
+msgstr "Methu dileu \"%s\": %s\n"
+
+#: ../backends/markup-tree.c:1168
+#, c-format
+msgid "Failed to write \"%s\": %s\n"
+msgstr "Methu ysgrifennu \"%s\": %s\n"
+
+#: ../backends/markup-tree.c:1376
+#, c-format
+msgid "Failed to load file \"%s\": %s"
+msgstr "Methu llwytho'r ffeil \"%s\": %s"
+
+#: ../backends/markup-tree.c:1968
+#, c-format
+msgid "Line %d character %d: %s"
+msgstr "Llinell %d nod %d: %s"
+
+#: ../backends/markup-tree.c:2187
+#, c-format
+msgid "Attribute \"%s\" repeated twice on the same <%s> element"
+msgstr "Priodoledd \"%s\" wedi ei ailadrodd ddwywaith ar yr un elfen <%s>"
+
+#: ../backends/markup-tree.c:2204 ../backends/markup-tree.c:2228
+#, c-format
+msgid "Attribute \"%s\" is invalid on <%s> element in this context"
+msgstr ""
+"Mae'r priodoledd \"%s\" yn annilys ar yr elfen <%s> yn y cyd-destun hwn"
+
+#: ../backends/markup-tree.c:2253 ../gconf/gconf-value.c:109
+#, c-format
+msgid "Didn't understand `%s' (expected integer)"
+msgstr "Ddim yn deall `%s' (disgwyliwyd cyfanrif)"
+
+#: ../backends/markup-tree.c:2260 ../gconf/gconf-value.c:119
+#, c-format
+msgid "Integer `%s' is too large or small"
+msgstr "Mae'r cyfanrif `%s' yn rhy fawr neu'n rhy fach"
+
+# EFALLAI
+#: ../backends/markup-tree.c:2292 ../gconf/gconf-value.c:184
+#, c-format
+msgid "Didn't understand `%s' (expected true or false)"
+msgstr "Ddim yn deall `%s' (disgwyliwyd gwir neu anwir)"
+
+# EFALLAI (real?)
+#: ../backends/markup-tree.c:2316 ../gconf/gconf-value.c:140
+#, c-format
+msgid "Didn't understand `%s' (expected real number)"
+msgstr "Ddim yn deall `%s' (disgwyliwyd rhif real)"
+
+#: ../backends/markup-tree.c:2386 ../backends/markup-tree.c:2415
+#: ../backends/markup-tree.c:2455 ../backends/markup-tree.c:2479
+#: ../backends/markup-tree.c:2487 ../backends/markup-tree.c:2542
+#: ../backends/markup-tree.c:2607 ../backends/markup-tree.c:2719
+#: ../backends/markup-tree.c:2787 ../backends/markup-tree.c:2845
+#: ../backends/markup-tree.c:2995
+#, c-format
+msgid "No \"%s\" attribute on element <%s>"
+msgstr "Dim priodwedd \"%s\" ar elfen <%s>"
+
+#: ../backends/markup-tree.c:2395
+#, c-format
+msgid "Unknown value \"%s\" for \"%s\" attribute on element <%s>"
+msgstr "Gwerth anhysbys \"%s\" ar gyfer priodoledd \"%s\" ar elfen <%s>"
+
+#: ../backends/markup-tree.c:2429
+#, c-format
+msgid "Invalid ltype \"%s\" on <%s>"
+msgstr "Ltype annilys \"%s\" ar <%s>"
+
+#: ../backends/markup-tree.c:2509
+#, c-format
+msgid "Invalid first-element type \"%s\" on <%s>"
+msgstr "Math elfen gyntaf \"%s\" annilys ar <%s>"
+
+#: ../backends/markup-tree.c:2523
+#, c-format
+msgid "Invalid cdr_type \"%s\" on <%s>"
+msgstr "Math cdr_type annilys \"%s\" ar <%s>"
+
+#: ../backends/markup-tree.c:2559
+#, c-format
+msgid "Invalid list_type \"%s\" on <%s>"
+msgstr "Math list_type annilys \"%s\" ar <%s>"
+
+#: ../backends/markup-tree.c:2926
+msgid "Two <default> elements below a <local_schema>"
+msgstr "Dai elfen <default> islaw elfen <local_schema>"
+
+#: ../backends/markup-tree.c:2941
+msgid "Two <longdesc> elements below a <local_schema>"
+msgstr "Dwy elfen <longdesc> islaw elfen <local_schema>"
+
+#: ../backends/markup-tree.c:2948
+#, c-format
+msgid "Element <%s> is not allowed below <%s>"
+msgstr "Ni chaniateir elfen <%s> islaw elfen <%s>"
+
+#: ../backends/markup-tree.c:2973 ../backends/markup-tree.c:3078
+#: ../backends/markup-tree.c:3132 ../backends/markup-tree.c:3183
+#, c-format
+msgid "<%s> provided but current element does not have type %s"
+msgstr "Darparir <%s> on nid oes gan yr elfen gyfredol fath %s"
+
+#: ../backends/markup-tree.c:3056
+msgid "Two <car> elements given for same pair"
+msgstr "Dwy elfen <car> ar gyfer yr un pâr"
+
+#: ../backends/markup-tree.c:3070
+msgid "Two <cdr> elements given for same pair"
+msgstr "Dwy elfen <cdr> ar gyfer yr un pâr"
+
+#: ../backends/markup-tree.c:3124
+#, c-format
+msgid "<li> has wrong type %s"
+msgstr "Mae gan <li> y math anghywir %s"
+
+#: ../backends/markup-tree.c:3155
+#, c-format
+msgid "<%s> provided but parent <entry> does not have a value"
+msgstr "Darparir <%s> ond nid oes gan y rhiant <entry> werth"
+
+#: ../backends/markup-tree.c:3196 ../backends/markup-tree.c:3219
+#: ../backends/markup-tree.c:3241 ../backends/markup-tree.c:3258
+#, c-format
+msgid "Element <%s> is not allowed inside current element"
+msgstr "Ni chaniateir elfen <%s> o fewn yr elfen gyfredol"
+
+#: ../backends/markup-tree.c:3290
+#, c-format
+msgid "Outermost element in menu file must be <gconf> not <%s>"
+msgstr ""
+"Rhaid i'r elfen allanol oll mewn ffeil dewislen fod yn <gconf> nid <%s>"
+
+#: ../backends/markup-tree.c:3310 ../backends/markup-tree.c:3332
+#: ../backends/markup-tree.c:3337
+#, c-format
+msgid "Element <%s> is not allowed inside a <%s> element"
+msgstr "Ni chaniateir elfen <%s> o fewn elfen <%s>"
+
+#: ../backends/markup-tree.c:3481
+#, c-format
+msgid "No text is allowed inside element <%s>"
+msgstr "Ni chaniateir testun o fewn elfen <%s>"
+
+#: ../backends/markup-tree.c:3598 ../backends/markup-tree.c:4377
+#: ../backends/markup-tree.c:4395
+#, c-format
+msgid "Failed to open \"%s\": %s\n"
+msgstr "Methwyd agor \"%s\": %s\n"
+
+#: ../backends/markup-tree.c:3628
+#, c-format
+msgid "Error reading \"%s\": %s\n"
+msgstr "Gwall wrth ddarllen \"%s\": %s\n"
+
+#: ../backends/markup-tree.c:4482
+#, c-format
+msgid "Error writing file \"%s\": %s"
+msgstr "Gwall wrth ysgrifennu ffeil \"%s\": %s"
+
+#: ../backends/markup-tree.c:4494
+#, c-format
+msgid "Failed to move temporary file \"%s\" to final location \"%s\": %s"
+msgstr "Methwyd symud ffeil dros dro \"%s\" i'r lleoliad terfynol \"%s\": %s"
+
+#: ../backends/xml-backend.c:239
+msgid "Unloading XML backend module."
+msgstr "Dadlwytho modiwl ochr gefn XML."
+
+#: ../backends/xml-backend.c:618
+#, c-format
+msgid "Error syncing the XML backend directory cache: %s"
+msgstr "Methiant wrth gysoni storfa cyfeiriadur ochr gefn XML: %s"
+
+#: ../backends/xml-backend.c:809
+msgid "Initializing XML backend module"
+msgstr "Cychwyn modiwl ochr gefn XML"
+
+#: ../backends/xml-cache.c:286
 msgid "Failed to sync XML cache contents to disk"
 msgstr "Methu cysoni cynnwys y storfa XML i'r ddisgen"
 
-#: backends/xml-cache.c:316
+#: ../backends/xml-cache.c:316
 #, c-format
 msgid ""
 "Unable to remove directory `%s' from the XML backend cache, because it has "
 "not been successfully synced to disk"
 msgstr ""
-"Methu dileu cyfeiriadur `%s' o'r storfa XML, er nid yw'r cysoniad wedillwyddo"
+"Methu dileu cyfeiriadur `%s' o'r storfa XML, er nid yw'r cysoniad wedi "
+"llwyddo"
 
-#: backends/xml-dir.c:171
+#: ../backends/xml-dir.c:170
 #, c-format
 msgid "Could not stat `%s': %s"
-msgstr "Methwyd stat() o `%s: %s"
+msgstr "Methodd stat() o `%s: %s"
 
-#: backends/xml-dir.c:181
+#: ../backends/xml-dir.c:180
 #, c-format
 msgid "XML filename `%s' is a directory"
-msgstr "Mae'r enw ffeil XML `%s' yn cyfeirio at cyfeiriadur"
+msgstr "Mae'r enw ffeil XML `%s' yn cyfeirio at gyfeiriadur"
 
-#: backends/xml-dir.c:416 backends/xml-dir.c:425
+#: ../backends/xml-dir.c:417 ../backends/xml-dir.c:426
 #, c-format
 msgid "Failed to delete \"%s\": %s"
 msgstr "Methu dileu \"%s\": %s"
 
-#: backends/xml-dir.c:471
+#: ../backends/xml-dir.c:472
 #, c-format
 msgid "Failed to write file `%s': %s"
 msgstr "Methu wrth ysgrifennu ffeil `%s':%s"
 
-#: backends/xml-dir.c:484
+#: ../backends/xml-dir.c:486 ../backends/xml-dir.c:522
 #, c-format
 msgid "Failed to set mode on `%s': %s"
 msgstr "Methu gosod modd ar `%s': %s"
 
-#: backends/xml-dir.c:494
+#: ../backends/xml-dir.c:497
 #, c-format
 msgid "Failed to write XML data to `%s': %s"
-msgstr "Methu ysgrifennu data XMI i `%s': %s"
+msgstr "Methu ysgrifennu data XML i `%s': %s"
 
-#: backends/xml-dir.c:504 backends/xml-dir.c:1279
+#: ../backends/xml-dir.c:507 ../backends/xml-dir.c:1298
 #, c-format
 msgid "Failed to close file `%s': %s"
 msgstr "Methu cau ffeil `%s': %s"
 
-#: backends/xml-dir.c:520 backends/xml-dir.c:530
+#: ../backends/xml-dir.c:537 ../backends/xml-dir.c:547
 #, c-format
 msgid "Failed to rename `%s' to `%s': %s"
 msgstr "Methu ailenwi `%s' i `%s': %s"
 
-#: backends/xml-dir.c:536
+#: ../backends/xml-dir.c:553
 #, c-format
 msgid "Failed to restore `%s' from `%s': %s"
 msgstr "Methu adfer `%s' o `%s': %s"
 
-#: backends/xml-dir.c:548
+#: ../backends/xml-dir.c:565
 #, c-format
 msgid "Failed to delete old file `%s': %s"
 msgstr "Methu dileu hen ffeil `%s': %s"
 
 #  These are all fatal errors
 #. These are all fatal errors
-#: backends/xml-dir.c:978
+#: ../backends/xml-dir.c:997
 #, c-format
 msgid "Failed to stat `%s': %s"
-msgstr "Methwyd stat() o `%s': %s"
+msgstr "Methodd stat o `%s': %s"
 
-#: backends/xml-dir.c:1152
+#: ../backends/xml-dir.c:1171
 #, c-format
 msgid "Duplicate entry `%s' in `%s', ignoring"
 msgstr "Cofnod dyblyg `%s' yn `%s', anwybyddu"
 
-#: backends/xml-dir.c:1174
+#: ../backends/xml-dir.c:1193
 #, c-format
 msgid "Entry with no name in XML file `%s', ignoring"
 msgstr "Cofnod heb enw yn y ffeil XML `%s', anwybyddu"
 
-#: backends/xml-dir.c:1182
+#: ../backends/xml-dir.c:1201
 #, c-format
 msgid "A toplevel node in XML file `%s' is <%s> rather than <entry>, ignoring"
 msgstr ""
-"Mae nôd lefel dop yn y ffeil XML `%s' yn <%s> yn hytrach na <entry>, "
+"Mae nod lefel dop yn y ffeil XML `%s' yn <%s> yn hytrach na <entry>, "
 "anwybyddu"
 
-#: backends/xml-dir.c:1255
-#, c-format
-msgid "Could not make directory \"%s\": %s"
-msgstr "Methu creu cyfeiriadur \"%s\": %s"
-
-#: backends/xml-dir.c:1271
+#: ../backends/xml-dir.c:1290
 #, c-format
 msgid "Failed to create file `%s': %s"
 msgstr "Methu creu ffeil `%s': %s"
 
-#: backends/xml-dir.c:1370
+#: ../backends/xml-dir.c:1389
 #, c-format
 msgid "Failed to parse XML file \"%s\""
 msgstr "Methu gramadegu'r ffeil XML \"%s\""
 
 #  There was an error
 #. There was an error
-#: backends/xml-entry.c:154
+#: ../backends/xml-entry.c:154
 #, c-format
 msgid "Ignoring XML node with name `%s': %s"
-msgstr "Anwybyddu nôd XML â'r enw `%s': %s"
+msgstr "Anwybyddu nod XML â'r enw `%s': %s"
 
-#: backends/xml-entry.c:332
+#: ../backends/xml-entry.c:332
 #, c-format
 msgid "Ignoring schema name `%s', invalid: %s"
-msgstr "Anwybyddu sgema â'r enw `%s', annillys: %s"
+msgstr "Anwybyddu sgema â'r enw `%s', annilys: %s"
 
-# EFALLAI (nôd - defnyddir 'nod' ar gyfer 'character')
-#: backends/xml-entry.c:380
+# EFALLAI (nod - defnyddir 'nod' ar gyfer 'character')
+#: ../backends/xml-entry.c:380
 #, c-format
 msgid "Ignoring XML node `%s': %s"
-msgstr "Anwybyddu nôd XML `%s': %s"
+msgstr "Anwybyddu nod XML `%s': %s"
 
-#: backends/xml-entry.c:732
+#: ../backends/xml-entry.c:732
 #, c-format
 msgid "Failed reading default value for schema: %s"
 msgstr "Methwyd darllen gwerth rhagosodedig i'r sgema: %s"
 
-#: backends/xml-entry.c:952
+#: ../backends/xml-entry.c:952
 #, c-format
 msgid "No \"type\" attribute for <%s> node"
-msgstr "Dim priodoledd \"type\" i nôd <%s>"
+msgstr "Dim priodoledd \"type\" i nod <%s>"
 
-#: backends/xml-entry.c:966
+#: ../backends/xml-entry.c:966
 #, c-format
 msgid "A node has unknown \"type\" attribute `%s', ignoring"
-msgstr "Mae gan nôd briodoledd anhysbys `%s', anwybyddu"
+msgstr "Mae gan nod briodoledd anhysbys `%s', anwybyddu"
 
-#: backends/xml-entry.c:981
+#: ../backends/xml-entry.c:981
 msgid "No \"value\" attribute for node"
-msgstr "Does gan nôd ddim priodoledd \"value\""
+msgstr "Does gan nod ddim priodoledd \"value\""
 
-#: backends/xml-entry.c:1029 backends/xml-entry.c:1105
+#: ../backends/xml-entry.c:1029 ../backends/xml-entry.c:1105
 #, c-format
 msgid "Didn't understand XML node <%s> inside an XML list node"
-msgstr "Ddim yn deall nôd XML <%s> tu fewn i nod rhestr XML"
+msgstr "Ddim yn deall nod XML <%s> tu fewn i nod rhestr XML"
 
-#: backends/xml-entry.c:1063
+#: ../backends/xml-entry.c:1063
 msgid "Invalid type (list, pair, or unknown) in a list node"
-msgstr "Math annilys (rhestr, pâr, neu anhysbys) mewn nôd rhestr"
+msgstr "Math annilys (rhestr, pâr, neu anhysbys) mewn nod rhestr"
 
-#: backends/xml-entry.c:1086
+#: ../backends/xml-entry.c:1086
 #, c-format
 msgid "Bad XML node: %s"
-msgstr "Nôd XML gwael: %s"
+msgstr "Nod XML gwael: %s"
 
 # EFALLAI
-#: backends/xml-entry.c:1094
+#: ../backends/xml-entry.c:1094
 #, c-format
 msgid "List contains a badly-typed node (%s, should be %s)"
-msgstr "Mae'r rhestr yn cynnwys nôd wedi ei cam-fathu (%s, dylai fod %s)"
+msgstr "Mae'r rhestr yn cynnwys nod wedi ei gam-fathu (%s, dylai fod %s)"
 
-#: backends/xml-entry.c:1146
+#: ../backends/xml-entry.c:1146
 #, c-format
 msgid "Ignoring bad car from XML pair: %s"
 msgstr "Anwybyddu CAR gwael o bâr XML: %s"
 
-#: backends/xml-entry.c:1155 backends/xml-entry.c:1178
+#: ../backends/xml-entry.c:1155 ../backends/xml-entry.c:1178
 msgid "parsing XML file: lists and pairs may not be placed inside a pair"
-msgstr "gramadegu ffeil XML: ni chaniateir rhoi rhestri a parau o fewn pâr"
+msgstr "gramadegu ffeil XML: ni chaniateir rhoi rhestri a pharau o fewn pâr"
 
-#: backends/xml-entry.c:1168
+#: ../backends/xml-entry.c:1168
 #, c-format
 msgid "Ignoring bad cdr from XML pair: %s"
 msgstr "Anwybyddu CDR gwael o bâr XML: %s"
 
-#: backends/xml-entry.c:1187
+#: ../backends/xml-entry.c:1187
 #, c-format
 msgid "Didn't understand XML node <%s> inside an XML pair node"
-msgstr "Methu deall nôd XML <%s> tu fewn i nôd pâr XML"
+msgstr "Methu deall nod XML <%s> tu fewn i nôd pâr XML"
 
-#: backends/xml-entry.c:1205
+#: ../backends/xml-entry.c:1205
 msgid "Didn't find car and cdr for XML pair node"
-msgstr "Ni chanfodwyd CAR a CDR ar gyfer nôd pâr XML"
+msgstr "Ni chanfuwyd CAR a CDR ar gyfer nod pâr XML"
 
-#: backends/xml-entry.c:1211
+#: ../backends/xml-entry.c:1211
 msgid "Missing cdr from pair of values in XML file"
-msgstr "CDR ar goll o pâr o werthoedd mewn ffeil XML"
+msgstr "CDR ar goll o bâr o werthoedd mewn ffeil XML"
 
-#: backends/xml-entry.c:1218
+#: ../backends/xml-entry.c:1218
 msgid "Missing car from pair of values in XML file"
-msgstr "CAR ar goll o pâr o werthoedd mewn ffeil XML"
+msgstr "CAR ar goll o bâr o werthoedd mewn ffeil XML"
 
-#: backends/xml-entry.c:1223
+#: ../backends/xml-entry.c:1223
 msgid "Missing both car and cdr values from pair in XML file"
-msgstr "CAR a CDR ar goll o pâr mewn ffeil XML"
+msgstr "CAR a CDR ar goll o bâr mewn ffeil XML"
+
+#: ../gconf/gconf-backend.c:62
+#, c-format
+msgid "`%c' is an invalid character in a configuration storage address"
+msgstr "Mae `%c' nod annilys o fewn cyfeiriad storfa cyfluniad"
 
 #. -- end debug only
-#: gconf/gconf-backend.c:167
+#: ../gconf/gconf-backend.c:216
 #, c-format
 msgid "No such file `%s'\n"
 msgstr "Dim ffeil `%s'\n"
 
-#: gconf/gconf-backend.c:195
+#: ../gconf/gconf-backend.c:261
+#, c-format
+msgid "Backend `%s' failed return a vtable\n"
+msgstr "Methodd yr ochr gen `%s' ddychwelyd vtable\n"
+
+#: ../gconf/gconf-backend.c:276
+#, c-format
+msgid "Backend `%s' missing required vtable member `%s'\n"
+msgstr "Ochr gefn `%s' heb aelod vtable angenrheidiol `%s'\n"
+
+#: ../gconf/gconf-backend.c:302
+#, c-format
+msgid "Bad address `%s': %s"
+msgstr "Cyfeiriad gwallus `%s': %s"
+
+#: ../gconf/gconf-backend.c:312
 #, c-format
 msgid "Bad address `%s'"
 msgstr "Cyfeiriad gwallus `%s'"
 
-#: gconf/gconf-backend.c:220
+#: ../gconf/gconf-backend.c:337
 msgid "GConf won't work without dynamic module support (gmodule)"
 msgstr "Ni fydd GConf yn gweithio heb gynhaliaeth modylau deinameg (gmodule)"
 
-#: gconf/gconf-backend.c:230
+#: ../gconf/gconf-backend.c:346
 #, c-format
 msgid "Error opening module `%s': %s\n"
-msgstr "Gwall wrth llwytho'r modiwl `%s': %s\n"
+msgstr "Gwall wrth lwytho'r modiwl `%s': %s\n"
 
-#: gconf/gconf-backend.c:262
+#: ../gconf/gconf-backend.c:357
+#, c-format
+msgid "Error initializing module `%s': %s\n"
+msgstr "Gwall wrth ymgychwyn y modiwl `%s': %s\n"
+
+#: ../gconf/gconf-backend.c:388
 #, c-format
 msgid "Couldn't locate backend module for `%s'"
 msgstr "Methu darganfod modiwl ochr gefn ar gyfer `%s'"
 
-#: gconf/gconf-backend.c:299
+#: ../gconf/gconf-backend.c:425
 msgid "Failed to shut down backend"
-msgstr "Methwyd cau yr ochr gefn"
+msgstr "Methwyd cau'r ochr gefn"
 
-#: gconf/gconf-client.c:344 gconf/gconf-client.c:362
+#: ../gconf/gconf-client.c:344 ../gconf/gconf-client.c:362
 #, c-format
 msgid "GConf Error: %s\n"
 msgstr "Gwall GConf: %s\n"
 
-#: gconf/gconf-client.c:896
+#: ../gconf/gconf-client.c:912
 #, c-format
 msgid "GConf warning: failure listing pairs in `%s': %s"
 msgstr "Rhybudd GConf: methu rhestru parau yn `%s': %s"
 
-#: gconf/gconf-client.c:1181
+#: ../gconf/gconf-client.c:1197
 #, c-format
 msgid "Expected `%s' got `%s' for key %s"
 msgstr "Disgwyliwyd `%s', cafwyd `%s' am allwedd %s"
 
-#: gconf/gconf-database.c:155
+#: ../gconf/gconf-database.c:211
+msgid "Received invalid value in set request"
+msgstr "Derbyniwyd gwerth annilys yn y cais gosod"
+
+#: ../gconf/gconf-database.c:219
+#, c-format
+msgid "Couldn't make sense of CORBA value received in set request for key `%s'"
+msgstr "Methu deall gwerth CORBA a dderbyniwyd mewn cais gosod am allwedd `%s'"
+
+#: ../gconf/gconf-database.c:502
+msgid "Received request to drop all cached data"
+msgstr "Derbyniwyd cais i gael gwared holl ddata'r storfa"
+
+#: ../gconf/gconf-database.c:519
+msgid "Received request to sync synchronously"
+msgstr "Derbyniwyd cais i gysoni yn gydamseredig"
+
+#: ../gconf/gconf-database.c:807
+msgid "Fatal error: failed to get object reference for ConfigDatabase"
+msgstr "Gwall terfynol: methwyd cael "
+
+#: ../gconf/gconf-database.c:973
 #, c-format
 msgid "Failed to sync one or more sources: %s"
 msgstr "Methwyd cysoni un ffynhonnell neu fwy: %s"
 
-#: gconf/gconf-database.c:223 gconf/gconf-sources.c:1566
+#: ../gconf/gconf-database.c:1046
+#, c-format
+msgid ""
+"Error obtaining new value for `%s' after change notification from backend `%"
+"s': %s"
+msgstr ""
+"Gwall wrth gyrchu gwerth newydd ar gyfer `%s' ar ôl hysbysiad newid o'r ochr "
+"gefn `%s': %s"
+
+#: ../gconf/gconf-database.c:1119
+#, c-format
+msgid ""
+"Failed to log addition of listener %s (%s);will not be able to restore this "
+"listener on gconfd restart, resulting in unreliable notification of "
+"configuration changes."
+msgstr ""
+"Methwyd cofnodi ychwanegiad y gwrandäwr %s (%s); ni ellir adfer y gwrandäwr "
+"hwn pan mae gconfd yn ailddechrau, yn arwain at hysbysiad annibynadwy "
+"ynghylch newidiadau cyfluniad."
+
+#: ../gconf/gconf-database.c:1153
+#, c-format
+msgid "Listener ID %lu doesn't exist"
+msgstr "Nid yw'r ID gwrandäwr %lu yn bodoli"
+
+#: ../gconf/gconf-database.c:1167
+#, c-format
+msgid ""
+"Failed to log removal of listener to logfile (most likely harmless, may "
+"result in a notification weirdly reappearing): %s"
+msgstr ""
+"Methwyd cofnodi tyniad gwrandäwr i'r ffeil cofnodi (diniwed, mwy na thebyg, "
+"efallai bydd hysbysiad yn ailymddangos mewn ffordd od): %s"
+
+#: ../gconf/gconf-database.c:1299 ../gconf/gconf-sources.c:1697
 #, c-format
 msgid "Error getting value for `%s': %s"
 msgstr "Gwall wrth gael gwerth am `%s': %s"
 
-#: gconf/gconf-database.c:269
+#: ../gconf/gconf-database.c:1349
 #, c-format
 msgid "Error setting value for `%s': %s"
 msgstr "Gwall wrth osod gwerth am `%s': %s"
 
-#: gconf/gconf-database.c:324
+#: ../gconf/gconf-database.c:1397
 #, c-format
 msgid "Error unsetting `%s': %s"
-msgstr "Gwall wrth ddatosod '%s': %s"
+msgstr "Gwall wrth ddadosod '%s': %s"
 
-#: gconf/gconf-database.c:353
+#: ../gconf/gconf-database.c:1426
 #, c-format
 msgid "Error getting default value for `%s': %s"
 msgstr "Gwall wrth gael gwerth rhagosodedig ar gyfer '%s': %s"
 
-#: gconf/gconf-database.c:400
+#: ../gconf/gconf-database.c:1484
 #, c-format
 msgid "Error unsetting \"%s\": %s"
-msgstr "Gwall wrth ddatosod \"%s\": %s"
+msgstr "Gwall wrth ddadosod \"%s\": %s"
 
-#: gconf/gconf-database.c:432
+#: ../gconf/gconf-database.c:1515
 #, c-format
 msgid "Error getting new value for \"%s\": %s"
 msgstr "Gwall wrth gael gwerth newydd ar gyfer \"%s\": %s"
 
-#: gconf/gconf-database.c:478
+#: ../gconf/gconf-database.c:1570
 #, c-format
 msgid "Error checking existence of `%s': %s"
 msgstr "Gwall wrth wirio bodolaeth `%s': %s"
 
-#: gconf/gconf-database.c:502
+#: ../gconf/gconf-database.c:1594
 #, c-format
 msgid "Error removing directory \"%s\": %s"
 msgstr "Gwall wrth ddileu cyfeiriadur `%s': %s"
 
-#: gconf/gconf-database.c:529
+#: ../gconf/gconf-database.c:1621
 #, c-format
 msgid "Failed to get all entries in `%s': %s"
 msgstr "Methwyd cael pob cofnod yn `%s': %s"
 
-#: gconf/gconf-database.c:555
+#: ../gconf/gconf-database.c:1647
 #, c-format
 msgid "Error listing dirs in `%s': %s"
-msgstr "Gwall wrth rhestru cyfeiriaduron yn `%s': %s"
+msgstr "Gwall wrth restru cyfeiriaduron yn `%s': %s"
 
-#: gconf/gconf-database.c:576
+#: ../gconf/gconf-database.c:1668
 #, c-format
 msgid "Error setting schema for `%s': %s"
-msgstr "Gwall wrth osod sgema argyfer `%s': %s"
+msgstr "Gwall wrth osod sgema ar gyfer `%s': %s"
 
-#: gconf/gconf-error.c:25
+#: ../gconf/gconf-error.c:25
 msgid "Success"
 msgstr "Llwyddiant"
 
-#: gconf/gconf-error.c:26
+#: ../gconf/gconf-error.c:26
 msgid "Failed"
 msgstr "Methwyd"
 
-#: gconf/gconf-error.c:27
+#: ../gconf/gconf-error.c:27
 msgid "Configuration server couldn't be contacted"
-msgstr "Methwyd cysylltu a'r gweithydd cyfluniad"
+msgstr "Methwyd cysylltu â'r gweinydd cyfluniad"
 
-#: gconf/gconf-error.c:28
+#: ../gconf/gconf-error.c:28
 msgid "Permission denied"
 msgstr "Dim caniatâd"
 
-#: gconf/gconf-error.c:29
+#: ../gconf/gconf-error.c:29
 msgid "Couldn't resolve address for configuration source"
-msgstr "Methwyd gatrys cyfeiriad ar gyfer ffynhonnell cyfluniad"
+msgstr "Methwyd datrys cyfeiriad ar gyfer ffynhonnell cyfluniad"
 
-#: gconf/gconf-error.c:30
+#: ../gconf/gconf-error.c:30
 msgid "Bad key or directory name"
 msgstr "Enw allwedd neu gyfeiriadur drwg"
 
-#: gconf/gconf-error.c:31
+#: ../gconf/gconf-error.c:31
 msgid "Parse error"
 msgstr "Gwall gramadegu"
 
-#: gconf/gconf-error.c:32
+#: ../gconf/gconf-error.c:32
 msgid "Corrupt data in configuration source database"
-msgstr "Data llygredig yn y cronfa ddata ffynhonnellau cyfluniad"
+msgstr "Data llygredig yn y gronfa ddata ffynonellau cyfluniad"
 
-#: gconf/gconf-error.c:33
+#: ../gconf/gconf-error.c:33
 msgid "Type mismatch"
-msgstr "Anghyfatebiad mathau"
+msgstr "Mathau ddim yn cyfateb"
 
-#: gconf/gconf-error.c:34
+#: ../gconf/gconf-error.c:34
 msgid "Key operation on directory"
 msgstr "Gweithred allwedd ar gyfeiriadur"
 
-#: gconf/gconf-error.c:35
+#: ../gconf/gconf-error.c:35
 msgid "Directory operation on key"
 msgstr "Gweithred cyfeiriadur ar allwedd"
 
-#: gconf/gconf-error.c:36
+#: ../gconf/gconf-error.c:36
 msgid "Can't overwrite existing read-only value"
-msgstr "Methu trosysgrifennu gwerth darllen-yn-unig sy'n bodoli eisioes"
+msgstr "Methu trosysgrifo gwerth darllen-yn-unig sy'n bodoli eisoes"
 
-#: gconf/gconf-error.c:37
+#: ../gconf/gconf-error.c:37
 msgid "Object Activation Framework error"
 msgstr "Gwall Fframwaith Gweithredu Gwrthrychau (OAF)"
 
-#: gconf/gconf-error.c:38
+#: ../gconf/gconf-error.c:38
 msgid "Operation not allowed without configuration server"
 msgstr "Ni chaniateir y weithred heb weinydd cyfluniad"
 
-#: gconf/gconf-error.c:39
+#: ../gconf/gconf-error.c:39
 msgid "Failed to get a lock"
 msgstr "Methwyd cael clo"
 
-#: gconf/gconf-error.c:40
+#: ../gconf/gconf-error.c:40
 msgid "No database available to save your configuration"
 msgstr "Dim cronfa ddata ar gael er mwyn arbed eich cyfluniad"
 
-#: gconf/gconf-internals.c:71
+#: ../gconf/gconf-internals.c:91
 #, c-format
 msgid "No '/' in key \"%s\""
 msgstr "Dim '/' yn yr allwedd \"%s\""
 
-#: gconf/gconf-internals.c:341
+#: ../gconf/gconf-internals.c:203
+#, c-format
+msgid "Invalid UTF-8 in string value in '%s'"
+msgstr "UTF-8 annilys mewn gwerth llinyn yn '%s'"
+
+#: ../gconf/gconf-internals.c:262
+msgid "Couldn't interpret CORBA value for list element"
+msgstr "Methwyd dehongli gwerth CORBA ar gyfer elfen rhestr"
+
+#: ../gconf/gconf-internals.c:264
+#, c-format
+msgid "Incorrect type for list element in %s"
+msgstr "Math anghywir ar gyfer elfen rhestr yn %s"
+
+#: ../gconf/gconf-internals.c:277
+msgid "Received list from gconfd with a bad list type"
+msgstr "Derbyniwyd rhestr o gconfd gyda math rhestr wael"
+
+#: ../gconf/gconf-internals.c:458
+msgid "Failed to convert object to IOR"
+msgstr "Methwyd trosi gwrthrych i IOR"
+
+#: ../gconf/gconf-internals.c:595
+msgid "Invalid UTF-8 in locale for schema"
+msgstr "UTF-8 annilys yn y locale ar gyfer y sgema"
+
+#: ../gconf/gconf-internals.c:603
+msgid "Invalid UTF-8 in short description for schema"
+msgstr "UTF-8 annilys yn nisgrifiad byr ar gyfer y sgema"
+
+#: ../gconf/gconf-internals.c:611
+msgid "Invalid UTF-8 in long description for schema"
+msgstr "UTF-8 annilys yn nisgrifiad hir ar gyfer y sgema"
+
+#: ../gconf/gconf-internals.c:619
+msgid "Invalid UTF-8 in owner for schema"
+msgstr "UTF-8 annilys ym mherchennog y sgema"
+
+#: ../gconf/gconf-internals.c:864
 #, c-format
 msgid "Couldn't open path file `%s': %s\n"
 msgstr "Methu agor ffeil llwybr `%s': %s\n"
 
-#: gconf/gconf-internals.c:390
+#: ../gconf/gconf-internals.c:920
 #, c-format
 msgid "Adding source `%s'\n"
 msgstr "Ychwanegu'r ffynhonnell `%s'\n"
 
-#: gconf/gconf-internals.c:402
+#: ../gconf/gconf-internals.c:935
 #, c-format
 msgid "Read error on file `%s': %s\n"
 msgstr "Gwall darllen ar y ffeil `%s': %s\n"
 
-#: gconf/gconf-internals.c:706 gconf/gconf-internals.c:772
-#: gconf/gconf-value.c:154 gconf/gconf-value.c:253 gconf/gconf-value.c:395
-#: gconf/gconf-value.c:1681
+#: ../gconf/gconf-internals.c:1268 ../gconf/gconf-internals.c:1334
+#: ../gconf/gconf-value.c:153 ../gconf/gconf-value.c:252
+#: ../gconf/gconf-value.c:394 ../gconf/gconf-value.c:1667
 msgid "Text contains invalid UTF-8"
 msgstr "Testun yn cynnwys UTF-8 annilys"
 
-#: gconf/gconf-internals.c:857
+#: ../gconf/gconf-internals.c:1419
 #, c-format
 msgid "Expected list, got %s"
-msgstr "Disgwylwyd rhestr, canfu %s"
+msgstr "Disgwyliwyd rhestr, canfu %s"
 
-#: gconf/gconf-internals.c:867
+#: ../gconf/gconf-internals.c:1429
 #, c-format
 msgid "Expected list of %s, got list of %s"
-msgstr "Disgwylwyd rhestr o %s, canfu rhestr o %s"
+msgstr "Disgwyliwyd rhestr o %s, canfu rhestr o %s"
 
-#: gconf/gconf-internals.c:995
+#: ../gconf/gconf-internals.c:1557
 #, c-format
 msgid "Expected pair, got %s"
 msgstr "Disgwylwyd par, canfu %s"
 
-#: gconf/gconf-internals.c:1009
+#: ../gconf/gconf-internals.c:1571
 #, c-format
 msgid "Expected (%s,%s) pair, got a pair with one or both values missing"
-msgstr "Disgwylwyd pâr (%s, %s), cafwyd pâr gyda un neu'r ddau werth ar goll"
+msgstr "Disgwyliwyd pâr (%s, %s), cafwyd pâr gydag un neu'r ddau werth ar goll"
 
-#: gconf/gconf-internals.c:1025
+#: ../gconf/gconf-internals.c:1587
 #, c-format
 msgid "Expected pair of type (%s,%s) got type (%s,%s)"
-msgstr "Disgwylwyd pâr o'r math (%s,%s), cafwyd math (%s,%s)"
+msgstr "Disgwyliwyd pâr o'r math (%s,%s), cafwyd math (%s,%s)"
 
-#: gconf/gconf-internals.c:1141
+#: ../gconf/gconf-internals.c:1703
 msgid "Quoted string doesn't begin with a quotation mark"
 msgstr "Nid yw'r llinyn wedi ei ddyfynnu yn dechrau gyda dyfynnod"
 
-#: gconf/gconf-internals.c:1203
+#: ../gconf/gconf-internals.c:1764
 msgid "Quoted string doesn't end with a quotation mark"
 msgstr "Nid yw'r llinyn wedi ei ddyfynnu yn gorffen gyda dyfynnod"
 
-#: gconf/gconf-internals.c:1339
+#: ../gconf/gconf-internals.c:1882
 msgid "Encoded value is not valid UTF-8"
 msgstr "Nid yw'r gwerth wedi ei amgodio yn UTF-8 dilys"
 
-#: gconf/gconf-internals.c:1841
-#, c-format
-msgid "IOR file '%s' not opened successfully, no gconfd located: %s"
-msgstr "Y ffeil IOR '%s' heb ei agor yn llwyddiannus, ni chanfodwyd gconfd: %s"
-
-#: gconf/gconf-internals.c:1871
-#, c-format
-msgid "gconftool or other non-gconfd process has the lock file '%s'"
-msgstr "mae gconftool neu rhyw broses arall nid gconf ydyw y ffeil clo '%s'"
-
-# EFALLAI
-#: gconf/gconf-internals.c:1888
-msgid "couldn't contact ORB to resolve existing gconfd object reference"
-msgstr ""
-"methwyd cysylltu a ORB er mwyn datrys cyfeirnod gconfd gwrthrych sy'n bodoli"
-
-#: gconf/gconf-internals.c:1898
-#, c-format
-msgid "Failed to convert IOR '%s' to an object reference"
-msgstr "Methwyd trosi yr IOR '%s' i gyfeirnod gwrthrydd"
-
-#: gconf/gconf-internals.c:1953
+#: ../gconf/gconf-internals.c:2366
 #, c-format
 msgid "Could not lock temporary file '%s': %s"
 msgstr "Methu cloi ffeil dros dro '%s': %s"
 
-#: gconf/gconf-internals.c:1980
+#: ../gconf/gconf-internals.c:2393
 #, c-format
 msgid "Could not create file '%s', probably because it already exists"
-msgstr "Methu creu'r ffeil '%s', mwy na thebyg am ei fod yn bodoli eisioes"
+msgstr "Methu creu'r ffeil '%s', mwy na thebyg am ei fod yn bodoli eisoes"
 
-#: gconf/gconf-internals.c:2027
+#: ../gconf/gconf-internals.c:2461
 #, c-format
 msgid "Failed to create or open '%s'"
 msgstr "Methu creu neu agor '%s'"
 
-#: gconf/gconf-internals.c:2037
+#: ../gconf/gconf-internals.c:2471
 #, c-format
 msgid ""
 "Failed to lock '%s': probably another process has the lock, or your "
 "operating system has NFS file locking misconfigured (%s)"
 msgstr ""
-"Methwyd cloi '%s': mwy na thebyg mae gan proses arall y clo, neu mae gan "
-"eith system weithredu cloi NFS wedi ei camgyflunio (%s)"
+"Methwyd cloi '%s': mwy na thebyg mae gan broses arall y clo, neu mae cloi "
+"NFS wedi ei gam-gyflunio ar eich system (%s)"
+
+#: ../gconf/gconf-internals.c:2491
+#, c-format
+msgid "Failed to remove '%s': %s"
+msgstr "Methwyd tynnu '%s': %s"
+
+#: ../gconf/gconf-internals.c:2515
+#, c-format
+msgid "IOR file '%s' not opened successfully, no gconfd located: %s"
+msgstr "Y ffeil IOR '%s' heb ei agor yn llwyddiannus, ni chanfuwyd gconfd: %s"
+
+#: ../gconf/gconf-internals.c:2545
+#, c-format
+msgid "gconftool or other non-gconfd process has the lock file '%s'"
+msgstr ""
+"mae gan gconftool neu ryw broses arall (heb fod yn gconfd) y ffeil clo '%s'"
 
 # EFALLAI
-#: gconf/gconf-internals.c:2121
-#, c-format
-msgid "We didn't have the lock on file `%s', but we should have"
-msgstr "Nid oedd gennym clo ar y ffeil `%s', ond fe ddylwyd"
+#: ../gconf/gconf-internals.c:2562
+msgid "couldn't contact ORB to resolve existing gconfd object reference"
+msgstr ""
+"methwyd cysylltu â ORB er mwyn datrys cyfeirnod gconfd gwrthrych sy'n bodoli"
 
-#: gconf/gconf-internals.c:2142
+#: ../gconf/gconf-internals.c:2572
 #, c-format
-msgid "Failed to link '%s' to '%s': %s"
-msgstr "Methwyd cysylltu '%s' at '%s': %s"
+msgid "Failed to convert IOR '%s' to an object reference"
+msgstr "Methwyd trosi'r IOR '%s' i gyfeirnod gwrthrych"
 
-#: gconf/gconf-internals.c:2154
-#, c-format
-msgid "Failed to remove lock file `%s': %s"
-msgstr "Methwyd dileu ffeil clo `%s': %s"
-
-#: gconf/gconf-internals.c:2173
-#, c-format
-msgid "Failed to clean up file '%s': %s"
-msgstr "Methwyd tacluso ffeil '%s': %s"
-
-#: gconf/gconf-internals.c:2187
-#, c-format
-msgid "Failed to remove lock directory `%s': %s"
-msgstr "Methwyd dileu cyfeiriadur clo `%s': %s"
-
-#: gconf/gconf-internals.c:2224
+#: ../gconf/gconf-internals.c:2624
 #, c-format
 msgid "couldn't create directory `%s': %s"
 msgstr "methwyd creu cyfeiriadur `%s': %s"
 
-#: gconf/gconf-internals.c:2283
+#: ../gconf/gconf-internals.c:2681
 #, c-format
 msgid "Can't write to file `%s': %s"
 msgstr "Methu ysgrifennu ar ffeil `%s': %s"
 
-#: gconf/gconf-internals.c:2327
+# EFALLAI
+#: ../gconf/gconf-internals.c:2722
+#, c-format
+msgid "We didn't have the lock on file `%s', but we should have"
+msgstr "Nid oedd gennym y clo dylai fod gennym ar y ffeil `%s'"
+
+#: ../gconf/gconf-internals.c:2745
+#, c-format
+msgid "Failed to link '%s' to '%s': %s"
+msgstr "Methwyd cysylltu '%s' at '%s': %s"
+
+#: ../gconf/gconf-internals.c:2757
+#, c-format
+msgid "Failed to remove lock file `%s': %s"
+msgstr "Methwyd dileu ffeil clo `%s': %s"
+
+#: ../gconf/gconf-internals.c:2780
+#, c-format
+msgid "Failed to clean up file '%s': %s"
+msgstr "Methwyd tacluso ffeil '%s': %s"
+
+#: ../gconf/gconf-internals.c:2796
+#, c-format
+msgid "Failed to remove lock directory `%s': %s"
+msgstr "Methwyd dileu cyfeiriadur clo `%s': %s"
+
+#: ../gconf/gconf-internals.c:2838
 #, c-format
 msgid "Failed to unlink lock file %s: %s\n"
 msgstr "Methwyd datgysylltu ffeil clo %s: %s\n"
 
-#: gconf/gconf-sanity-check.c:43 gconf/gconftool.c:86
-msgid "Help options"
-msgstr "Opsiynau cymorth"
+#: ../gconf/gconf-internals.c:2992 ../gconf/gconfd.c:570
+#, c-format
+msgid "Failed to stat %s: %s"
+msgstr "Methwyd stat() o %s: %s"
 
-#: gconf/gconf-sanity-check.c:79 gconf/gconftool.c:508
+#: ../gconf/gconf-internals.c:3014
+#, c-format
+msgid "Server ping error: %s"
+msgstr "Gwall ping gweinydd: %s"
+
+#: ../gconf/gconf-internals.c:3039
+#, c-format
+msgid "Failed to create pipe for communicating with spawned gconf daemon: %s\n"
+msgstr "Methu creu piben er mwyn cyfathrebu gyda'r daemon gconf a grëwyd: %s\n"
+
+#: ../gconf/gconf-internals.c:3063
+#, c-format
+msgid "Failed to launch configuration server: %s\n"
+msgstr "Methu lansio gweinydd cyfluniad: %s\n"
+
+#: ../gconf/gconf-internals.c:3088
 #, c-format
 msgid ""
-"Error on option %s: %s.\n"
+"Failed to contact configuration server; some possible causes are that you "
+"need to enable TCP/IP networking for ORBit, or you have stale NFS locks due "
+"to a system crash. See http://www.gnome.org/projects/gconf/ for information. "
+"(Details - %s)"
+msgstr ""
+"Methwyd cysylltu â gweinydd cyfluniad; rhai achosion posib: rhaid i chi "
+"alluogi rhwydweithio TCP/IP ar gyfer ORBit, neu mae gennych hen gloeon NFS "
+"oherwydd chwaliad system. Gweler http://www.gnome.org/projects/gconf/ am fwy "
+"o wybodaeth. (Manylion - %s)"
+
+#: ../gconf/gconf-internals.c:3089
+msgid "none"
+msgstr "dim"
+
+#: ../gconf/gconf-sanity-check.c:46
+msgid "- Sanity checks for GConf"
+msgstr "- Profion callineb i GConf"
+
+#: ../gconf/gconf-sanity-check.c:55 ../gconf/gconftool.c:592
+#, c-format
+msgid ""
+"Error while parsing options: %s.\n"
 "Run '%s --help' to see a full list of available command line options.\n"
 msgstr ""
-"Gwall ar yr opsiwn %s: %s.\n"
-"Defnyddiwch '%s --help' er mwyn gweld rhestr o'r holl opsiynau llinell\n"
-"gorchymyn sydd ar gael.\n"
+"Gwall wrth ramadegu opsiynau: %s.\n"
+"Defnyddiwch '%s --help' er mwyn gweld rhestr lawn o'r holl opsiynau\n"
+"llinell orchymyn sydd ar gael.\n"
 
-#: gconf/gconf-sanity-check.c:144 gconf/gconf-sanity-check.c:169
+#: ../gconf/gconf-sanity-check.c:126 ../gconf/gconf-sanity-check.c:151
 #, c-format
 msgid ""
 "Please contact your system administrator to resolve the following problem:\n"
@@ -653,13 +1050,13 @@ msgid ""
 "problem with your configuration, as many programs will need to create files "
 "in your home directory. The error was \"%s\" (errno = %d)."
 msgstr ""
-"Cysylltwch a gweinydd eich system er mwyn datrys y broblem dilynol os\n"
+"Cysylltwch â gweinydd eich system er mwyn datrys y broblem ddilynol os\n"
 "gwelwch yn dda:\n"
-"Ni ellir agor neu greu y ffeil \"%s\"; mae hyn yn dangos ei fod yn bosib fod "
-"yna broblem gyda'ch cyfluniad, gan fe fydd llawer o rhaglenni angen creu "
+"Ni ellir agor neu greu'r ffeil \"%s\"; mae hyn yn dangos ei fod yn bosib fod "
+"yna broblem gyda'ch cyfluniad, gan y bydd angen i lawer o raglenni greu "
 "ffeiliau yn eich cyfeiriadur cartref. Y gwall oedd \"%s\" (errno = %d)."
 
-#: gconf/gconf-sanity-check.c:183
+#: ../gconf/gconf-sanity-check.c:165
 #, c-format
 msgid ""
 "Please contact your system administrator to resolve the following problem:\n"
@@ -670,47 +1067,47 @@ msgid ""
 "that the \"nfslock\" service has been disabled.The error was \"%s\" (errno = "
 "%d)."
 msgstr ""
-"Cysylltwch a gweinydd eich system er mwyn datrys y broblem dilynol os\n"
+"Cysylltwch â gweinydd eich system er mwyn datrys y broblem ddilynol os\n"
 "gwelwch yn dda:\n"
-"Methwyd cloi y ffeil \"%s\"; mae hyn yn dangos bod problem gyda cyfluniad "
-"eich system weithredu. Os oes cyfeiriadur cartref wedi ei osod dros NFs "
-"gennych, efallai for y gweinydd neu'r cleient wedi ei osod yn anghywir. "
+"Methwyd cloi'r ffeil \"%s\"; mae hyn yn dangos bod problem gyda chyfluniad "
+"eich system weithredu. Os oes cyfeiriadur cartref wedi ei osod dros NFS "
+"gennych, efallai fod y gweinydd neu'r cleient wedi ei osod yn anghywir. "
 "Gweler dogfennaeth rpc.statd and rpc.lockd. Achos cyffredin o'r broblem hon "
-"yw fod y gwasanaeth \"nfslock\" wedi ei analluogi. \"%s\" oedd y gwall "
+"yw bod y gwasanaeth \"nfslock\" wedi ei analluogi. \"%s\" oedd y gwall "
 "(errno = %d)."
 
-#: gconf/gconf-sanity-check.c:200
+#: ../gconf/gconf-sanity-check.c:182
 #, c-format
 msgid "Can't remove file %s: %s\n"
 msgstr "Methu dileu'r ffeil %s: %s\n"
 
-#: gconf/gconf-sanity-check.c:236
+#: ../gconf/gconf-sanity-check.c:218
 #, c-format
 msgid ""
 "Please contact your system administrator to resolve the following problem:\n"
 "No configuration sources in the configuration file \"%s\"; this means that "
 "preferences and other settings can't be saved. %s%s"
 msgstr ""
-"Cysylltwch a gweinydd eich system er mwyn datrys y broblem dilynol os\n"
+"Cysylltwch â gweinydd eich system er mwyn datrys y broblem ddilynol os\n"
 "gwelwch yn dda:\n"
-"Dim ffynhonnellau cyfluniad yn y ffeil cyfluniad \"%s\"; mae hyn yn golygu "
-"ni ellir arbed hoffterau a gosodiadau eraill. %s%s"
+"Dim ffynonellau cyfluniad yn y ffeil cyfluniad \"%s\"; mae hyn yn golygu na "
+"ellir arbed hoffterau a gosodiadau eraill. %s%s"
 
-#: gconf/gconf-sanity-check.c:239
+#: ../gconf/gconf-sanity-check.c:221
 msgid "Error reading the file: "
 msgstr "Gwall wrth ddarllen y ffeil: "
 
-#: gconf/gconf-sanity-check.c:262
+#: ../gconf/gconf-sanity-check.c:244
 #, c-format
 msgid ""
 "Please contact your system administrator to resolve the following problem:\n"
 "Could not resolve the address \"%s\" in the configuration file \"%s\": %s"
 msgstr ""
-"Cysylltwch a gweinydd eich system er mwyn datrys y broblem dilynol os\n"
+"Cysylltwch â gweinydd eich system er mwyn datrys y broblem ddilynol os\n"
 "gwelwch yn dda:\n"
 "Methu datrys y cyfeiriad \"%s\" yn y ffeil cyfluniad \"%s\": %s"
 
-#: gconf/gconf-sanity-check.c:323
+#: ../gconf/gconf-sanity-check.c:305
 msgid ""
 "The files that contain your preference settings are currently in use.\n"
 "\n"
@@ -725,89 +1122,91 @@ msgstr ""
 "Mae'r ffeiliau sy'n cynnwys eich gosodiadau hoffter yn cael eu defnyddio ar "
 "hyn o bryd.\n"
 "\n"
-"Efallai eich bod chi wedi mewngofnodi at sesiwn o gyfrifiadur arall, a mae'r "
-"sesiwn yn defnyddio eich ffeiliau gosodiadau hoffter.\n"
+"Efallai eich bod chi wedi mewngofnodi at sesiwn o gyfrifiadur arall, ac "
+"mae'r sesiwn yn defnyddio eich ffeiliau gosodiadau hoffter.\n"
 "\n"
 "Cewch barhau i ddefnyddio'r sesiwn gyfredol, ond efallai fe fydd hyn yn "
-"achosi problemau dros dro efo'r gosodiadau hoffter yn y sesiwn arall.\n"
+"achosi problemau dros dro gyda'r gosodiadau hoffter yn y sesiwn arall.\n"
 "\n"
 "Ydych chi eisiau parhau?"
 
-#: gconf/gconf-sanity-check.c:344
+#: ../gconf/gconf-sanity-check.c:326
 msgid "_Log Out"
 msgstr "_Allgofnodi"
 
-#: gconf/gconf-sanity-check.c:346
+#: ../gconf/gconf-sanity-check.c:328
 msgid "_Continue"
-msgstr "_Pahau"
+msgstr "_Parhau"
 
-#: gconf/gconf-sanity-check.c:359
+#: ../gconf/gconf-sanity-check.c:341
 #, c-format
 msgid "%s Continue (y/n)?"
 msgstr "%s Parhau (i/n)?"
 
-#: gconf/gconf-schema.c:221 gconf/gconf-schema.c:229 gconf/gconf-schema.c:237
-#: gconf/gconf-schema.c:245
+#: ../gconf/gconf-schema.c:217 ../gconf/gconf-schema.c:225
+#: ../gconf/gconf-schema.c:233 ../gconf/gconf-schema.c:241
 msgid "Schema contains invalid UTF-8"
 msgstr "Mae'r sgema yn cynnwys UTF-8 annilys"
 
-#: gconf/gconf-schema.c:254
+#: ../gconf/gconf-schema.c:250
 msgid ""
 "Schema specifies type list but doesn't specify the type of the list elements"
 msgstr ""
 "Mae'r sgema yn penodi rhestr ond nid yw'n penodi math elfennau'r rhestr"
 
-#: gconf/gconf-schema.c:264
+#: ../gconf/gconf-schema.c:260
 msgid ""
 "Schema specifies type pair but doesn't specify the type of the car/cdr "
 "elements"
 msgstr "Mae'r sgema yn penodi pâr ond nid yw'n penodi math yr elfennau CAR/CDR"
 
-#: gconf/gconf-sources.c:331
+#: ../gconf/gconf-sources.c:371
 #, c-format
 msgid "Failed to load source \"%s\": %s"
 msgstr "Methu llwytho'r ffynhonnell \"%s\": %s"
 
-#: gconf/gconf-sources.c:371
+#: ../gconf/gconf-sources.c:411
 #, c-format
-msgid "Resolved address \"%s\" to a writable config source at position %d"
+msgid ""
+"Resolved address \"%s\" to a writable configuration source at position %d"
 msgstr ""
-"Datryswyd y cyfeiriad \"%s\" i ffynhonnell cyfluniad ysgrifennadwy ger y "
+"Datryswyd y cyfeiriad \"%s\" i ffynhonnell cyfluniad ysgrifenadwy ger y "
 "safle %d"
 
-#: gconf/gconf-sources.c:377
+#: ../gconf/gconf-sources.c:417
 #, c-format
-msgid "Resolved address \"%s\" to a read-only config source at position %d"
+msgid ""
+"Resolved address \"%s\" to a read-only configuration source at position %d"
 msgstr ""
 "Datryswyd y cyfeiriad \"%s\" i ffynhonnell cyfluniad darllen-yn-unig ger y "
 "safle %d"
 
-#: gconf/gconf-sources.c:384
+#: ../gconf/gconf-sources.c:424
 #, c-format
 msgid ""
 "Resolved address \"%s\" to a partially writable config source at position %d"
 msgstr ""
-"Datryswyd y cyfeiriad \"%s\" i ffynhonnell cyfluniad rhannol ysgrifennadwy "
+"Datryswyd y cyfeiriad \"%s\" i ffynhonnell cyfluniad rhannol ysgrifenadwy "
 "ger y safle %d"
 
-#: gconf/gconf-sources.c:393
+#: ../gconf/gconf-sources.c:433
 msgid ""
 "None of the resolved addresses are writable; saving configuration settings "
 "will not be possible"
 msgstr ""
-"Does dim o'r cyfeiriadau fe ddatryswyd yn ysgrifennadwy; ni fydd yn bosib "
+"Does dim o'r cyfeiriadau fe ddatryswyd yn ysgrifenadwy; ni fydd yn bosib "
 "cadw gosodiadau cyfluniad"
 
-#: gconf/gconf-sources.c:609
+#: ../gconf/gconf-sources.c:650
 #, c-format
 msgid "Schema `%s' specified for `%s' stores a non-schema value"
 msgstr "Mae'r sgema `%s' a benodwyd ar gyfer `%s' yn dal gwerth nid yw'n sgema"
 
-#: gconf/gconf-sources.c:667
+#: ../gconf/gconf-sources.c:712
 msgid "The '/' name can only be a directory, not a key"
 msgstr "Gall yr enw '/' fod yn gyfeiriadur yn unig, nid allwedd"
 
-#: gconf/gconf-sources.c:705
+#: ../gconf/gconf-sources.c:754
 #, c-format
 msgid ""
 "Value for `%s' set in a read-only source at the front of your configuration "
@@ -816,7 +1215,7 @@ msgstr ""
 "Gosodwyd gwerth ar gyfer `%s' mewn ffynhonnell darllen-yn-unig ar flaen eich "
 "llwybr cyfluniad"
 
-#: gconf/gconf-sources.c:717
+#: ../gconf/gconf-sources.c:766
 #, c-format
 msgid ""
 "Unable to store a value at key '%s', as the configuration server has no "
@@ -837,198 +1236,205 @@ msgid ""
 "in individual storage locations such as ~/.gconf"
 msgstr ""
 "Ni ellir cadw gwerth at yr allwedd '%s', gan nad oes gan y gweinydd "
-"cyfluniad dim cronfa ddata ysgrifennadwy. Mae gan y broblem hon rhai "
-"achosion cyffredin: 1) nid yw'ch ffeil llwybr cyfluniad %s/path yn cynnwys "
-"unrhyw gronfeydd data, neu ni chanfodwyd ef 2) rhywsut fe grëwyd dwy broses "
-"gconfd yn wallus 3) mae eich system weithredu wedi ei camgyflunio felly dyw "
-"cloi ffeiliau NFS ddim yn gweithio yn eich cyfeiriadur cartref neu 4) "
-"chwalodd eich peiriant cleient NFS heb hysbysu'r gweinydd wrth ailfwtio fe "
-"ddylid gollwng cloëau. Os oes dwy broses gconfd gennych (neu roedd dwy "
-"gennych pan gychwynnwyd yr ail), fe all allgofnodi, llofruddio pob copi o "
-"gconfd a mewnngofnodi eto fod o gymorth. Os mae cloëon pwdr gennych, tynnwch "
-"~/.gconf*/*lock. Efallai'r broblem yw eich bod wedi ceisio defnyddio GConf o "
-"ddau gyfeiriadur ar yr un pryd, a mae gan ORBit ei cyfluniad rhagosodedig "
-"sy'n gwahardd cysylltiadau CORBA pell - rhowch \"ORBIIOPIPv4=1\" yn /etc/"
-"orbitrb. Fel wastad, edrychwch yn syslog user.* ar gyfer manylion ynghylch "
+"cyfluniad dim cronfa ddata ysgrifenadwy. Mae gan y broblem hon rhai achosion "
+"cyffredin: 1) nid yw'ch ffeil llwybr cyfluniad %s/path yn cynnwys unrhyw "
+"gronfeydd data, neu ni chanfuwyd ef 2) rhywsut fe grëwyd dwy broses gconfd "
+"yn wallus 3) mae eich system weithredu wedi ei gam-gyflunio felly dyw cloi "
+"ffeiliau NFS ddim yn gweithio yn eich cyfeiriadur cartref neu 4) chwalodd "
+"eich peiriant cleient NFS heb hysbysu'r gweinydd wrth ailfwtio fe ddylid "
+"gollwng cloeau. Os oes dwy broses gconfd gennych (neu roedd dwy gennych pan "
+"gychwynnwyd yr ail), fe all allgofnodi, llofruddio pob copi o gconfd a "
+"mewngofnodi eto fod o gymorth. Os mae cloeon pwdr gennych, tynnwch ~/.gconf*/"
+"*lock. Efallai'r broblem yw eich bod wedi ceisio defnyddio GConf o ddau "
+"gyfeiriadur ar yr un pryd, ac mae gan ORBit ei gyfluniad rhagosodedig sy'n "
+"gwahardd cysylltiadau CORBA pell - rhowch \"ORBIIOPIPv4=1\" yn /etc/orbitrb. "
+"Fel bob amser, edrychwch yn syslog user.* ar gyfer manylion ynghylch "
 "problemau cafodd gconfd. Fe all fod ond un gconfd i bob cyfeiriadur cartref, "
-"a mae'n rhaid iddo berchen clo yn ~/.gconfd a hefyd cloëon yn lleoliadau "
+"ac mae'n rhaid iddo berchen clo yn ~/.gconfd a hefyd cloeon yn lleoliadau "
 "storio unigol megis ~/.gconf"
 
-#: gconf/gconf-sources.c:1439
+#: ../gconf/gconf-sources.c:1570
 #, c-format
 msgid "Error finding metainfo: %s"
-msgstr "Gwall wrth ganfod metawybodaeth: %s"
+msgstr "Gwall wrth ganfod meta-wybodaeth: %s"
 
-#: gconf/gconf-sources.c:1508
+#: ../gconf/gconf-sources.c:1639
 #, c-format
 msgid "Error getting metainfo: %s"
-msgstr "Gwall wrth gyrchu metagwybodaeth: %s"
+msgstr "Gwall wrth gyrchu meta-wybodaeth: %s"
 
-#: gconf/gconf-sources.c:1532
+#: ../gconf/gconf-sources.c:1663
 #, c-format
 msgid "Key `%s' listed as schema for key `%s' actually stores type `%s'"
 msgstr ""
 "Mae'r allwedd `%s' wedi ei rhestru fel sgema ar gyfer yr allwedd `%s' yn "
 "storio'r math `%s' mewn gwirionedd"
 
-#: gconf/gconf-value.c:110
-#, c-format
-msgid "Didn't understand `%s' (expected integer)"
-msgstr "Ddim yn daeall `%s' (disgwylwyd cyfanrif)"
-
-#: gconf/gconf-value.c:120
-#, c-format
-msgid "Integer `%s' is too large or small"
-msgstr "Mae'r cyfanrif `%s' yn rhy fawr neu'n rhy fach"
-
-# EFALLAI (real?)
-#: gconf/gconf-value.c:141
-#, c-format
-msgid "Didn't understand `%s' (expected real number)"
-msgstr "Ddim yn daeall `%s' (disgwylwyd rhif real)"
-
-# EFALLAI
-#: gconf/gconf-value.c:185
-#, c-format
-msgid "Didn't understand `%s' (expected true or false)"
-msgstr "Ddim yn daeall `%s' (disgwylwyd gwir neu anwir)"
-
-#: gconf/gconf-value.c:261
+#: ../gconf/gconf-value.c:260
 #, c-format
 msgid "Didn't understand `%s' (list must start with a '[')"
-msgstr "Ddim yn daeall `%s' (rhaid i rhestr ddechrau efo '[')"
+msgstr "Ddim yn deall `%s' (rhaid i restr ddechrau gyda '[')"
 
-#: gconf/gconf-value.c:274
+#: ../gconf/gconf-value.c:273
 #, c-format
 msgid "Didn't understand `%s' (list must end with a ']')"
-msgstr "Ddim yn daeall `%s' (rhaid i rhestr orffen efo ']')"
+msgstr "Ddim yn deall `%s' (rhaid i restr orffen gyda ']')"
 
-#: gconf/gconf-value.c:325
+#: ../gconf/gconf-value.c:324
 #, c-format
 msgid "Didn't understand `%s' (extra unescaped ']' found inside list)"
-msgstr "Methwyd daeall `%s' (']' ychwanegol heb ei ddianc o fewn rhestr)"
+msgstr "Methwyd deall `%s' (']' ychwanegol heb ei ddianc o fewn rhestr)"
 
-#: gconf/gconf-value.c:356 gconf/gconf-value.c:517
+#: ../gconf/gconf-value.c:355 ../gconf/gconf-value.c:516
 #, c-format
 msgid "Didn't understand `%s' (extra trailing characters)"
-msgstr "Ddim yn daeall `%s' (nodau ychwanegol ar y diwedd)"
+msgstr "Ddim yn deall `%s' (nodau ychwanegol ar y diwedd)"
 
-#: gconf/gconf-value.c:403
+#: ../gconf/gconf-value.c:402
 #, c-format
 msgid "Didn't understand `%s' (pair must start with a '(')"
-msgstr "Ddim yn daeall `%s' (rhaid i bar ddechrau efo '(')"
+msgstr "Ddim yn deall `%s' (rhaid i bâr ddechrau gyda '(')"
 
-#: gconf/gconf-value.c:416
+#: ../gconf/gconf-value.c:415
 #, c-format
 msgid "Didn't understand `%s' (pair must end with a ')')"
-msgstr "Ddim yn daeall `%s' (rhaid i bar orffen efo ')')"
+msgstr "Ddim yn deall `%s' (rhaid i bâr orffen gyda ')')"
 
-#: gconf/gconf-value.c:446 gconf/gconf-value.c:532
+#: ../gconf/gconf-value.c:445 ../gconf/gconf-value.c:531
 #, c-format
 msgid "Didn't understand `%s' (wrong number of elements)"
-msgstr "Ddim yn daeall `%s' (nifer anghywir o elfennau)"
+msgstr "Ddim yn deall `%s' (nifer anghywir o elfennau)"
 
-#: gconf/gconf-value.c:486
+#: ../gconf/gconf-value.c:485
 #, c-format
 msgid "Didn't understand `%s' (extra unescaped ')' found inside pair)"
-msgstr "Methwyd daeall `%s' (')' ychwanegol heb ei ddianc o fewn pâr)"
+msgstr "Methwyd deall `%s' (')' ychwanegol heb ei ddianc o fewn pâr)"
 
-#: gconf/gconf.c:44
+#: ../gconf/gconf.c:57
 #, c-format
 msgid "Key \"%s\" is NULL"
 msgstr "Mae'r allwedd \"%s\" yn NULL"
 
-#: gconf/gconf.c:51
+#: ../gconf/gconf.c:64
 #, c-format
 msgid "\"%s\": %s"
 msgstr "\"%s\": %s"
 
-#: gconf/gconf.c:116
+#: ../gconf/gconf.c:383
+#, c-format
+msgid "Server couldn't resolve the address `%s'"
+msgstr "Methodd y gweinydd ddatrys y cyfeiriad `%s'"
+
+#: ../gconf/gconf.c:761
+msgid "Can't add notifications to a local configuration source"
+msgstr "Methu ychwanegu hysbysiadau at ffynhonnell cyfluniad lleol"
+
+#: ../gconf/gconf.c:2224
+#, c-format
+msgid "Adding client to server's list failed, CORBA error: %s"
+msgstr "Methwyd ychwanegu cleient i restr y gweinydd, gwall CORBA: %s"
+
+#: ../gconf/gconf.c:2589
 msgid "Must begin with a slash (/)"
 msgstr "Rhaid cychwyn gyda '/'"
 
-#: gconf/gconf.c:138
+#: ../gconf/gconf.c:2611
 msgid "Can't have two slashes (/) in a row"
 msgstr "Methu cael dau '/' gyda'i gilydd"
 
-#: gconf/gconf.c:140
+#: ../gconf/gconf.c:2613
 msgid "Can't have a period (.) right after a slash (/)"
 msgstr "Methu cael '.' yn syth ar ôl '/'"
 
-#: gconf/gconf.c:159
+#: ../gconf/gconf.c:2632
 #, c-format
 msgid "'%c' is not an ASCII character, so isn't allowed in key names"
-msgstr "Nid yw '%c' yn nod ACII, felly ni chaniateir ef mewn enwau allweddi"
+msgstr "Nid yw '%c' yn nod ASCII, felly ni chaniateir ef mewn enwau allweddi"
 
-#: gconf/gconf.c:169
+#: ../gconf/gconf.c:2642
 #, c-format
 msgid "`%c' is an invalid character in key/directory names"
 msgstr "Mae `%c' nod annilys mewn enwau allweddau/cyfeiriaduron"
 
-#: gconf/gconf.c:183
+#: ../gconf/gconf.c:2656
 msgid "Key/directory may not end with a slash (/)"
-msgstr "Ni chaiff enw allwedd/cyfeiriadur orffen efo '/'"
+msgstr "Ni chaiff enw allwedd/cyfeiriadur orffen gyda '/'"
 
-#: gconf/gconf.c:408
+#: ../gconf/gconf.c:3027
+#, c-format
+msgid "Failure shutting down config server: %s"
+msgstr "Gwall wrth derfynu gweinydd cyfluniad: %s"
+
+#: ../gconf/gconf.c:3088
 #, c-format
 msgid "Expected float, got %s"
 msgstr "Disgwylwyd float, cafwyd %s"
 
-#: gconf/gconf.c:443
+#: ../gconf/gconf.c:3123
 #, c-format
 msgid "Expected int, got %s"
-msgstr "Disgwylwyd int, cafwyd %s"
+msgstr "Disgwyliwyd inc, cafwyd %s"
 
-#: gconf/gconf.c:478
+#: ../gconf/gconf.c:3158
 #, c-format
 msgid "Expected string, got %s"
 msgstr "Disgwylwyd string, cafwyd %s"
 
-#: gconf/gconf.c:512
+#: ../gconf/gconf.c:3192
 #, c-format
 msgid "Expected bool, got %s"
-msgstr "Disgwylwyd bool, cafwyd %s"
+msgstr "Disgwyliwyd bol, cafwyd %s"
 
-#: gconf/gconf.c:545
+#: ../gconf/gconf.c:3225
 #, c-format
 msgid "Expected schema, got %s"
-msgstr "Disgwylwyd sgema, cafwyd %s"
+msgstr "Disgwyliwyd sgema, cafwyd %s"
 
-#: gconf/gconfd.c:150
+#: ../gconf/gconf.c:3564
+#, c-format
+msgid "CORBA error: %s"
+msgstr "Gwall CORBA: %s"
+
+# EFALLAI
+#: ../gconf/gconfd.c:302
+msgid "Shutdown request received"
+msgstr "Derbyniwyd gofyniad terfynu"
+
+#: ../gconf/gconfd.c:334
 msgid ""
 "gconfd compiled with debugging; trying to load gconf.path from the source "
 "directory"
 msgstr ""
-"crynhowyd gconfd gyda dadcwilenni; ceisir llwytho gconf.path o'r cyfeiriadur "
-"ffynhonnell"
+"crynhowyd gconfd gyda gwybodaeth datnamu; ceisir llwytho gconf.path o'r "
+"cyfeiriadur ffynhonnell"
 
-#: gconf/gconfd.c:164
+#: ../gconf/gconfd.c:354
 #, c-format
 msgid ""
 "No configuration files found, trying to use the default config source `%s'"
 msgstr ""
-"Ni chanfodwyd unrhyw ffeiliau cyfluniad, ceisir defnyddio y ffynhonnell "
+"Ni chanfuwyd unrhyw ffeiliau cyfluniad, ceisir defnyddio'r ffynhonnell "
 "cyfluniad rhagosodedig `%s'"
 
 # EFALLAI
 #. We want to stay alive but do nothing, because otherwise every
 #. request would result in another failed gconfd being spawned.
 #.
-#: gconf/gconfd.c:172
+#: ../gconf/gconfd.c:362
 #, c-format
 msgid ""
 "No configuration sources in the source path, configuration won't be saved; "
-"edit %s"
+"edit %s%s"
 msgstr ""
-"Dim ffynhonnellau cyfluniad yn y llwybr ffynhonnell; ni chaiff y cyfluniad "
-"ei gadw; golygwch %s"
+"Dim ffynonellau cyfluniad yn y llwybr ffynhonnell; ni chaiff y cyfluniad ei "
+"gadw; golygwch %s%s"
 
-#: gconf/gconfd.c:185
+#: ../gconf/gconfd.c:375
 #, c-format
 msgid "Error loading some config sources: %s"
 msgstr "Gwall wrth lwytho rhai ffynonellau cyfluniad: %s"
 
-#: gconf/gconfd.c:197
+#: ../gconf/gconfd.c:387
 msgid ""
 "No config source addresses successfully resolved, can't load or store config "
 "data"
@@ -1036,166 +1442,310 @@ msgstr ""
 "Methwyd datrys unrhyw gyfeiriad ffynhonnell cyfluniad, ni ellir llwytho na "
 "arbed data cyfluniad"
 
-#: gconf/gconfd.c:214
+#: ../gconf/gconfd.c:404
 msgid ""
 "No writable config sources successfully resolved, may not be able to save "
 "some configuration changes"
 msgstr ""
-"Methwyd datrys unrhyw ffynohnellau cyfluniad ysgrifenadwy, efallai ni fydd "
-"yn bosib arbed rhai newidiadau cyfluniad"
+"Methwyd datrys unrhyw ffynonellau cyfluniad ysgrifenadwy, efallai ni fydd yn "
+"bosib arbed rhai newidiadau cyfluniad"
 
-#: gconf/gconfd.c:240
+#: ../gconf/gconfd.c:433
 #, c-format
 msgid "Received signal %d, dumping core. Please report a GConf bug."
 msgstr ""
-"Derbyniwyd arwydd %d, dadlwytho craidd. A fyddech cystal â rhoi gwybodfod "
-"gwall yn GConf."
+"Derbyniwyd arwydd %d, dadlwytho craidd. A fyddech cystal â rhoi gwybod fod "
+"gwall yn GConf?"
 
-#: gconf/gconfd.c:258
+#: ../gconf/gconfd.c:439
+#, c-format
+msgid "Received signal %d. Please report a GConf bug."
+msgstr ""
+"Derbyniwyd arwydd %d. Os gwelwch yn dda, cyflwynwch adroddiad nam am GConf."
+
+#: ../gconf/gconfd.c:459
 #, c-format
 msgid ""
 "Received signal %d, shutting down abnormally. Please file a GConf bug report."
 msgstr ""
-"Derbyniwyd arwydd %d, cau lawr yn anarferol. A fyddech cystal â rhoi "
-"gwybodfod gwall yn GConf."
+"Derbyniwyd arwydd %d, cau lawr yn anarferol. A fyddech cystal â rhoi gwybod "
+"fod gwall yn GConf?"
 
-#: gconf/gconfd.c:275
+#: ../gconf/gconfd.c:475
 #, c-format
 msgid "Received signal %d, shutting down cleanly"
 msgstr "Derbyniwyd arwydd %d, terfynu'n daclus"
 
-#: gconf/gconfd.c:344
+#: ../gconf/gconfd.c:563
 #, c-format
 msgid "Failed to open %s: %s"
 msgstr "Methwyd agor %s: %s"
 
-#: gconf/gconfd.c:351
-#, c-format
-msgid "Failed to stat %s: %s"
-msgstr "Methwyd stat() o %s: %s"
-
-#: gconf/gconfd.c:360
+#: ../gconf/gconfd.c:579
 #, c-format
 msgid "Owner of %s is not the current user"
 msgstr "Nid y defnyddiwr cyfredol yw perchennog %s"
 
-#: gconf/gconfd.c:368
+#: ../gconf/gconfd.c:587
 #, c-format
 msgid "Bad permissions %lo on directory %s"
 msgstr "Caniatadau gwael %lo ar gyfeiriadur %s"
 
 #. openlog() does not copy logname - what total brokenness.
 #. So we free it at the end of main()
-#: gconf/gconfd.c:452
+#: ../gconf/gconfd.c:679
 #, c-format
 msgid "starting (version %s), pid %u user '%s'"
 msgstr "dechrau (fersiwn %s), pid %u defnyddiwr '%s'"
 
-#: gconf/gconfd.c:493
+#: ../gconf/gconfd.c:736
+msgid "Failed to get object reference for ConfigServer"
+msgstr "Methwyd cyrchu cyfeirnod gwrthrych ar gyfer ConfigServer"
+
+#: ../gconf/gconfd.c:749
 #, c-format
 msgid "Failed to create %s: %s"
 msgstr "Methwyd creu %s: %s"
 
-#: gconf/gconfd.c:501
+#: ../gconf/gconfd.c:756
 #, c-format
 msgid "Directory %s has a problem, gconfd can't use it"
 msgstr "Mae gan y cyfeiriadur %s broblem, ni all gconf ei ddefnyddio"
 
-#: gconf/gconfd.c:537
+#: ../gconf/gconfd.c:788
 #, c-format
-msgid "Failed to write byte to pipe fd %d so client program may hang: %s"
+msgid ""
+"Failed to write byte to pipe file descriptor %d so client program may hang: %"
+"s"
 msgstr ""
-"Methwyd ysgrifennu beit i'r bibell a'r disgrifwr %d felly fe all rhaglen "
-"gleient hongian: %s"
+"Methwyd ysgrifennu beit i'r bibell a'r disgrifiwr ffeil %d felly fe all "
+"rhaglen gleient hongian: %s"
 
-#: gconf/gconfd.c:551
+#: ../gconf/gconfd.c:798
 #, c-format
 msgid "Failed to get lock for daemon, exiting: %s"
 msgstr "Methu cael clo ar gyfer daemon, terfynu: %s"
 
-#: gconf/gconfd.c:593
+#: ../gconf/gconfd.c:836
 #, c-format
 msgid "Error releasing lockfile: %s"
 msgstr "Gwall wrth ryddhau ffeil clo: %s"
 
-#: gconf/gconfd.c:601
+#: ../gconf/gconfd.c:844
 msgid "Exiting"
 msgstr "Terfynu"
 
-#: gconf/gconfd.c:646
+#: ../gconf/gconfd.c:869
+msgid "SIGHUP received, reloading all databases"
+msgstr "Derbyniwyd SIGHUP, yn ail-lwytho pob cronfa data"
+
+#: ../gconf/gconfd.c:886
 msgid "GConf server is not in use, shutting down."
 msgstr "Nid yw'r gweinydd GConf yn cael ei ddefnyddio, terfynu."
 
-#: gconf/gconftool.c:95
-msgid "Set a key to a value and sync. Use with --type."
-msgstr "Gosod allwedd at werth a chysoni. Defnyddiwch efo --type."
+#: ../gconf/gconfd.c:1212
+#, c-format
+msgid "Error obtaining new value for `%s': %s"
+msgstr "Gwall wrth gael gwerth newydd ar gyfer `%s': %s"
 
-#: gconf/gconftool.c:104
+#: ../gconf/gconfd.c:1340
+#, c-format
+msgid "Returning exception: %s"
+msgstr "Dychwelyd eithriad: %s"
+
+#: ../gconf/gconfd.c:1446
+#, c-format
+msgid ""
+"Failed to open gconfd logfile; won't be able to restore listeners after "
+"gconfd shutdown (%s)"
+msgstr ""
+"Methwyd agor ffeil gofnodi gconfd: ni ellir adfer gwrandawyr ar ôl i gconfd "
+"derfynu (%s)"
+
+#: ../gconf/gconfd.c:1481
+#, c-format
+msgid ""
+"Failed to close gconfd logfile; data may not have been properly saved (%s)"
+msgstr ""
+"Methwyd cau ffeil gofnodi gconfd; efallai ni chafodd data ei gadw'n gywir (%"
+"s)"
+
+#: ../gconf/gconfd.c:1543
+#, c-format
+msgid "Could not open saved state file '%s' for writing: %s"
+msgstr "Methwyd agor y ffeil cadw cyflwr '%s' er mwyn ysgrifennu: %s"
+
+#: ../gconf/gconfd.c:1557
+#, c-format
+msgid "Could not write saved state file '%s' fd: %d: %s"
+msgstr "Methwyd ysgrifennu disgrifiwr at y ffeil cadw cyflwr '%s': %d: %s"
+
+#: ../gconf/gconfd.c:1566
+#, c-format
+msgid "Failed to close new saved state file '%s': %s"
+msgstr "Methwyd cau ffeil cadw cyflwr newydd '%s': %s"
+
+#: ../gconf/gconfd.c:1580
+#, c-format
+msgid "Could not move aside old saved state file '%s': %s"
+msgstr "Methwyd neilltuo hen ffeil cadw cyflwr '%s': %s"
+
+#: ../gconf/gconfd.c:1590
+#, c-format
+msgid "Failed to move new save state file into place: %s"
+msgstr "Methwyd symud ffeil cadw cyflwr newydd i'w le: %s"
+
+#: ../gconf/gconfd.c:1599
+#, c-format
+msgid ""
+"Failed to restore original saved state file that had been moved to '%s': %s"
+msgstr ""
+"Methwyd adfer ffeil cadw cyflwr gwreiddiol a gafwyd ei symud i '%s': %s"
+
+#: ../gconf/gconfd.c:2078
+#, c-format
+msgid ""
+"Unable to restore a listener on address '%s', couldn't resolve the database"
+msgstr ""
+"Methwyd adfer gwrandäwr ar y cyfeiriad '%s', methwyd datrys y gronfa ddata"
+
+#: ../gconf/gconfd.c:2114
+#, c-format
+msgid "Error reading saved state file: %s"
+msgstr "Gwall wrth ddarllen ffeil cadw cyflwr: %s"
+
+#: ../gconf/gconfd.c:2164
+#, c-format
+msgid "Unable to open saved state file '%s': %s"
+msgstr "Methwyd agor ffeil cadw cyflwr '%s': %s"
+
+#: ../gconf/gconfd.c:2283
+#, c-format
+msgid ""
+"Failed to log addition of listener to gconfd logfile; won't be able to re-"
+"add the listener if gconfd exits or shuts down (%s)"
+msgstr ""
+"Methwyd cofnodi ychwanegiad gwrandäwr at ffeil cofnod gconfd; ni ellir ail-"
+"ychwanegu'r gwrandäwr os mae gconfd yn terfynu (%s)"
+
+#: ../gconf/gconfd.c:2288
+#, c-format
+msgid ""
+"Failed to log removal of listener to gconfd logfile; might erroneously re-"
+"add the listener if gconfd exits or shuts down (%s)"
+msgstr ""
+"Methwyd cofnodi tyniad gwrandäwr at ffeil cofnod gconfd; efallai caiff y "
+"gwrandäwr ei ail-ychwanegu yn wallus os mae gconfd yn terfynu (%s)"
+
+#: ../gconf/gconfd.c:2311 ../gconf/gconfd.c:2485
+#, c-format
+msgid "Failed to get IOR for client: %s"
+msgstr "Methu cael IOR ar gyfer y cleient: %s"
+
+#: ../gconf/gconfd.c:2326
+#, c-format
+msgid "Failed to open saved state file: %s"
+msgstr "Methwyd agor ffeil cadw cyflwr: %s"
+
+#: ../gconf/gconfd.c:2339
+#, c-format
+msgid "Failed to write client add to saved state file: %s"
+msgstr "Methwyd ysgrifennu ychwanegiad cleient at ffeil cadw cyflwr: %s"
+
+#: ../gconf/gconfd.c:2347
+#, c-format
+msgid "Failed to flush client add to saved state file: %s"
+msgstr "Methwyd cysoni ychwanegiad cleient at ffeil cadw cyflwr: %s"
+
+#: ../gconf/gconfd.c:2446
+msgid ""
+"Some client removed itself from the GConf server when it hadn't been added."
+msgstr ""
+"Tynnodd rhyw gleient ei hun o'r gweinydd GConf pan nad oedd wedi ei "
+"ychwanegu."
+
+#: ../gconf/gconftool.c:89
+msgid "Set a key to a value and sync. Use with --type."
+msgstr "Gosod allwedd at werth a chysoni. Defnyddiwch gyda --type."
+
+#: ../gconf/gconftool.c:98
 msgid "Print the value of a key to standard output."
 msgstr "Argraffu gwerth yr allwedd i'r allbwn safonol."
 
-#: gconf/gconftool.c:113
-msgid ""
-"Set a schema and sync. Use with --short-desc, --long-desc, --owner, and --"
-"type."
-msgstr ""
-"Gosod sgema a cysoni. Defnyddiwch efo --short-desc, --long-desc, --owner, a "
-"--type"
-
-#: gconf/gconftool.c:123
+#: ../gconf/gconftool.c:108
 msgid "Unset the keys on the command line"
-msgstr "Datosod yr holl allweddi ar y llinell orchymyn"
+msgstr "Dadosod yr holl allweddi ar y llinell orchymyn"
 
-#: gconf/gconftool.c:132
+#: ../gconf/gconftool.c:117
 msgid ""
 "Recursively unset all keys at or below the key/directory names on the "
 "command line"
 msgstr ""
-"Datosod yn ailgyrchol yr holl allweddi sydd yn, neu islaw, yr enwau allwedd/"
+"Dadosod yn ailadroddus yr holl allweddi sydd yn, neu islaw, yr enwau allwedd/"
 "cyfeiriadur ar y llinell orchymyn"
 
-#: gconf/gconftool.c:141
+#: ../gconf/gconftool.c:126
 msgid "Print all key/value pairs in a directory."
 msgstr "Argraffu pob pâr allwedd/gwerth mewn cyfeiriadur."
 
-#: gconf/gconftool.c:150
+#: ../gconf/gconftool.c:135
 msgid "Print all subdirectories in a directory."
 msgstr "Argraffu pob is-gyfeiriadur mewn cyfeiriadur."
 
-#: gconf/gconftool.c:159
+#: ../gconf/gconftool.c:144
+msgid "Print all subdirectories and entries under a directory, recursively."
+msgstr ""
+"Argraffu pob is-gyfeiriadur a chofnod islaw cyfeiriadur, yn ailadroddus."
+
+#: ../gconf/gconftool.c:153
+msgid "Get the short doc string for a key"
+msgstr "Cyrchu'r llinyn dogfennaeth byr ar gyfer allwedd"
+
+#: ../gconf/gconftool.c:162
+msgid "Get the long doc string for a key"
+msgstr "Cyrchu'r llinyn dogfennaeth hir ar gyfer allwedd"
+
+#: ../gconf/gconftool.c:171
+msgid "Return 0 if the directory exists, 2 if it does not."
+msgstr "Dychwelyd 0 os yw'r cyfeiriadur yn bodoli, 2 os nad ydyw."
+
+#: ../gconf/gconftool.c:180
+msgid "Ignore schema defaults when reading values."
+msgstr "Anwybyddu rhagosodiadau sgema wrth ddarllen gwerthoedd."
+
+#: ../gconf/gconftool.c:195
 msgid ""
-"Dump to standard out an XML description of all entries under a dir, "
+"Dump to standard output an XML description of all entries under a directory, "
 "recursively."
 msgstr ""
-"Gollwng disgrifiad XML o pob cofnod islaw cyfeiriadur i'r allbwn safonol, yn "
-"ailgyrchol."
+"Gollwng disgrifiad XML o bob cofnod islaw cyfeiriadur i'r allbwn safonol, yn "
+"ailadroddus."
 
-#: gconf/gconftool.c:168
+#: ../gconf/gconftool.c:204
 msgid ""
 "Load from the specified file an XML description of values and set them "
-"relative to a dir."
+"relative to a directory."
 msgstr ""
 "Llwytho o'r ffeil penodedig disgrifiad gwerthoedd XML a'u gosod yn gymharol "
 "i gyfeiriadur."
 
-#: gconf/gconftool.c:177
-msgid "Print all subdirectories and entries under a dir, recursively."
-msgstr ""
-"Argraffu pob is-gyfeiriadur a chofnod islaw cyfeiriadur, yn ailgyrchol."
+#: ../gconf/gconftool.c:213
+msgid "Unload a set of values described in an XML file."
+msgstr "Dadlwytho set o werthoedd a ddisgrifir mewn ffeil XML."
 
-#: gconf/gconftool.c:186
-msgid "Return 0 if the directory exists, 2 if it does not."
-msgstr "Dychwelyd 0 os yw'r cyfeiriadur yn bodoli, 2 os nad ydyw."
+#: ../gconf/gconftool.c:228
+msgid "Get the name of the default source"
+msgstr "Cyrchu enw'r ffynhonnell rhagosodedig"
 
-#: gconf/gconftool.c:195
+#: ../gconf/gconftool.c:237
 msgid "Shut down gconfd. DON'T USE THIS OPTION WITHOUT GOOD REASON."
-msgstr "Terfynu gconfd. PEIDIWCH A DEFNYDDIO'R OPSIWN HWN HEB RHESWM DA."
+msgstr "Terfynu gconfd. PEIDIWCH Â DEFNYDDIO'R OPSIWN HWN HEB RESWM DA."
 
-#: gconf/gconftool.c:204
+#: ../gconf/gconftool.c:246
 msgid "Return 0 if gconfd is running, 2 if not."
 msgstr "Dychwelyd 0 os yw gconfd yn rhedeg, 2 os nad ydyw."
 
-#: gconf/gconftool.c:213
+#: ../gconf/gconftool.c:255
 msgid ""
 "Launch the config server (gconfd). (Normally happens automatically when "
 "needed.)"
@@ -1203,7 +1753,7 @@ msgstr ""
 "Lansio'r gweinydd cyfluniad (gconfd). (Mae fel arfer yn digwydd yn awtomatig "
 "fel y bo'r angen.)"
 
-#: gconf/gconftool.c:222
+#: ../gconf/gconftool.c:270
 msgid ""
 "Specify the type of the value being set, or the type of the value a schema "
 "describes. Unique abbreviations OK."
@@ -1211,23 +1761,23 @@ msgstr ""
 "Penodi'r math o'r gwerth sy'n cael ei osod, neu'r math o werth mae sgema yn "
 "ei ddisgrifio. Mae byrhadau unigryw yn iawn."
 
-#: gconf/gconftool.c:223
+#: ../gconf/gconftool.c:271
 msgid "int|bool|float|string|list|pair"
 msgstr "int|bool|float|string|list|pair"
 
-#: gconf/gconftool.c:231
+#: ../gconf/gconftool.c:279
 msgid "Print the data type of a key to standard output."
 msgstr "Argraffu math data allwedd i'r allbwn safonol."
 
-#: gconf/gconftool.c:240
+#: ../gconf/gconftool.c:288
 msgid "Get the number of elements in a list key."
 msgstr "Cyrchu'r nifer o elfennau mewn allwedd rhestr."
 
-#: gconf/gconftool.c:249
+#: ../gconf/gconftool.c:297
 msgid "Get a specific element from a list key, numerically indexed."
 msgstr "Cyrchu elfen benodol o allwedd rhestr, wedi eu mynegeio'n rhifol."
 
-#: gconf/gconftool.c:258
+#: ../gconf/gconftool.c:306
 msgid ""
 "Specify the type of the list value being set, or the type of the value a "
 "schema describes. Unique abbreviations OK."
@@ -1235,11 +1785,11 @@ msgstr ""
 "Penodi math y gwerth rhestr sy'n cael ei osod, neu'r math o werth mae sgema "
 "yn disgrifio. Mae byrhadau unigryw yn iawn."
 
-#: gconf/gconftool.c:259 gconf/gconftool.c:268 gconf/gconftool.c:277
+#: ../gconf/gconftool.c:307 ../gconf/gconftool.c:316 ../gconf/gconftool.c:325
 msgid "int|bool|float|string"
 msgstr "int|bool|float|string"
 
-#: gconf/gconftool.c:267
+#: ../gconf/gconftool.c:315
 msgid ""
 "Specify the type of the car pair value being set, or the type of the value a "
 "schema describes. Unique abbreviations OK."
@@ -1247,7 +1797,7 @@ msgstr ""
 "Penodi math y gwerth pâr CAR sy'n cael ei osod, neu'r math o werth mae sgema "
 "yn disgrifio. Mae byrhadau unigryw yn iawn."
 
-#: gconf/gconftool.c:276
+#: ../gconf/gconftool.c:324
 msgid ""
 "Specify the type of the cdr pair value being set, or the type of the value a "
 "schema describes. Unique abbreviations OK."
@@ -1255,697 +1805,764 @@ msgstr ""
 "Penodi math y gwerth pâr CDR sy'n cael ei osod, neu'r math o werth mae sgema "
 "yn disgrifio. Mae byrhadau unigryw yn iawn."
 
-#: gconf/gconftool.c:285
-msgid "Specify a short half-line description to go in a schema."
-msgstr "Penodi disgrifiad byr hanner llinell er mwyn mynd mewn sgema."
-
-#: gconf/gconftool.c:286 gconf/gconftool.c:295
-msgid "DESCRIPTION"
-msgstr "DISGRIFIAD"
-
-#: gconf/gconftool.c:294
-msgid "Specify a several-line description to go in a schema."
-msgstr "Penodi disgrifiad aml-linell er mwyn mynd mewn sgema."
-
-#: gconf/gconftool.c:303
-msgid "Specify the owner of a schema"
-msgstr "Penodi perchennog sgema"
-
-#: gconf/gconftool.c:304
-msgid "OWNER"
-msgstr "PERCHENNOG"
-
-#: gconf/gconftool.c:312
+#: ../gconf/gconftool.c:339
 msgid "Specify a schema file to be installed"
 msgstr "Penodi ffeil sgema i'w osod"
 
-#: gconf/gconftool.c:313
+#: ../gconf/gconftool.c:340
 msgid "FILENAME"
 msgstr "ENWFFEIL"
 
-#: gconf/gconftool.c:321
+#: ../gconf/gconftool.c:348
 msgid "Specify a configuration source to use rather than the default path"
 msgstr ""
 "Penodi ffynhonnell cyfluniad i'w ddefnyddio yn hytrach na'r llwybr "
 "rhagosodedig"
 
-#: gconf/gconftool.c:322
+#: ../gconf/gconftool.c:349
 msgid "SOURCE"
-msgstr "FFYNHONELL"
+msgstr "FFYNHONNELL"
 
-#: gconf/gconftool.c:330
+#: ../gconf/gconftool.c:357
 msgid ""
 "Access the config database directly, bypassing server. Requires that gconfd "
 "is not running."
 msgstr ""
-"Cyrchu'r cronfa cyfluniad yn uniongyrchol, heb y gweinydd. Mae'n rhaid nad "
+"Cyrchu'r gronfa cyfluniad yn uniongyrchol, heb y gweinydd. Mae'n rhaid nad "
 "yw gconfd yn rhedeg."
 
-#: gconf/gconftool.c:339
+#: ../gconf/gconftool.c:366
 msgid ""
 "Properly installs schema files on the command line into the database. "
 "GCONF_CONFIG_SOURCE environment variable should be set to a non-default "
 "config source or set to the empty string to use the default."
 msgstr ""
-"Gosodir yn gywir ffeiliau sgema ar y llinell orchymyn i'r cronfa ddata. "
+"Gosodir yn gywir ffeiliau sgema ar y llinell orchymyn i'r gronfa ddata. "
 "Dylid gosod y newidyn amgylchol GCONF_CONFIG_SOURCE i ffynhonnell cyfluniad "
-"nid yw'n rhagosodedig neu ei osod i llinyn gwag er mwyn defnyddio'r "
+"nid yw'n rhagosodedig neu ei osod i linyn gwag er mwyn defnyddio'r "
 "rhagosodiad."
 
-#: gconf/gconftool.c:348
+#: ../gconf/gconftool.c:375
 msgid ""
 "Properly uninstalls schema files on the command line from the database. "
 "GCONF_CONFIG_SOURCE environment variable should be set to a non-default "
 "config source or set to the empty string to use the default."
 msgstr ""
-"Datosodir yn gywir ffeiliau sgema ar y llinell orchymyn o'r cronfa ddata. "
+"Dadosodir yn gywir ffeiliau sgema ar y llinell orchymyn o'r gronfa ddata. "
 "Dylid gosod y newidyn amgylchol GCONF_CONFIG_SOURCE i ffynhonnell cyfluniad "
-"nid yw'n rhagosodedig neu ei osod i llinyn gwag er mwyn defnyddio'r "
+"nid yw'n rhagosodedig neu ei osod i linyn gwag er mwyn defnyddio'r "
 "rhagosodiad."
 
-#: gconf/gconftool.c:357
+#: ../gconf/gconftool.c:390
 msgid ""
 "Torture-test an application by setting and unsetting a bunch of values of "
 "different types for keys on the command line."
 msgstr ""
-"Poenydio rhaglen er mwyn ei brofi gan osod a datosod nifer o werthoedd o "
+"Poenydio rhaglen er mwyn ei brofi gan osod a dadosod nifer o werthoedd o "
 "wahanol fathau ar gyfer allweddau ar y llinell orchymyn."
 
-#: gconf/gconftool.c:366
+#: ../gconf/gconftool.c:399
 msgid ""
 "Torture-test an application by setting and unsetting a bunch of keys inside "
 "the directories on the command line."
 msgstr ""
-"Poenydio rhaglen er mwyn ei brofi gan osod a datosod nifer o allweddi o fewn "
+"Poenydio rhaglen er mwyn ei brofi gan osod a dadosod nifer o allweddi o fewn "
 "y cyfeiriaduron ar y llinell orchymyn."
 
-#: gconf/gconftool.c:375
-msgid "Get the short doc string for a key"
-msgstr "Cyrchu'r llinyn dogfennaeth byr ar gyfer allwedd"
+#: ../gconf/gconftool.c:414
+msgid ""
+"Set a schema and sync. Use with --short-desc, --long-desc, --owner, and --"
+"type."
+msgstr ""
+"Gosod sgema a chysoni. Defnyddiwch gyda --short-desc, --long-desc, --owner, "
+"a --type"
 
-#: gconf/gconftool.c:384
-msgid "Get the long doc string for a key"
-msgstr "Cyrchu'r llinyn dogfennaeth hir ar gyfer allwedd"
+#: ../gconf/gconftool.c:423
+msgid "Specify a short half-line description to go in a schema."
+msgstr "Penodi disgrifiad byr hanner llinell er mwyn mynd mewn sgema."
 
-#: gconf/gconftool.c:393
+#: ../gconf/gconftool.c:424 ../gconf/gconftool.c:433
+msgid "DESCRIPTION"
+msgstr "DISGRIFIAD"
+
+#: ../gconf/gconftool.c:432
+msgid "Specify a several-line description to go in a schema."
+msgstr "Penodi disgrifiad aml-linell er mwyn mynd mewn sgema."
+
+#: ../gconf/gconftool.c:441
+msgid "Specify the owner of a schema"
+msgstr "Penodi perchennog sgema"
+
+#: ../gconf/gconftool.c:442
+msgid "OWNER"
+msgstr "PERCHENNOG"
+
+#: ../gconf/gconftool.c:450
 msgid "Get the name of the schema applied to this key"
-msgstr "Cyrchi enw'r sgema a gymhwyswyd i'r allwedd hwn"
+msgstr "Cyrchi enw'r sgema a gymhwyswyd i'r allwedd hon"
 
-#: gconf/gconftool.c:402
+#: ../gconf/gconftool.c:459
 msgid "Specify the schema name followed by the key to apply the schema name to"
 msgstr ""
 "Penodi enw'r sgema wedi ei ddilyn gan yr allwedd i gymhwyso enw'r sgema ati"
 
-#: gconf/gconftool.c:411
+#: ../gconf/gconftool.c:468
 msgid "Remove any schema name applied to the given keys"
 msgstr "Tynnu unrhyw enw sgema a gymhwyswyd i'r allweddi penodwyd"
 
-#: gconf/gconftool.c:420
-msgid "Get the name of the default source"
-msgstr "Cyrchu enw y ffynhonnell rhagosodedig"
-
-#: gconf/gconftool.c:429
+#: ../gconf/gconftool.c:483
 msgid "Print version"
 msgstr "Argraffu fersiwn"
 
-#: gconf/gconftool.c:526
+#: ../gconf/gconftool.c:492
+msgid "[FILE...]|[KEY...]|[DIR...]"
+msgstr "[FFEIL...]|[ALLWEDD...]|[CYFEIRIADUR...]"
+
+#: ../gconf/gconftool.c:548
+msgid "- Tool to manipulate a GConf configuration"
+msgstr "- Arf i drafod cyfluniad GConf"
+
+#: ../gconf/gconftool.c:550
+msgid "Client options"
+msgstr "Opsiynau'r cleient"
+
+#: ../gconf/gconftool.c:550
+msgid "Show client options"
+msgstr "Dangos opsiynau'r cleient"
+
+#: ../gconf/gconftool.c:554
+msgid "Key type options"
+msgstr "Opsiynau math bysell"
+
+#: ../gconf/gconftool.c:554
+msgid "Show key type options"
+msgstr "Dangos opsiynau math bysell"
+
+#: ../gconf/gconftool.c:558
+msgid "Load/Save options"
+msgstr "Opsiynau Llwytho/Cadw"
+
+#: ../gconf/gconftool.c:558
+msgid "Show load/save options"
+msgstr "Dangos opsiynau llwytho/cadw"
+
+#: ../gconf/gconftool.c:562
+msgid "Server options"
+msgstr "Opsiynau gweinydd"
+
+#: ../gconf/gconftool.c:562
+msgid "Show server options"
+msgstr "Dangos opsiynau gweinydd"
+
+#: ../gconf/gconftool.c:566
+msgid "Installation options"
+msgstr "Opsiynau gosod"
+
+#: ../gconf/gconftool.c:566
+msgid "Show installation options"
+msgstr "Dangos opsiynau gosod"
+
+#: ../gconf/gconftool.c:570
+msgid "Test options"
+msgstr "Opsiynau profi"
+
+#: ../gconf/gconftool.c:570
+msgid "Show test options"
+msgstr "Dangos opsiynau profi"
+
+#: ../gconf/gconftool.c:574
+msgid "Schema options"
+msgstr "Opsiynau sgema"
+
+#: ../gconf/gconftool.c:574
+msgid "Show schema options"
+msgstr "Dangos opsiynau sgema"
+
+#: ../gconf/gconftool.c:582
+#, c-format
+msgid "Run '%s --help' to see a full list of available command line options.\n"
+msgstr ""
+"Defnyddiwch '%s --help' er mwyn gweld rhestr lawn o'r holl opsiynau\n"
+"llinell orchymyn sydd ar gael.\n"
+
+#: ../gconf/gconftool.c:610
 msgid "Can't get and set/unset simultaneously\n"
 msgstr "Methu cyrchu a gosod/datosod ar yr un pryd\n"
 
-#: gconf/gconftool.c:536
+#: ../gconf/gconftool.c:620
 msgid "Can't set and get/unset simultaneously\n"
-msgstr "Methu gosod a cyrchu/datosod ar yr un pryd\n"
+msgstr "Methu gosod a chyrchu/datosod ar yr un pryd\n"
 
-#: gconf/gconftool.c:543
+#: ../gconf/gconftool.c:627
 msgid "Can't get type and set/unset simultaneously\n"
 msgstr "Methu cyrchu'r math a gosod/datosod ar yr un pryd\n"
 
-#: gconf/gconftool.c:554
+#: ../gconf/gconftool.c:638
 msgid "Can't use --all-entries with --get or --set\n"
-msgstr "Methir defnyddio --all-entries efo --get neu --set\n"
+msgstr "Methir defnyddio --all-entries gyda --get neu --set\n"
 
-#: gconf/gconftool.c:565
+#: ../gconf/gconftool.c:649
 msgid "Can't use --all-dirs with --get or --set\n"
-msgstr "Methir defnyddio --all-dirs efo --get neu --set\n"
+msgstr "Methir defnyddio --all-dirs gyda --get neu --set\n"
 
-#: gconf/gconftool.c:578
+#: ../gconf/gconftool.c:662
 msgid ""
 "--recursive-list should not be used with --get, --set, --unset, --all-"
 "entries, or --all-dirs\n"
 msgstr ""
-"Ni ddylid defnyddio --recursive-list efo --get, --set, --unset, --all-"
+"Ni ddylid defnyddio --recursive-list gyda --get, --set, --unset, --all-"
 "entries, neu --all-dirs\n"
 
-#: gconf/gconftool.c:591
+#: ../gconf/gconftool.c:675
 msgid ""
 "--set_schema should not be used with --get, --set, --unset, --all-entries, --"
 "all-dirs\n"
 msgstr ""
-"Ni ddylid defnyddio --set_schema efo --get, --set, --unset, --all-entries, --"
-"all-dirs\n"
+"Ni ddylid defnyddio --set_schema gyda --get, --set, --unset, --all-entries, "
+"--all-dirs\n"
 
-#: gconf/gconftool.c:597
+#: ../gconf/gconftool.c:681
 msgid "Value type is only relevant when setting a value\n"
-msgstr "Math gwerth ond yn berthnasol pan yn gosod gwerth\n"
+msgstr "Math gwerth ond yn berthnasol wrth osod gwerth\n"
 
-#: gconf/gconftool.c:603
+#: ../gconf/gconftool.c:687
 msgid "Must specify a type when setting a value\n"
 msgstr "Rhaid penodi math wrth osod gwerth\n"
 
-#: gconf/gconftool.c:615 gconf/gconftool.c:628 gconf/gconftool.c:641
-#: gconf/gconftool.c:655 gconf/gconftool.c:668 gconf/gconftool.c:681
-#: gconf/gconftool.c:695
+#: ../gconf/gconftool.c:695
+msgid ""
+"--ignore-schema-defaults is only relevant with --get, --all-entries, --dump, "
+"--recursive-list, --get-list-size or --get-list-element\n"
+msgstr ""
+"Mae --ignore-schema-defaults ond yn berthnasol gyda --get, --all-entries, --"
+"dump, --recursive-list, --get-list-size neu --get-list-element\n"
+
+#: ../gconf/gconftool.c:707 ../gconf/gconftool.c:720 ../gconf/gconftool.c:733
+#: ../gconf/gconftool.c:747 ../gconf/gconftool.c:760 ../gconf/gconftool.c:773
+#: ../gconf/gconftool.c:787
 #, c-format
 msgid "%s option must be used by itself.\n"
 msgstr "Rhaid defnyddio'r opsiwn %s ar ei hun.\n"
 
-#: gconf/gconftool.c:704
+#: ../gconf/gconftool.c:796
 msgid ""
 "You must specify a config source with --config-source when using --direct\n"
 msgstr ""
-"Rhaid i chi benodi ffynhonnell cyfluniad efo --config-source wrth ddefnyddio "
-"--direct\n"
+"Rhaid i chi benodi ffynhonnell cyfluniad gyda --config-source wrth "
+"ddefnyddio --direct\n"
 
-#: gconf/gconftool.c:710
-msgid "You should use --direct when using a non-default configuration source\n"
-msgstr ""
-"Dylwch ddefnyddio --direct wrth ddefnyddio ffynhonnell cyfluniad nid ydyw'n "
-"rhagosodedig\n"
-
-#: gconf/gconftool.c:716
+#: ../gconf/gconftool.c:802
 #, c-format
 msgid "Failed to init GConf: %s\n"
 msgstr "Methwyd cychwyn GConf: %s\n"
 
-#: gconf/gconftool.c:745
+#: ../gconf/gconftool.c:830
 msgid "GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL is set, not installing schemas\n"
 msgstr ""
 "Mae GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL wedi ei osod, ddim yn gosod "
 "sgemàu\n"
 
-#: gconf/gconftool.c:752
+#: ../gconf/gconftool.c:837
 msgid ""
 "GCONF_DISABLE_MAKEFILE_SCHEMA_UNINSTALL is set, not uninstalling schemas\n"
 msgstr ""
 "Mae GCONF_DISABLE_MAKEFILE_SCHEMA_UNINSTALL wedi ei osod, ddim yn datosod "
 "sgemàu\n"
 
-#: gconf/gconftool.c:765
+#: ../gconf/gconftool.c:850
 msgid "Must set the GCONF_CONFIG_SOURCE environment variable\n"
 msgstr "Rhaid gosod y newidyn amgylchol GCONF_CONFIG_SOURCE\n"
 
-#: gconf/gconftool.c:794
+#: ../gconf/gconftool.c:885
 #, c-format
 msgid "Failed to access configuration source(s): %s\n"
-msgstr "Methwyd cyrchu y ffynhonnell(au) cyfluniad: %s\n"
+msgstr "Methwyd cyrchu'r ffynhonnell(au) cyfluniad: %s\n"
 
-#: gconf/gconftool.c:1085
+#: ../gconf/gconftool.c:1163
 #, c-format
 msgid "Shutdown error: %s\n"
 msgstr "Gwall terfynu: %s\n"
 
-#: gconf/gconftool.c:1128
+#: ../gconf/gconftool.c:1206
 msgid "Must specify one or more directories to recursively list.\n"
-msgstr "Rhaid penodi un cyfeiriadur neu fwy i'w rhestru'n ailgyrchol.\n"
+msgstr "Rhaid penodi un cyfeiriadur neu fwy i'w rhestru'n ailadroddus.\n"
 
-#: gconf/gconftool.c:1180
+#: ../gconf/gconftool.c:1258
 msgid "Must specify one or more directories to dump.\n"
 msgstr "Rhaid penodi un cyfeiriadur neu fwy i'w tomennu.\n"
 
-#: gconf/gconftool.c:1222 gconf/gconftool.c:1487
+#: ../gconf/gconftool.c:1300 ../gconf/gconftool.c:1566
 #, c-format
 msgid "Failure listing entries in `%s': %s\n"
 msgstr "Methiant wrth restru cofnodion yn `%s': %s\n"
 
-#: gconf/gconftool.c:1240
+#: ../gconf/gconftool.c:1319
 msgid "(no value set)"
 msgstr "(dim gwerth wedi ei osod)"
 
-#: gconf/gconftool.c:1545
+#: ../gconf/gconftool.c:1625
 #, c-format
 msgid "Failed to spawn the config server (gconfd): %s\n"
 msgstr "Methwyd cychwyn y gweinydd cyfluniad (gconfd): %s\n"
 
-#: gconf/gconftool.c:1559
+#: ../gconf/gconftool.c:1654
 msgid "Must specify a key or keys to get\n"
 msgstr "Rhaid penodi allwedd neu allweddi i'w cyrchu\n"
 
-#: gconf/gconftool.c:1594
+#: ../gconf/gconftool.c:1689
 #, c-format
 msgid "Type: %s\n"
 msgstr "Math: %s\n"
 
-#: gconf/gconftool.c:1595
+#: ../gconf/gconftool.c:1690
 #, c-format
 msgid "List Type: %s\n"
 msgstr "Math Rhestr: %s\n"
 
-#: gconf/gconftool.c:1596
+#: ../gconf/gconftool.c:1691
 #, c-format
 msgid "Car Type: %s\n"
 msgstr "Math CAR: %s\n"
 
-#: gconf/gconftool.c:1597
+#: ../gconf/gconftool.c:1692
 #, c-format
 msgid "Cdr Type: %s\n"
 msgstr "Math CDR: %s\n"
 
-#: gconf/gconftool.c:1602
+#: ../gconf/gconftool.c:1697
 #, c-format
 msgid "Default Value: %s\n"
 msgstr "Gwerth Rhagosodedig: %s\n"
 
-#: gconf/gconftool.c:1602 gconf/gconftool.c:1604 gconf/gconftool.c:1605
-#: gconf/gconftool.c:1606
+#: ../gconf/gconftool.c:1697 ../gconf/gconftool.c:1699
+#: ../gconf/gconftool.c:1700 ../gconf/gconftool.c:1701
 msgid "Unset"
 msgstr "Datosod"
 
-#: gconf/gconftool.c:1604
+#: ../gconf/gconftool.c:1699
 #, c-format
 msgid "Owner: %s\n"
 msgstr "Perchennog: %s\n"
 
-#: gconf/gconftool.c:1605
+#: ../gconf/gconftool.c:1700
 #, c-format
 msgid "Short Desc: %s\n"
 msgstr "Disgrifiad Byr: %s\n"
 
-#: gconf/gconftool.c:1606
+#: ../gconf/gconftool.c:1701
 #, c-format
 msgid "Long Desc: %s\n"
 msgstr "Disgrifiad Hir: %s\n"
 
-#: gconf/gconftool.c:1615 gconf/gconftool.c:1839 gconf/gconftool.c:1873
-#: gconf/gconftool.c:1918 gconf/gconftool.c:2063
+#: ../gconf/gconftool.c:1710 ../gconf/gconftool.c:1934
+#: ../gconf/gconftool.c:1968 ../gconf/gconftool.c:2013
+#: ../gconf/gconftool.c:2158
 #, c-format
 msgid "No value set for `%s'\n"
 msgstr "Does dim gwerth wedi ei osod ar gyfer `%s'\n"
 
-#: gconf/gconftool.c:1619 gconf/gconftool.c:1843 gconf/gconftool.c:1877
-#: gconf/gconftool.c:1922 gconf/gconftool.c:2067
+#: ../gconf/gconftool.c:1714 ../gconf/gconftool.c:1938
+#: ../gconf/gconftool.c:1972 ../gconf/gconftool.c:2017
+#: ../gconf/gconftool.c:2162
 #, c-format
 msgid "Failed to get value for `%s': %s\n"
 msgstr "Methwyd cyrchu gwerth ar gyfer `%s': %s\n"
 
-#: gconf/gconftool.c:1662 gconf/gconftool.c:1674
+#: ../gconf/gconftool.c:1757 ../gconf/gconftool.c:1769
 #, c-format
 msgid "Don't understand type `%s'\n"
-msgstr "Ddim yn daeall y math `%s'\n"
+msgstr "Ddim yn deall y math `%s'\n"
 
-#: gconf/gconftool.c:1686
+#: ../gconf/gconftool.c:1781
 msgid "Must specify alternating keys/values as arguments\n"
-msgstr "Rhaid penodi allweddi/gwethoedd bob yn ail fel ymresymiadau\n"
+msgstr "Rhaid penodi allweddi/gwerthoedd bob yn ail fel argiau\n"
 
-#: gconf/gconftool.c:1706
+#: ../gconf/gconftool.c:1801
 #, c-format
 msgid "No value to set for key: `%s'\n"
-msgstr "Dim gweth wedi ei osod ar gyfer allwedd: `%s'\n"
+msgstr "Dim gwerth wedi ei osod ar gyfer allwedd: `%s'\n"
 
-#: gconf/gconftool.c:1734
+#: ../gconf/gconftool.c:1829
 msgid "Cannot set schema as value\n"
 msgstr "Methu gosod sgema fel gwerth\n"
 
-#: gconf/gconftool.c:1744
+#: ../gconf/gconftool.c:1839
 msgid "When setting a list you must specify a primitive list-type\n"
-msgstr "Pan yn gosod rhestr mae'n rhaid i chi benodi math rhestr sylfaenol\n"
+msgstr "Wrth osod rhestr mae'n rhaid i chi benodi math rhestr sylfaenol\n"
 
-#: gconf/gconftool.c:1758
+#: ../gconf/gconftool.c:1853
 msgid ""
 "When setting a pair you must specify a primitive car-type and cdr-type\n"
-msgstr ""
-"Pan yn gosod pâr mae'n rhaid i chi benodi math CAR a math CDR sylfaenol\n"
+msgstr "Wrth osod pâr mae'n rhaid i chi benodi math CAR a math CDR sylfaenol\n"
 
-#: gconf/gconftool.c:1773
+#: ../gconf/gconftool.c:1868
 #, c-format
 msgid "Error: %s\n"
 msgstr "Gwall: %s\n"
 
-#: gconf/gconftool.c:1786 gconf/gconftool.c:2815
+#: ../gconf/gconftool.c:1881 ../gconf/gconftool.c:2913
 #, c-format
 msgid "Error setting value: %s\n"
 msgstr "Gwall wrth osod gwerth: %s\n"
 
-#: gconf/gconftool.c:1804
+#: ../gconf/gconftool.c:1899
 #, c-format
 msgid "Error syncing: %s\n"
 msgstr "Gwall wrth gysoni: %s\n"
 
-#: gconf/gconftool.c:1819
+#: ../gconf/gconftool.c:1914
 msgid "Must specify a key or keys to get type\n"
-msgstr "Rhaid penodi allwedd neu allwedi i gyrchu math\n"
+msgstr "Rhaid penodi allwedd neu allweddi i gyrchu math\n"
 
-#: gconf/gconftool.c:1863
+#: ../gconf/gconftool.c:1958
 msgid "Must specify a key to lookup size of.\n"
-msgstr "Rhaid penodi allwedi i gyrchu ei faint.\n"
+msgstr "Rhaid penodi allweddi i gyrchu ei faint.\n"
 
-#: gconf/gconftool.c:1888 gconf/gconftool.c:1933
+#: ../gconf/gconftool.c:1983 ../gconf/gconftool.c:2028
 #, c-format
 msgid "Key %s is not a list.\n"
 msgstr "Dydy allwedd %s ddim yn rhestr.\n"
 
-#: gconf/gconftool.c:1908
+#: ../gconf/gconftool.c:2003
 msgid "Must specify a key from which to get list element.\n"
-msgstr "Rhaid penodi allwed i gyrchu elfen rhestr ohoni.\n"
+msgstr "Rhaid penodi allwedd i gyrchu elfen rhestr ohoni.\n"
 
-#: gconf/gconftool.c:1939
+#: ../gconf/gconftool.c:2034
 msgid "Must specify list index.\n"
 msgstr "Rhaid penodi mynegai rhestr.\n"
 
-#: gconf/gconftool.c:1946
+#: ../gconf/gconftool.c:2041
 msgid "List index must be non-negative.\n"
 msgstr "Ni chaiff fynegai rhestr fod yn negatif.\n"
 
-#: gconf/gconftool.c:1955
+#: ../gconf/gconftool.c:2050
 msgid "List index is out of bounds.\n"
 msgstr "Mae'r mynegai rhestr y tu hwnt i ffiniau.\n"
 
-#: gconf/gconftool.c:1981
+#: ../gconf/gconftool.c:2076
 msgid "Must specify a key or keys on the command line\n"
 msgstr "Rhaid penodi allwedd neu allweddi ar y llinell orchymyn\n"
 
-#: gconf/gconftool.c:2001
+#: ../gconf/gconftool.c:2096
 #, c-format
 msgid "No schema known for `%s'\n"
 msgstr "Dim sgema'n hysbys ar gyfer `%s'\n"
 
-#: gconf/gconftool.c:2034
+#: ../gconf/gconftool.c:2129
 #, c-format
 msgid "No doc string stored in schema at '%s'\n"
-msgstr "Dim llinyn dogfen wedi ei gadw mewn sgeam at '%s'\n"
+msgstr "Dim llinyn dogfen wedi ei gadw mewn sgema at '%s'\n"
 
-#: gconf/gconftool.c:2039
+#: ../gconf/gconftool.c:2134
 #, c-format
 msgid "Error getting schema at '%s': %s\n"
 msgstr "Gwall wrth gyrchu sgema at '%s': %s\n"
 
-#: gconf/gconftool.c:2046
+#: ../gconf/gconftool.c:2141
 #, c-format
 msgid "No schema stored at '%s'\n"
 msgstr "Dim sgema wedi ei gadw at '%s'\n"
 
-#: gconf/gconftool.c:2049
+#: ../gconf/gconftool.c:2144
 #, c-format
 msgid "Value at '%s' is not a schema\n"
-msgstr "Nid yw'r gweth at '%s' yn sgema\n"
+msgstr "Nid yw'r gwerth yn '%s' yn sgema\n"
 
-#: gconf/gconftool.c:2105
+#: ../gconf/gconftool.c:2200
 msgid "Must specify a schema name followed by the key name to apply it to\n"
 msgstr ""
 "Rhaid penodi enw sgema wedi ei ddilyn gan enw'r allwedd i'w gymhwyso ato\n"
 
-#: gconf/gconftool.c:2112
+#: ../gconf/gconftool.c:2207
 #, c-format
 msgid "Error associating schema name '%s' with key name '%s': %s\n"
 msgstr ""
 "Gwall wrth gysylltu'r sgema o'r enw '%s' gyda'r allwedd o'r enw '%s': %s\n"
 
-#: gconf/gconftool.c:2130
+#: ../gconf/gconftool.c:2225
 msgid "Must specify keys to unapply schema from\n"
-msgstr "Rhaid penodi allwddi i ddatgymhwyso'r sgema ohonynt\n"
+msgstr "Rhaid penodi allweddi i ddatgymhwyso'r sgema ohonynt\n"
 
-#: gconf/gconftool.c:2140
+#: ../gconf/gconftool.c:2235
 #, c-format
 msgid "Error removing schema name from '%s': %s\n"
 msgstr "Gwall tynnu enw sgema o '%s': %s\n"
 
-#: gconf/gconftool.c:2165
+#: ../gconf/gconftool.c:2260
 msgid "Must specify key (schema name) as the only argument\n"
 msgstr "Rhaid penodi allwedd (enw sgema) fel yr unig ymresymiad\n"
 
-#: gconf/gconftool.c:2207
+#: ../gconf/gconftool.c:2302
 msgid "List type must be a primitive type: string, int, float or bool\n"
 msgstr ""
 "Rhaid i fath rhestr fod yn werth sylfaenol: sring, int, float neu bool\n"
 
-#: gconf/gconftool.c:2227
+#: ../gconf/gconftool.c:2322
 msgid "Pair car type must be a primitive type: string, int, float or bool\n"
 msgstr ""
 "Rhaid i fath CAR pâr fod yn fath sylfaenol: string, int, float neu bool\n"
 
-#: gconf/gconftool.c:2247
+#: ../gconf/gconftool.c:2342
 msgid "Pair cdr type must be a primitive type: string, int, float or bool\n"
 msgstr ""
 "Rhaid i fath CDR pâr fod yn fath sylfaenol: string, int, float neu bool\n"
 
-#: gconf/gconftool.c:2262
+#: ../gconf/gconftool.c:2357
 #, c-format
 msgid "Error setting value: %s"
 msgstr "Gwall wrth osod gwerth: %s"
 
-#: gconf/gconftool.c:2276
+#: ../gconf/gconftool.c:2371
 #, c-format
 msgid "Error syncing: %s"
 msgstr "Gwall wrth gysoni: %s"
 
-#: gconf/gconftool.c:2291
+#: ../gconf/gconftool.c:2386
 msgid "Must specify one or more directories to get key/value pairs from.\n"
 msgstr ""
 "Rhaid penodi un cyfeiriadur neu fwy i gyrchu parau allwedd/gwerth ohonynt.\n"
 
-#: gconf/gconftool.c:2305
+#: ../gconf/gconftool.c:2400
 msgid "Must specify one or more keys to unset.\n"
 msgstr "Rhaid penodi un allwedd neu fwy i'w datosod.\n"
 
-#: gconf/gconftool.c:2316
+#: ../gconf/gconftool.c:2411
 #, c-format
 msgid "Error unsetting `%s': %s\n"
-msgstr "Gwall wrth ddatosod '%s': %s\n"
+msgstr "Gwall wrth ddadosod '%s': %s\n"
 
-#: gconf/gconftool.c:2336
+#: ../gconf/gconftool.c:2431
 msgid "Must specify one or more keys to recursively unset.\n"
-msgstr "Rhaid penodi un allwedd neu fwy i'w datosod yn ailgyrchol.\n"
+msgstr "Rhaid penodi un allwedd neu fwy i'w datosod yn ailadroddus.\n"
 
-#: gconf/gconftool.c:2350
+#: ../gconf/gconftool.c:2445
 #, c-format
 msgid "Failure during recursive unset of \"%s\": %s\n"
-msgstr "Methiant yn ystod datosodiad ailgyrchol o \"%s\": %s\n"
+msgstr "Methiant yn ystod dadosodiad ailadroddus o \"%s\": %s\n"
 
-#: gconf/gconftool.c:2370
+#: ../gconf/gconftool.c:2465
 msgid "Must specify one or more directories to get subdirs from.\n"
 msgstr ""
-"Rhaid penodi un cyfeiriadur neu fwy i gyrchu isgyfeiriaduron ohonynt.\n"
+"Rhaid penodi un cyfeiriadur neu fwy i gyrchu is-gyfeiriaduron ohonynt.\n"
 
-#: gconf/gconftool.c:2404
+#: ../gconf/gconftool.c:2499
 #, c-format
 msgid "Error listing dirs: %s\n"
-msgstr "Gwall wrth rhestru cyfeiriaduron: %s\n"
+msgstr "Gwall wrth restru cyfeiriaduron: %s\n"
 
-#: gconf/gconftool.c:2540
+#: ../gconf/gconftool.c:2635
 msgid "WARNING: must specify both a <car> and a <cdr> in a <pair>\n"
 msgstr "RHYBUDD: rhaid penodi <car> a <cdr> mewn <pair>\n"
 
-#: gconf/gconftool.c:2567
+#: ../gconf/gconftool.c:2662
 #, c-format
 msgid "WARNING: key specified (%s) for schema under a <value> - ignoring\n"
 msgstr ""
 "RHYBUDD: penodwyd allwedd (%s) ar gyfer sgema islaw <value> - anwybyddu\n"
 
-#: gconf/gconftool.c:2600
+#: ../gconf/gconftool.c:2695
 msgid "WARNING: must have a child node under <value>\n"
-msgstr "RHYBUDD: rhaid cael nôd plentyn o dan <value>\n"
+msgstr "RHYBUDD: rhaid cael nod plentyn o dan <value>\n"
 
-#: gconf/gconftool.c:2606
+#: ../gconf/gconftool.c:2701
 #, c-format
 msgid "WARNING: node <%s> not understood\n"
-msgstr "RHYBUDD: methu daeall nôd <%s>\n"
+msgstr "RHYBUDD: methu deall nod <%s>\n"
 
-#: gconf/gconftool.c:2624
+#: ../gconf/gconftool.c:2719
 #, c-format
 msgid "WARNING: Failed to parse int value `%s'\n"
 msgstr "RHYBUDD: Methwyd gramadegu gwerth int `%s'\n"
 
-#: gconf/gconftool.c:2645
+#: ../gconf/gconftool.c:2740
 #, c-format
 msgid "WARNING: Failed to parse float value `%s'\n"
 msgstr "RHYBUDD: Methwyd gramadegu gwerth float `%s'\n"
 
-#: gconf/gconftool.c:2667
+#: ../gconf/gconftool.c:2762
 #, c-format
 msgid "WARNING: Failed to parse string value `%s'\n"
 msgstr "RHYBUDD: Methwyd gramadegu gwerth llinyn `%s'\n"
 
-#: gconf/gconftool.c:2688
+#: ../gconf/gconftool.c:2783
 #, c-format
 msgid "WARNING: Failed to parse boolean value `%s'\n"
-msgstr "RHYBUDD: Methwyd gramadegu gwerth bool `%s'\n"
+msgstr "RHYBUDD: Methwyd gramadegu gwerth Boole `%s'\n"
 
-#: gconf/gconftool.c:2797 gconf/gconftool.c:3340
+#: ../gconf/gconftool.c:2892 ../gconf/gconftool.c:3434
 #, c-format
 msgid "WARNING: failed to associate schema `%s' with key `%s': %s\n"
-msgstr "RHYBUDD: methwyd cysylltu sgema `%s' efo allwedd `%s': %s\n"
+msgstr "RHYBUDD: methwyd cysylltu sgema `%s' gydag allwedd `%s': %s\n"
 
-#: gconf/gconftool.c:2909
+#: ../gconf/gconftool.c:3007
 #, c-format
 msgid "WARNING: invalid or missing type for schema (%s)\n"
-msgstr "RHYBUDD: math annilys neu coll ar gyfer sgema (%s)\n"
+msgstr "RHYBUDD: math annilys neu goll ar gyfer sgema (%s)\n"
 
-#: gconf/gconftool.c:2918
+#: ../gconf/gconftool.c:3016
 #, c-format
 msgid "WARNING: invalid or missing list_type for schema (%s)\n"
-msgstr "RHYBUDD: list_type annilys neu coll ar gyfer sgema (%s)\n"
+msgstr "RHYBUDD: list_type annilys neu goll ar gyfer sgema (%s)\n"
 
-#: gconf/gconftool.c:2929 gconf/gconftool.c:2959 gconf/gconftool.c:2988
+#: ../gconf/gconftool.c:3027 ../gconf/gconftool.c:3057
+#: ../gconf/gconftool.c:3086
 #, c-format
 msgid "WARNING: Failed to parse default value `%s' for schema (%s)\n"
 msgstr ""
 "RHYBUDD: Methwyd gramadegu gwerth rhagosodedig `%s' ar gyfer sgema (%s)\n"
 
-#: gconf/gconftool.c:2947
+#: ../gconf/gconftool.c:3045
 #, c-format
 msgid "WARNING: invalid or missing car_type or cdr_type for schema (%s)\n"
-msgstr "RHYBUDD: car_type neu cdr_type annilys neu coll ar gyfer sgema (%s)\n"
+msgstr "RHYBUDD: car_type neu cdr_type annilys neu goll ar gyfer sgema (%s)\n"
 
-#: gconf/gconftool.c:2972
+#: ../gconf/gconftool.c:3070
 msgid "WARNING: You cannot set a default value for a schema\n"
-msgstr "RHYBUDD: Ni chewch osod gwerth rhaogosodedig ar gyfer sgema\n"
+msgstr "RHYBUDD: Ni chewch osod gwerth rhagosodedig ar gyfer sgema\n"
 
-#: gconf/gconftool.c:3001
+#: ../gconf/gconftool.c:3099
 msgid "WARNING: gconftool internal error, unknown GConfValueType\n"
 msgstr "RHYBUDD: gwall gconftool mewnol, GConfValueType anhysbys\n"
 
-#: gconf/gconftool.c:3049 gconf/gconftool.c:3070 gconf/gconftool.c:3091
-#: gconf/gconftool.c:3112
+#: ../gconf/gconftool.c:3147 ../gconf/gconftool.c:3168
+#: ../gconf/gconftool.c:3189 ../gconf/gconftool.c:3210
 #, c-format
 msgid "WARNING: failed to parse type name `%s'\n"
-msgstr "RHYBUDD: methwyd gramdegu enw math `%s'\n"
+msgstr "RHYBUDD: methwyd gramadegu enw math `%s'\n"
 
-#: gconf/gconftool.c:3066
+#: ../gconf/gconftool.c:3164
 #, c-format
 msgid ""
 "WARNING: list_type can only be int, float, string or bool and not `%s'\n"
 msgstr ""
-"RHYBUDD: gall list_type ond fod yn int, float, string neu bool a nid `%s'\n"
+"RHYBUDD: gall list_type ond fod yn int, float, string neu bool ac nid `%s'\n"
 
-#: gconf/gconftool.c:3087
+#: ../gconf/gconftool.c:3185
 #, c-format
 msgid "WARNING: car_type can only be int, float, string or bool and not `%s'\n"
 msgstr ""
 "RHYBUDD: gall car_type ond fod yn int, float, string neu bool a nid `%s'\n"
 
-#: gconf/gconftool.c:3108
+#: ../gconf/gconftool.c:3206
 #, c-format
 msgid "WARNING: cdr_type can only be int, float, string or bool and not `%s'\n"
 msgstr ""
 "RHYBUDD: gall cdr_type ond fod yn int, float, string neu bool a nid `%s'\n"
 
-#: gconf/gconftool.c:3148
+#: ../gconf/gconftool.c:3246
 msgid "WARNING: empty <applyto> node"
-msgstr "RHYBUDD: nôd <applyto> gwag"
+msgstr "RHYBUDD: nod <applyto> gwag"
 
-#: gconf/gconftool.c:3151 gconf/gconftool.c:3413
+#: ../gconf/gconftool.c:3249 ../gconf/gconftool.c:3507
 #, c-format
 msgid "WARNING: node <%s> not understood below <schema>\n"
-msgstr "RHYBUDD: ni ddaeallir nôd <%s> islaw <schama>\n"
+msgstr "RHYBUDD: ni ddeallir nod <%s> islaw <schama>\n"
 
-#: gconf/gconftool.c:3162
+#: ../gconf/gconftool.c:3260
 msgid "WARNING: no <list_type> specified for schema of type list\n"
 msgstr "RHYBUDD: dim <list_type> wedi ei benodi ar gyfer sgema math rhestr\n"
 
-#: gconf/gconftool.c:3168
+#: ../gconf/gconftool.c:3266
 msgid "WARNING: no <car_type> specified for schema of type pair\n"
 msgstr "RHYBUDD: dim <car_type> wedi ei benodi ar gyfer sgema math pâr\n"
 
-#: gconf/gconftool.c:3174
+#: ../gconf/gconftool.c:3272
 msgid "WARNING: no <cdr_type> specified for schema of type pair\n"
 msgstr "RHYBUDD: dim <cdr_type> wedi ei benodi ar gyfer sgema math pâr\n"
 
-#: gconf/gconftool.c:3203
+#: ../gconf/gconftool.c:3301
 msgid "WARNING: <locale> node has no `name=\"locale\"' attribute, ignoring\n"
 msgstr ""
-"RHYBUDD: Does gan y nôd <locale> ddim priodoledd `name=\"locale\"', "
+"RHYBUDD: Does gan y nod <locale> ddim priodoledd `name=\"locale\"', "
 "anwybyddu\n"
 
-#: gconf/gconftool.c:3209
+#: ../gconf/gconftool.c:3307
 #, c-format
 msgid ""
 "WARNING: multiple <locale> nodes for locale `%s', ignoring all past first\n"
 msgstr ""
-"RHYBUDD: sawl nôd <loccale> ar gyfer y locale `%s'; anybyddu pob un ond y "
+"RHYBUDD: sawl nod <loccale> ar gyfer y locale `%s'; anwybyddu pob un ond y "
 "cyntaf\n"
 
-#: gconf/gconftool.c:3307
+#: ../gconf/gconftool.c:3405
 #, c-format
 msgid "WARNING: Invalid node <%s> in a <locale> node\n"
-msgstr "RHYBUDD: Nôd annilys <%s> mewn nôd <locale>\n"
+msgstr "RHYBUDD: Nôd annilys <%s> mewn nod <locale>\n"
 
-#: gconf/gconftool.c:3348
+#: ../gconf/gconftool.c:3442
 #, c-format
 msgid "Attached schema `%s' to key `%s'\n"
 msgstr "Rhwymwyd y sgema `%s' i'r allwedd `%s'\n"
 
-#: gconf/gconftool.c:3422
+#: ../gconf/gconftool.c:3516
 msgid "You must have at least one <locale> entry in a <schema>\n"
 msgstr "Mae'n rhaid i chi gael o leiaf un cofnod <locale> mewn <schema>\n"
 
-#: gconf/gconftool.c:3454
+#: ../gconf/gconftool.c:3551
 #, c-format
 msgid "WARNING: failed to install schema `%s' locale `%s': %s\n"
 msgstr "RHYBUDD: methwyd gosod sgema `%s' locale `%s': %s\n"
 
-#: gconf/gconftool.c:3462
+#: ../gconf/gconftool.c:3559
 #, c-format
 msgid "Installed schema `%s' for locale `%s'\n"
 msgstr "Gosodwyd sgema `%s' ar gyfer locale `%s'\n"
 
-#: gconf/gconftool.c:3486
+#: ../gconf/gconftool.c:3569
 #, c-format
 msgid "WARNING: failed to uninstall schema `%s' locale `%s': %s\n"
 msgstr "RHYBUDD: methu datosod sgema locale `%2$s' y sgema `%1$s': %3$s\n"
 
-#: gconf/gconftool.c:3494
+#: ../gconf/gconftool.c:3577
 #, c-format
 msgid "Uninstalled schema `%s' from locale `%s'\n"
-msgstr "Datosodwyd y sgema `%s' o'r locale `%s'\n"
+msgstr "Dadosodwyd y sgema `%s' o'r locale `%s'\n"
 
-#: gconf/gconftool.c:3532
+#: ../gconf/gconftool.c:3615
 msgid "WARNING: no key specified for schema\n"
 msgstr "RHYBUDD: penodwyd dim allwedd ar gyfer y sgema\n"
 
-#: gconf/gconftool.c:3573
+#: ../gconf/gconftool.c:3656
 #, c-format
 msgid "WARNING: node <%s> not understood below <%s>\n"
-msgstr "RHYBUDD: methu daeall nôd <%s> islaw <%s>\n"
+msgstr "RHYBUDD: methu deall nod <%s> islaw <%s>\n"
 
-#: gconf/gconftool.c:3604
+#: ../gconf/gconftool.c:3688
 #, c-format
 msgid "Failed to open `%s': %s\n"
 msgstr "Methu agor `%s': %s\n"
 
-#: gconf/gconftool.c:3611
+#: ../gconf/gconftool.c:3695
 #, c-format
 msgid "Document `%s' is empty?\n"
 msgstr "Ydy'r ddogfen `%s' yn hollol wag?\n"
 
-#: gconf/gconftool.c:3623
+#: ../gconf/gconftool.c:3707
 #, c-format
 msgid "Document `%s' has the wrong type of root node (<%s>, should be <%s>)\n"
 msgstr ""
-"Mae gan y ddogfen `%s' y math anghywir o nôd gwraidd (<%s>, dylai fod <%s>)\n"
+"Mae gan y ddogfen `%s' y math anghywir o nod gwraidd (<%s>, dylai fod <%s>)\n"
 
-#: gconf/gconftool.c:3636
+#: ../gconf/gconftool.c:3720
 #, c-format
 msgid "Document `%s' has no top level <%s> node\n"
-msgstr "Does gan y ddogfen `%s' ddim nôd lefel dop <%s>\n"
+msgstr "Does gan y ddogfen `%s' ddim nod lefel dop <%s>\n"
 
-#: gconf/gconftool.c:3650
+#: ../gconf/gconftool.c:3734
 #, c-format
 msgid "WARNING: node <%s> below <%s> not understood\n"
-msgstr "RHYBUDD: methu daeall <%s> islaw <%s>\n"
+msgstr "RHYBUDD: methu deall <%s> islaw <%s>\n"
 
-#: gconf/gconftool.c:3661 gconf/gconftool.c:3696 gconf/gconftool.c:3728
+#: ../gconf/gconftool.c:3755
 #, c-format
 msgid "Error syncing config data: %s"
 msgstr "Gwall wrth gysoni data cyfluniad: %s"
 
-#: gconf/gconftool.c:3680
+#: ../gconf/gconftool.c:3769
 msgid "Must specify some schema files to install\n"
 msgstr "Rhaid penodi rhai ffeiliau sgema i'w gosod\n"
 
-#: gconf/gconftool.c:3712
-msgid "Must specify some schema files to uninstall\n"
-msgstr "Rhaid penodi rhai ffeiliau sgema i'w datosod\n"
-
-#: gconf/gconftool.c:3749
+#: ../gconf/gconftool.c:3796
 #, c-format
 msgid ""
 "\n"
@@ -1954,16 +2571,16 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: gconf/gconftool.c:3769
+#: ../gconf/gconftool.c:3816
 #, c-format
 msgid "Failed to unset breakage key %s: %s\n"
 msgstr "Methwyd datosod allwedd toriad %s: %s\n"
 
-#: gconf/gconftool.c:3895
+#: ../gconf/gconftool.c:3942
 msgid "Must specify some keys to break\n"
 msgstr "Rhaid penodi rhai allweddi i'w torri\n"
 
-#: gconf/gconftool.c:3901
+#: ../gconf/gconftool.c:3948
 #, c-format
 msgid ""
 "Trying to break your application by setting bad values for key:\n"
@@ -1972,11 +2589,11 @@ msgstr ""
 "Ceisio torri eich rhaglen gan osod gwerthoedd gwael ar gyfer allwedd:\n"
 "  %s\n"
 
-#: gconf/gconftool.c:3919
+#: ../gconf/gconftool.c:3966
 msgid "Must specify some directories to break\n"
 msgstr "Rhaid penodi rhai cyfeiriaduron i'w torri\n"
 
-#: gconf/gconftool.c:3938
+#: ../gconf/gconftool.c:3985
 #, c-format
 msgid ""
 "Trying to break your application by setting bad values for keys in "
@@ -1986,217 +2603,3 @@ msgstr ""
 "Ceisio torri eich rhaglen gan osod gwerthoedd gwael ar gyfer allweddi mewn "
 "cyfeiriadur:\n"
 "  %s\n"
-
-#~ msgid "Received invalid value in set request"
-#~ msgstr "Derbyniwyd gwerth annilys yn y cais gosod"
-
-#~ msgid ""
-#~ "Couldn't make sense of CORBA value received in set request for key `%s'"
-#~ msgstr ""
-#~ "Methu deall gwerth CORBA a dderbyniwyd mewn cais gosod am allwedd `%s'"
-
-#~ msgid "Received request to drop all cached data"
-#~ msgstr "Derbyniwyd cais i gael gwared holl ddata y storfa"
-
-#~ msgid "Received request to sync synchronously"
-#~ msgstr "Derbyniwyd cais i gysoni yn gydamseredig"
-
-#~ msgid "Fatal error: failed to get object reference for ConfigDatabase"
-#~ msgstr "Gwall terfynol: methwyd cael "
-
-#~ msgid ""
-#~ "Failed to log addition of listener %s (%s);will not be able to restore "
-#~ "this listener on gconfd restart, resulting in unreliable notification of "
-#~ "configuration changes."
-#~ msgstr ""
-#~ "Methwyd cofnodi ychwanegiad y gwrandawr %s (%s); ni ellir adfer y "
-#~ "grandawr hwn pan mae gconfd yn ailddechrau, yn arwain at hysbysiad "
-#~ "annibynadwy ynhylch newidiadau cyfluniad."
-
-#~ msgid "Listener ID %lu doesn't exist"
-#~ msgstr "Nid yw'r ID gwrandawr %lu yn bodoli"
-
-#~ msgid ""
-#~ "Failed to log removal of listener to logfile (most likely harmless, may "
-#~ "result in a notification weirdly reappearing): %s"
-#~ msgstr ""
-#~ "Methwyd cofnodi tynniad gwrandawr i'r ffeil cofnodi (diniwed, mwy na "
-#~ "thebyg, efallai bydd hysbysiad yn ailymddangos mewn ffordd od): %s"
-
-#~ msgid "Invalid UTF-8 in string value in '%s'"
-#~ msgstr "UTF-8 annilys mewn gwerth llinyn yn '%s'"
-
-#~ msgid "Couldn't interpret CORBA value for list element"
-#~ msgstr "Methwyd dehongli gwerth CORBA ar gyfer elfen rhestr"
-
-#~ msgid "Incorrect type for list element in %s"
-#~ msgstr "Math anghywit ar gyfer elfen rhestr yn %s"
-
-#~ msgid "Received list from gconfd with a bad list type"
-#~ msgstr "Derbyniwyd rhestr o gconfd gyda math rhestr gwael"
-
-#~ msgid "Failed to convert object to IOR"
-#~ msgstr "Methwyd trosi gwthrych i IOR"
-
-#~ msgid "Invalid UTF-8 in locale for schema"
-#~ msgstr "UTF-8 annilys yn y locale ar gyfer y sgema"
-
-#~ msgid "Invalid UTF-8 in short description for schema"
-#~ msgstr "UTF-8 annilys yn nisgrifiad byr ar gyfer y sgema"
-
-#~ msgid "Invalid UTF-8 in long description for schema"
-#~ msgstr "UTF-8 annilys yn nisgrifiad hir ar gyfer y sgema"
-
-#~ msgid "Invalid UTF-8 in owner for schema"
-#~ msgstr "UTF-8 annilys ym mherchennog y sgema"
-
-#~ msgid "Server ping error: %s"
-#~ msgstr "Gwall ping gweinydd: %s"
-
-#~ msgid ""
-#~ "Failed to create pipe for communicating with spawned gconf daemon: %s\n"
-#~ msgstr ""
-#~ "Methu creu piben er mwyn cyfathredu gyda'r daemon gconf fe grweyd: %s\n"
-
-#~ msgid "Failed to launch configuration server: %s\n"
-#~ msgstr "Methu lansio gweinydd cyfluniad: %s\n"
-
-#~ msgid ""
-#~ "Failed to contact configuration server; some possible causes are that you "
-#~ "need to enable TCP/IP networking for ORBit, or you have stale NFS locks "
-#~ "due to a system crash. See http://www.gnome.org/projects/gconf/ for "
-#~ "information. (Details - %s)"
-#~ msgstr ""
-#~ "Methwyd cysylltu a gweinydd cyfluniad; rhai achosion posib: rhaid i chi "
-#~ "alluogi rhwydweithio TCP/IP ar gyfer ORBit, neu mae gennych hen gloeon "
-#~ "NFS oherwydd chwaliad system. Gweler http://www.gnome.org/projects/gconf/ "
-#~ "ar gyfer mwy o wyboadaeth. (Manylion - %s)"
-
-#~ msgid "none"
-#~ msgstr "dim"
-
-#~ msgid "Server couldn't resolve the address `%s'"
-#~ msgstr "Methodd y gweinydd ddatrys y cyfeiriad `%s'"
-
-#~ msgid "Can't add notifications to a local configuration source"
-#~ msgstr "Methu ychwanegu hysbysiadau at ffynhonnell cyfluniad lleol"
-
-#~ msgid "Adding client to server's list failed, CORBA error: %s"
-#~ msgstr "Methwyd ychwanegu cleient i rhestry gweinydd, gwall CORBA: %s"
-
-#~ msgid "Failure shutting down config server: %s"
-#~ msgstr "Gwall wrth derfynu gweinydd cyfluniad: %s"
-
-#~ msgid "CORBA error: %s"
-#~ msgstr "Gwall CORBA: %s"
-
-# EFALLAI
-#~ msgid "Shutdown request received"
-#~ msgstr "Derbynwyd gofyniad terfynu"
-
-#~ msgid "Failed to get object reference for ConfigServer"
-#~ msgstr "Methwyd cyrchu cyfeirnod gwrthrych ar gyfer ConfigServer"
-
-#~ msgid "Returning exception: %s"
-#~ msgstr "Dychwelyd eithriad: %s"
-
-#~ msgid ""
-#~ "Failed to open gconfd logfile; won't be able to restore listeners after "
-#~ "gconfd shutdown (%s)"
-#~ msgstr ""
-#~ "Methwyd agor ffeil gofnodi gconfd: ni ellir adfer gwrandawyr ar ôl "
-#~ "igconfd derfynu (%s)"
-
-#~ msgid ""
-#~ "Failed to close gconfd logfile; data may not have been properly saved (%s)"
-#~ msgstr ""
-#~ "Methwyd cau ffeil gofnodi gconfd; efallai ni chafodd data ei gadw'n gywir "
-#~ "(%s)"
-
-#~ msgid "Could not open saved state file '%s' for writing: %s"
-#~ msgstr "Methwyd agor y ffeil cadw cyflwr '%s' er mwyn ysgrifennu: %s"
-
-#~ msgid "Could not write saved state file '%s' fd: %d: %s"
-#~ msgstr "Methwyd ysgrifennu at y ffeil cadw cyflwr '%s' disgrifwr: %d: %s"
-
-#~ msgid "Failed to close new saved state file '%s': %s"
-#~ msgstr "Methwyd cau ffeil cadw cyflwr newydd '%s': %s"
-
-#~ msgid "Could not move aside old saved state file '%s': %s"
-#~ msgstr "Methwyd neilltuo hen ffeil cadw cyflwr '%s': %s"
-
-#~ msgid "Failed to move new save state file into place: %s"
-#~ msgstr "Methwyd sumud ffeil cadw cyflwr newydd i'w le: %s"
-
-#~ msgid ""
-#~ "Failed to restore original saved state file that had been moved to '%s': %"
-#~ "s"
-#~ msgstr ""
-#~ "Methwyd adfer ffeil cadw cyflwr gwreiddiol a gafwyd ei symud i '%s': %s"
-
-#~ msgid ""
-#~ "Unable to restore a listener on address '%s', couldn't resolve the "
-#~ "database"
-#~ msgstr ""
-#~ "Methwyd adfer gwrandawr ar y cyfeiriad '%s', methwyd datrys y cronfa ddata"
-
-#~ msgid "Error reading saved state file: %s"
-#~ msgstr "Gwall wrth ddarllen ffeil cadw cyflwr: %s"
-
-#~ msgid "Unable to open saved state file '%s': %s"
-#~ msgstr "Methwyd agor ffeil cadw cyflwr '%s': %s"
-
-#~ msgid ""
-#~ "Failed to log addition of listener to gconfd logfile; won't be able to re-"
-#~ "add the listener if gconfd exits or shuts down (%s)"
-#~ msgstr ""
-#~ "Methwyd cofnodi ychwanegiad gwrandawr at ffeil cofnod gconfd; ni ellir "
-#~ "ail-ychwanegu'r gwrandawr os mae gconfd yn terfynu (%s)"
-
-#~ msgid ""
-#~ "Failed to log removal of listener to gconfd logfile; might erroneously re-"
-#~ "add the listener if gconfd exits or shuts down (%s)"
-#~ msgstr ""
-#~ "Methwyd cofnodi tyniad gwrandawr at ffeil cofnod gconfd; efallai caiff y "
-#~ "gwrandawr ei ail-ychwanegu yn wallus os mae gconfd yn terfynu (%s)"
-
-#~ msgid "Failed to get IOR for client: %s"
-#~ msgstr "Methu cael IOR ar gyfer y cleient: %s"
-
-#~ msgid "Failed to open saved state file: %s"
-#~ msgstr "Methwyd agor ffeil cadw cyflwr: %s"
-
-#~ msgid "Failed to write client add to saved state file: %s"
-#~ msgstr "Methwyd ysgrifennu ychwanegiad cleient at ffeil cadw cyflwr: %s"
-
-#~ msgid "Failed to flush client add to saved state file: %s"
-#~ msgstr "Methwyd cysoni ychwanegiad cleient at ffeil cadw cyflwr: %s"
-
-#~ msgid ""
-#~ "Some client removed itself from the GConf server when it hadn't been "
-#~ "added."
-#~ msgstr ""
-#~ "Tynnodd rhyw gleient ei hun o'r gweinydd GConf pan nad oedd wedi ei "
-#~ "ychwanegu."
-
-#~ msgid ""
-#~ "%u items remain in the cache after cleaning already-synced items older "
-#~ "than %u seconds"
-#~ msgstr ""
-#~ "%u eitem ar ôl yn y storfa ar ôl glanhau eitemau yn hŷn na %u eiliad"
-
-#~ msgid "%s"
-#~ msgstr "%s"
-
-# EFALLAI
-#~ msgid "/path"
-#~ msgstr "/llwybr"
-
-#~ msgid "%s must be used by itself.\n"
-#~ msgstr "Rhaid defnyddio %s ar ei hunan.\n"
-
-#~ msgid "--dir-exists option must be used by itself.\n"
-#~ msgstr "Rhaid defnyddio yr opsiwn --dir-exists wrth ei hunan.\n"
-
-#~ msgid "--install-schema-file must be used by itself.\n"
-#~ msgstr "Rhaid i --install-schema-file gael ei ddefnyddio wrth ei hunan.\n"

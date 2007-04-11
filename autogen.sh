@@ -6,7 +6,7 @@ test -z "$srcdir" && srcdir=.
 
 ORIGDIR=`pwd`
 cd $srcdir
-PROJECT=gconf-dbus
+PROJECT="GConf D-Bus"
 TEST_TYPE=-f
 FILE=gconf/gconf.h
 
@@ -133,6 +133,10 @@ do
       if grep "^GTK_DOC_CHECK" configure.in >/dev/null; then
 	echo "Running gtkdocize..."
 	gtkdocize
+      fi
+      if grep "^IT_PROG_INTLTOOL" configure.in >/dev/null; then
+        echo "Running intltoolize..."
+        intltoolize --force --copy
       fi
       echo "Running $ACLOCAL $aclocalinclude ..."
       $ACLOCAL $aclocalinclude

@@ -36,14 +36,15 @@
 #include <time.h>
 #include <math.h>
 
-#ifdef HAVE_ORBIT
-#include "GConfX.h"
-#include "gconf-corba-utils.h"
+#ifdef G_OS_WIN32
+#include <windows.h>
+#include <share.h>
 #endif
 
 gboolean gconf_log_debug_messages = FALSE;
 
 static gboolean gconf_daemon_mode = FALSE;
+static gchar* daemon_ior = NULL;
 
 void
 gconf_set_daemon_mode(gboolean setting)
@@ -55,6 +56,25 @@ gboolean
 gconf_in_daemon_mode(void)
 {
   return gconf_daemon_mode;
+}
+
+void
+gconf_set_daemon_ior(const gchar* ior)
+{
+  if (daemon_ior != NULL)
+    {
+      g_free(daemon_ior);
+      daemon_ior = NULL;
+    }
+      
+  if (ior != NULL)
+    daemon_ior = g_strdup(ior);
+}
+
+const gchar*
+gconf_get_daemon_ior(void)
+{
+  return daemon_ior;
 }
 
 gchar*
@@ -114,14 +134,14 @@ gconf_file_exists (const gchar* filename)
   
   g_return_val_if_fail (filename != NULL,FALSE);
   
-  return stat (filename, &s) == 0;
+  return g_stat (filename, &s) == 0;
 }
 
 gboolean
 gconf_file_test(const gchar* filename, int test)
 {
   struct stat s;
-  if(stat (filename, &s) != 0)
+  if(g_stat (filename, &s) != 0)
     return FALSE;
   if(!(test & GCONF_FILE_ISFILE) && S_ISREG(s.st_mode))
     return FALSE;
@@ -132,6 +152,489 @@ gconf_file_test(const gchar* filename, int test)
   return TRUE;
 }
 
+#if HAVE_CORBA
+GConfValue* 
+gconf_value_from_corba_value(const ConfigValue* value)
+{
+  GConfValue* gval;
+  GConfValueType type = GCONF_VALUE_INVALID;
+  
+  switch (value->_d)
+    {
+    case InvalidVal:
+      return NULL;
+    case IntVal:
+      type = GCONF_VALUE_INT;
+      break;
+    case StringVal:
+      type = GCONF_VALUE_STRING;
+      break;
+    case FloatVal:
+      type = GCONF_VALUE_FLOAT;
+      break;
+    case BoolVal:
+      type = GCONF_VALUE_BOOL;
+      break;
+    case SchemaVal:
+      type = GCONF_VALUE_SCHEMA;
+      break;
+    case ListVal:
+      type = GCONF_VALUE_LIST;
+      break;
+    case PairVal:
+      type = GCONF_VALUE_PAIR;
+      break;
+    default:
+      gconf_log(GCL_DEBUG, "Invalid type in %s", G_GNUC_FUNCTION);
+      return NULL;
+    }
+
+  g_assert(GCONF_VALUE_TYPE_VALID(type));
+  
+  gval = gconf_value_new(type);
+
+  switch (gval->type)
+    {
+    case GCONF_VALUE_INT:
+      gconf_value_set_int(gval, value->_u.int_value);
+      break;
+    case GCONF_VALUE_STRING:
+      if (!g_utf8_validate (value->_u.string_value, -1, NULL))
+        {
+          gconf_log (GCL_ERR, _("Invalid UTF-8 in string value in '%s'"),
+                     value->_u.string_value); 
+        }
+      else
+        {
+          gconf_value_set_string(gval, value->_u.string_value);
+        }
+      break;
+    case GCONF_VALUE_FLOAT:
+      gconf_value_set_float(gval, value->_u.float_value);
+      break;
+    case GCONF_VALUE_BOOL:
+      gconf_value_set_bool(gval, value->_u.bool_value);
+      break;
+    case GCONF_VALUE_SCHEMA:
+      gconf_value_set_schema_nocopy(gval, 
+                                    gconf_schema_from_corba_schema(&(value->_u.schema_value)));
+      break;
+    case GCONF_VALUE_LIST:
+      {
+        GSList* list = NULL;
+        guint i = 0;
+        
+        switch (value->_u.list_value.list_type)
+          {
+          case BIntVal:
+            gconf_value_set_list_type(gval, GCONF_VALUE_INT);
+            break;
+          case BBoolVal:
+            gconf_value_set_list_type(gval, GCONF_VALUE_BOOL);
+            break;
+          case BFloatVal:
+            gconf_value_set_list_type(gval, GCONF_VALUE_FLOAT);
+            break;
+          case BStringVal:
+            gconf_value_set_list_type(gval, GCONF_VALUE_STRING);
+            break;
+          case BInvalidVal:
+            break;
+          default:
+            g_warning("Bizarre list type in %s", G_GNUC_FUNCTION);
+            break;
+          }
+
+        if (gconf_value_get_list_type(gval) != GCONF_VALUE_INVALID)
+          {
+            i = 0;
+            while (i < value->_u.list_value.seq._length)
+              {
+                GConfValue* val;
+                
+                /* This is a bit dubious; we cast a ConfigBasicValue to ConfigValue
+                   because they have the same initial members, but by the time
+                   the CORBA and C specs kick in, not sure we are guaranteed
+                   to be able to do this.
+                */
+                val = gconf_value_from_corba_value((ConfigValue*)&value->_u.list_value.seq._buffer[i]);
+                
+                if (val == NULL)
+                  gconf_log(GCL_ERR, _("Couldn't interpret CORBA value for list element"));
+                else if (val->type != gconf_value_get_list_type(gval))
+                  gconf_log(GCL_ERR, _("Incorrect type for list element in %s"), G_GNUC_FUNCTION);
+                else
+                  list = g_slist_prepend(list, val);
+                
+                ++i;
+              }
+        
+            list = g_slist_reverse(list);
+            
+            gconf_value_set_list_nocopy(gval, list);
+          }
+        else
+          {
+            gconf_log(GCL_ERR, _("Received list from gconfd with a bad list type"));
+          }
+      }
+      break;
+    case GCONF_VALUE_PAIR:
+      {
+        g_return_val_if_fail(value->_u.pair_value._length == 2, gval);
+        
+        gconf_value_set_car_nocopy(gval,
+                                   gconf_value_from_corba_value((ConfigValue*)&value->_u.list_value.seq._buffer[0]));
+
+        gconf_value_set_cdr_nocopy(gval,
+                                   gconf_value_from_corba_value((ConfigValue*)&value->_u.list_value.seq._buffer[1]));
+      }
+      break;
+    default:
+      g_assert_not_reached();
+      break;
+    }
+  
+  return gval;
+}
+
+void          
+gconf_fill_corba_value_from_gconf_value(const GConfValue *value, 
+                                        ConfigValue      *cv)
+{
+  if (value == NULL)
+    {
+      cv->_d = InvalidVal;
+      return;
+    }
+
+  switch (value->type)
+    {
+    case GCONF_VALUE_INT:
+      cv->_d = IntVal;
+      cv->_u.int_value = gconf_value_get_int(value);
+      break;
+    case GCONF_VALUE_STRING:
+      cv->_d = StringVal;
+      cv->_u.string_value = CORBA_string_dup((char*)gconf_value_get_string(value));
+      break;
+    case GCONF_VALUE_FLOAT:
+      cv->_d = FloatVal;
+      cv->_u.float_value = gconf_value_get_float(value);
+      break;
+    case GCONF_VALUE_BOOL:
+      cv->_d = BoolVal;
+      cv->_u.bool_value = gconf_value_get_bool(value);
+      break;
+    case GCONF_VALUE_SCHEMA:
+      cv->_d = SchemaVal;
+      gconf_fill_corba_schema_from_gconf_schema (gconf_value_get_schema(value),
+                                                 &cv->_u.schema_value);
+      break;
+    case GCONF_VALUE_LIST:
+      {
+        guint n, i;
+        GSList* list;
+        
+        cv->_d = ListVal;
+
+        list = gconf_value_get_list(value);
+
+        n = g_slist_length(list);
+
+        cv->_u.list_value.seq._buffer =
+          CORBA_sequence_ConfigBasicValue_allocbuf(n);
+        cv->_u.list_value.seq._length = n;
+        cv->_u.list_value.seq._maximum = n;
+        CORBA_sequence_set_release(&cv->_u.list_value.seq, TRUE);
+        
+        switch (gconf_value_get_list_type(value))
+          {
+          case GCONF_VALUE_INT:
+            cv->_u.list_value.list_type = BIntVal;
+            break;
+
+          case GCONF_VALUE_BOOL:
+            cv->_u.list_value.list_type = BBoolVal;
+            break;
+            
+          case GCONF_VALUE_STRING:
+            cv->_u.list_value.list_type = BStringVal;
+            break;
+
+          case GCONF_VALUE_FLOAT:
+            cv->_u.list_value.list_type = BFloatVal;
+            break;
+
+          case GCONF_VALUE_SCHEMA:
+            cv->_u.list_value.list_type = BSchemaVal;
+            break;
+            
+          default:
+            cv->_u.list_value.list_type = BInvalidVal;
+            gconf_log(GCL_DEBUG, "Invalid list type in %s", G_GNUC_FUNCTION);
+            break;
+          }
+        
+        i= 0;
+        while (list != NULL)
+          {
+            /* That dubious ConfigBasicValue->ConfigValue cast again */
+            gconf_fill_corba_value_from_gconf_value((GConfValue*)list->data,
+                                                    (ConfigValue*)&cv->_u.list_value.seq._buffer[i]);
+
+            list = g_slist_next(list);
+            ++i;
+          }
+      }
+      break;
+    case GCONF_VALUE_PAIR:
+      {
+        cv->_d = PairVal;
+
+        cv->_u.pair_value._buffer =
+          CORBA_sequence_ConfigBasicValue_allocbuf(2);
+        cv->_u.pair_value._length = 2;
+        cv->_u.pair_value._maximum = 2;
+        CORBA_sequence_set_release(&cv->_u.pair_value, TRUE);
+        
+        /* dubious cast */
+        gconf_fill_corba_value_from_gconf_value (gconf_value_get_car(value),
+                                                 (ConfigValue*)&cv->_u.pair_value._buffer[0]);
+        gconf_fill_corba_value_from_gconf_value(gconf_value_get_cdr(value),
+                                                (ConfigValue*)&cv->_u.pair_value._buffer[1]);
+      }
+      break;
+      
+    case GCONF_VALUE_INVALID:
+      cv->_d = InvalidVal;
+      break;
+    default:
+      cv->_d = InvalidVal;
+      gconf_log(GCL_DEBUG, "Unknown type in %s", G_GNUC_FUNCTION);
+      break;
+    }
+}
+
+ConfigValue*  
+gconf_corba_value_from_gconf_value (const GConfValue* value)
+{
+  ConfigValue* cv;
+
+  cv = ConfigValue__alloc();
+
+  gconf_fill_corba_value_from_gconf_value(value, cv);
+
+  return cv;
+}
+
+ConfigValue*  
+gconf_invalid_corba_value (void)
+{
+  ConfigValue* cv;
+
+  cv = ConfigValue__alloc();
+
+  cv->_d = InvalidVal;
+
+  return cv;
+}
+
+gchar*
+gconf_object_to_string (CORBA_Object obj,
+                        GError **err)
+{
+  CORBA_Environment ev;
+  gchar *ior;
+  gchar *retval;
+  
+  CORBA_exception_init (&ev);
+
+  ior = CORBA_ORB_object_to_string (gconf_orb_get (), obj, &ev);
+
+  if (ior == NULL)
+    {
+      gconf_set_error (err,
+                       GCONF_ERROR_FAILED,
+                       _("Failed to convert object to IOR"));
+
+      return NULL;
+    }
+
+  retval = g_strdup (ior);
+
+  CORBA_free (ior);
+
+  return retval;
+}
+
+static ConfigValueType
+corba_type_from_gconf_type(GConfValueType type)
+{
+  switch (type)
+    {
+    case GCONF_VALUE_INT:
+      return IntVal;
+    case GCONF_VALUE_BOOL:
+      return BoolVal;
+    case GCONF_VALUE_FLOAT:
+      return FloatVal;
+    case GCONF_VALUE_INVALID:
+      return InvalidVal;
+    case GCONF_VALUE_STRING:
+      return StringVal;
+    case GCONF_VALUE_SCHEMA:
+      return SchemaVal;
+    case GCONF_VALUE_LIST:
+      return ListVal;
+    case GCONF_VALUE_PAIR:
+      return PairVal;
+    default:
+      g_assert_not_reached();
+      return InvalidVal;
+    }
+}
+
+static GConfValueType
+gconf_type_from_corba_type(ConfigValueType type)
+{
+  switch (type)
+    {
+    case InvalidVal:
+      return GCONF_VALUE_INVALID;
+    case StringVal:
+      return GCONF_VALUE_STRING;
+    case IntVal:
+      return GCONF_VALUE_INT;
+    case FloatVal:
+      return GCONF_VALUE_FLOAT;
+    case SchemaVal:
+      return GCONF_VALUE_SCHEMA;
+    case BoolVal:
+      return GCONF_VALUE_BOOL;
+    case ListVal:
+      return GCONF_VALUE_LIST;
+    case PairVal:
+      return GCONF_VALUE_PAIR;
+    default:
+      g_assert_not_reached();
+      return GCONF_VALUE_INVALID;
+    }
+}
+
+void          
+gconf_fill_corba_schema_from_gconf_schema(const GConfSchema *sc, 
+                                          ConfigSchema      *cs)
+{
+  cs->value_type = corba_type_from_gconf_type (gconf_schema_get_type (sc));
+  cs->value_list_type = corba_type_from_gconf_type (gconf_schema_get_list_type (sc));
+  cs->value_car_type = corba_type_from_gconf_type (gconf_schema_get_car_type (sc));
+  cs->value_cdr_type = corba_type_from_gconf_type (gconf_schema_get_cdr_type (sc));
+
+  cs->locale = CORBA_string_dup (gconf_schema_get_locale (sc) ? gconf_schema_get_locale (sc) : "");
+  cs->short_desc = CORBA_string_dup (gconf_schema_get_short_desc (sc) ? gconf_schema_get_short_desc (sc) : "");
+  cs->long_desc = CORBA_string_dup (gconf_schema_get_long_desc (sc) ? gconf_schema_get_long_desc (sc) : "");
+  cs->owner = CORBA_string_dup (gconf_schema_get_owner (sc) ? gconf_schema_get_owner (sc) : "");
+
+  {
+    gchar* encoded;
+    GConfValue* default_val;
+
+    default_val = gconf_schema_get_default_value (sc);
+
+    if (default_val)
+      {
+        encoded = gconf_value_encode (default_val);
+
+        g_assert (encoded != NULL);
+
+        cs->encoded_default_value = CORBA_string_dup (encoded);
+
+        g_free (encoded);
+      }
+    else
+      cs->encoded_default_value = CORBA_string_dup ("");
+  }
+}
+
+ConfigSchema* 
+gconf_corba_schema_from_gconf_schema (const GConfSchema* sc)
+{
+  ConfigSchema* cs;
+
+  cs = ConfigSchema__alloc ();
+
+  gconf_fill_corba_schema_from_gconf_schema (sc, cs);
+
+  return cs;
+}
+
+GConfSchema*  
+gconf_schema_from_corba_schema(const ConfigSchema* cs)
+{
+  GConfSchema* sc;
+  GConfValueType type = GCONF_VALUE_INVALID;
+  GConfValueType list_type = GCONF_VALUE_INVALID;
+  GConfValueType car_type = GCONF_VALUE_INVALID;
+  GConfValueType cdr_type = GCONF_VALUE_INVALID;
+
+  type = gconf_type_from_corba_type(cs->value_type);
+  list_type = gconf_type_from_corba_type(cs->value_list_type);
+  car_type = gconf_type_from_corba_type(cs->value_car_type);
+  cdr_type = gconf_type_from_corba_type(cs->value_cdr_type);
+
+  sc = gconf_schema_new();
+
+  gconf_schema_set_type(sc, type);
+  gconf_schema_set_list_type(sc, list_type);
+  gconf_schema_set_car_type(sc, car_type);
+  gconf_schema_set_cdr_type(sc, cdr_type);
+
+  if (*cs->locale != '\0')
+    {
+      if (!g_utf8_validate (cs->locale, -1, NULL))
+        gconf_log (GCL_ERR, _("Invalid UTF-8 in locale for schema"));
+      else
+        gconf_schema_set_locale(sc, cs->locale);
+    }
+
+  if (*cs->short_desc != '\0')
+    {
+      if (!g_utf8_validate (cs->short_desc, -1, NULL))
+        gconf_log (GCL_ERR, _("Invalid UTF-8 in short description for schema"));
+      else
+        gconf_schema_set_short_desc(sc, cs->short_desc);
+    }
+
+  if (*cs->long_desc != '\0')
+    {
+      if (!g_utf8_validate (cs->long_desc, -1, NULL))
+        gconf_log (GCL_ERR, _("Invalid UTF-8 in long description for schema"));
+      else
+        gconf_schema_set_long_desc(sc, cs->long_desc);
+    }
+
+  if (*cs->owner != '\0')
+    {
+      if (!g_utf8_validate (cs->owner, -1, NULL))
+        gconf_log (GCL_ERR, _("Invalid UTF-8 in owner for schema"));
+      else
+        gconf_schema_set_owner(sc, cs->owner);
+    }
+      
+  {
+    GConfValue* val;
+
+    val = gconf_value_decode(cs->encoded_default_value);
+
+    if (val)
+      gconf_schema_set_default_value_nocopy(sc, val);
+  }
+  
+  return sc;
+}
+#endif /* HAVE_CORBA */
+
 const gchar* 
 gconf_value_type_to_string(GConfValueType type)
 {
@@ -139,32 +642,23 @@ gconf_value_type_to_string(GConfValueType type)
     {
     case GCONF_VALUE_INT:
       return "int";
-      break;
     case GCONF_VALUE_STRING:
       return "string";
-      break;
     case GCONF_VALUE_FLOAT:
       return "float";
-      break;
     case GCONF_VALUE_BOOL:
       return "bool";
-      break;
     case GCONF_VALUE_SCHEMA:
       return "schema";
-      break;
     case GCONF_VALUE_LIST:
       return "list";
-      break;
     case GCONF_VALUE_PAIR:
       return "pair";
-      break;
     case GCONF_VALUE_INVALID:
       return "*invalid*";
-      break;
     default:
       g_assert_not_reached();
       return NULL; /* for warnings */
-      break;
     }
 }
 
@@ -218,6 +712,34 @@ unquote_string(gchar* s)
   return s;
 }
 
+#ifdef G_OS_WIN32
+
+/* Return the home directory with forward slashes instead of backslashes */
+
+const char*
+_gconf_win32_get_home_dir (void)
+{
+  static GQuark quark = 0;
+  char *home_copy, *p;
+
+  if (quark != 0)
+    return g_quark_to_string (quark);
+  
+  home_copy = g_strdup (g_get_home_dir ());
+
+  /* Replace backslashes with forward slashes */
+  for (p = home_copy; *p; p++)
+    if (*p == '\\')
+      *p = '/';
+  
+  quark = g_quark_from_string (home_copy);
+  g_free (home_copy);
+
+  return g_quark_to_string (quark);
+}
+
+#endif
+
 static const gchar*
 get_variable(const gchar* varname)
 {
@@ -226,7 +748,11 @@ get_variable(const gchar* varname)
   */
   if (strcmp(varname, "HOME") == 0)
     {
-      return g_get_home_dir();
+#ifndef G_OS_WIN32
+      return g_get_home_dir ();
+#else
+      return _gconf_win32_get_home_dir ();
+#endif
     }
   else if (strcmp(varname, "USER") == 0)
     {
@@ -239,7 +765,7 @@ get_variable(const gchar* varname)
     {
       /* This is magic: if a variable called ENV_FOO is used,
          then the environment variable FOO is checked */
-      gchar* envvar = getenv(&varname[4]);
+      const gchar* envvar = g_getenv(&varname[4]);
 
       if (envvar)
         return envvar;
@@ -331,7 +857,7 @@ gconf_load_source_path(const gchar* filename, GError** err)
   GSList *l = NULL;
   gchar buf[512];
 
-  f = fopen(filename, "r");
+  f = g_fopen(filename, "r");
 
   if (f == NULL)
     {
@@ -339,7 +865,7 @@ gconf_load_source_path(const gchar* filename, GError** err)
         *err = gconf_error_new(GCONF_ERROR_FAILED,
                                _("Couldn't open path file `%s': %s\n"), 
                                filename, 
-                               strerror(errno));
+                               g_strerror(errno));
       return NULL;
     }
 
@@ -370,11 +896,18 @@ gconf_load_source_path(const gchar* filename, GError** err)
           unq = unquote_string(s);
 
           varsubst = subst_variables (unq);
+#ifdef G_OS_WIN32
+	  {
+	    gchar *tem = varsubst;
+	    varsubst = _gconf_win32_replace_prefix (varsubst);
+	    g_free (tem);
+	  }
+#endif
           included = gconf_load_source_path (varsubst, NULL);
           g_free (varsubst);
           
           if (included != NULL)
-            g_slist_concat (l, included);
+            l = g_slist_concat (l, included);
         }
       else 
         {
@@ -403,7 +936,7 @@ gconf_load_source_path(const gchar* filename, GError** err)
         *err = gconf_error_new(GCONF_ERROR_FAILED,
                                _("Read error on file `%s': %s\n"), 
                                filename,
-                               strerror(errno));
+                               g_strerror(errno));
       /* don't return, we want to go ahead and return any 
          addresses we already loaded. */
     }
@@ -411,6 +944,67 @@ gconf_load_source_path(const gchar* filename, GError** err)
   fclose(f);  
 
   return l;
+}
+
+char *
+gconf_address_list_get_persistent_name (GSList *addresses)
+{
+  GSList  *tmp;
+  GString *str = NULL;
+
+  if (!addresses)
+    {
+      return g_strdup ("empty");
+    }
+
+  tmp = addresses;
+  while (tmp != NULL)
+    {
+      const char *address = tmp->data;
+
+      if (str == NULL)
+	{
+	  str = g_string_new (address);
+	}
+      else
+        {
+          g_string_append_c (str, GCONF_DATABASE_LIST_DELIM);
+          g_string_append (str, address);
+        }
+
+      tmp = tmp->next;
+    }
+
+  return g_string_free (str, FALSE);
+}
+
+GSList *
+gconf_persistent_name_get_address_list (const char *persistent_name)
+{
+  char   delim [2] = { GCONF_DATABASE_LIST_DELIM, '\0' };
+  char **address_vector;
+
+  address_vector = g_strsplit (persistent_name, delim, -1);
+  if (address_vector != NULL)
+    {
+      GSList  *retval = NULL;
+      int      i;
+
+      i = 0;
+      while (address_vector [i] != NULL)
+        {
+          retval = g_slist_append (retval, g_strdup (address_vector [i]));
+          ++i;
+        }
+
+      g_strfreev (address_vector);
+
+      return retval;
+    }
+  else
+    {
+      return g_slist_append (NULL, g_strdup (persistent_name));
+    }
 }
 
 void
@@ -528,59 +1122,19 @@ gconf_current_locale(void)
  * Log
  */
 
-gchar*
-gconf_quote_percents(const gchar* src)
-{
-  gchar* dest;
-  const gchar* s;
-  gchar* d;
-
-  g_return_val_if_fail(src != NULL, NULL);
-  
-  /* waste memory! woo-hoo! */
-  dest = g_malloc0(strlen(src)*2+4);
-  
-  d = dest;
-  
-  s = src;
-  while (*s)
-    {
-      switch (*s)
-        {
-        case '%':
-          {
-            *d = '%';
-            ++d;
-            *d = '%';
-            ++d;
-          }
-          break;
-          
-        default:
-          {
-            *d = *s;
-            ++d;
-          }
-          break;
-        }
-      ++s;
-    }
-
-  /* End with NULL */
-  *d = '\0';
-  
-  return dest;
-}
-
+#ifdef HAVE_SYSLOG_H
 #include <syslog.h>
+#endif
 
 void
 gconf_log(GConfLogPriority pri, const gchar* fmt, ...)
 {
   gchar* msg;
-  gchar* convmsg;
   va_list args;
+#ifdef HAVE_SYSLOG_H
+  gchar* convmsg;
   int syslog_pri = LOG_DEBUG;
+#endif
 
   if (!gconf_log_debug_messages && 
       pri == GCL_DEBUG)
@@ -590,6 +1144,7 @@ gconf_log(GConfLogPriority pri, const gchar* fmt, ...)
   msg = g_strdup_vprintf(fmt, args);
   va_end (args);
 
+#ifdef HAVE_SYSLOG_H
   if (gconf_daemon_mode)
     {
       switch (pri)
@@ -641,6 +1196,7 @@ gconf_log(GConfLogPriority pri, const gchar* fmt, ...)
 	}
     }
   else
+#endif
     {
       switch (pri)
         {
@@ -1166,7 +1722,6 @@ gconf_unquote_string_inplace (gchar* str, gchar** end, GError** err)
           ++s;
           *end = s;
           return;
-          break;
 
         case '\\':
           /* Possible escaped quote or \ */
@@ -1250,40 +1805,31 @@ static gchar type_byte(GConfValueType type)
     {
     case GCONF_VALUE_INT:
       return 'i';
-      break;
         
     case GCONF_VALUE_BOOL:
       return 'b';
-      break;
 
     case GCONF_VALUE_FLOAT:
       return 'f';
-      break;
 
     case GCONF_VALUE_STRING:
       return 's';
-      break;
 
     case GCONF_VALUE_SCHEMA:
       return 'c';
-      break;
 
     case GCONF_VALUE_LIST:
       return 'l';
-      break;
 
     case GCONF_VALUE_PAIR:
       return 'p';
-      break;
 
     case GCONF_VALUE_INVALID:
       return 'v';
-      break;
       
     default:
       g_assert_not_reached();
       return '\0';
-      break;
     }
 }
 
@@ -1294,39 +1840,30 @@ byte_type(gchar byte)
     {
     case 'i':
       return GCONF_VALUE_INT;
-      break;
 
     case 'b':
       return GCONF_VALUE_BOOL;
-      break;
 
     case 's':
       return GCONF_VALUE_STRING;
-      break;
 
     case 'c':
       return GCONF_VALUE_SCHEMA;
-      break;
 
     case 'f':
       return GCONF_VALUE_FLOAT;
-      break;
 
     case 'l':
       return GCONF_VALUE_LIST;
-      break;
 
     case 'p':
       return GCONF_VALUE_PAIR;
-      break;
       
     case 'v':
       return GCONF_VALUE_INVALID;
-      break;
 
     default:
       return GCONF_VALUE_INVALID;
-      break;
     }
 }
 
@@ -1386,7 +1923,7 @@ gconf_value_decode (const gchar* encoded)
         const gchar* end = NULL;
         gchar* unquoted;
         
-        gconf_value_set_schema(val, sc);
+        gconf_value_set_schema_nocopy(val, sc);
 
         gconf_schema_set_type(sc, byte_type(*s));
         ++s;
@@ -1396,6 +1933,11 @@ gconf_value_decode (const gchar* encoded)
         ++s;
         gconf_schema_set_cdr_type(sc, byte_type(*s));
         ++s;
+
+        if (*s != ',')
+          g_warning("no comma after types in schema");
+
+	++s;
 
         /* locale */
         unquoted = gconf_unquote_string(s, &end, NULL);
@@ -1423,7 +1965,6 @@ gconf_value_decode (const gchar* encoded)
         ++end;
         s = end;
 
-
         /* long */
         unquoted = gconf_unquote_string(s, &end, NULL);
 
@@ -1436,7 +1977,6 @@ gconf_value_decode (const gchar* encoded)
 
         ++end;
         s = end;
-        
         
         /* default value */
         unquoted = gconf_unquote_string(s, &end, NULL);
@@ -1558,7 +2098,6 @@ gconf_value_encode (GConfValue* val)
     case GCONF_VALUE_SCHEMA:
       {
         gchar* tmp;
-        gchar* retval;
         gchar* quoted;
         gchar* encoded;
         GConfSchema* sc;
@@ -1683,87 +2222,7 @@ gconf_value_encode (GConfValue* val)
   return retval;
 }
 
-
-/*
- * Locks
- */
-
-/*
- * Locks works as follows. We have a lock directory to hold the locking
- * mess, and we have an IOR file inside the lock directory with the
- * gconfd IOR, and we have an fcntl() lock on the IOR file. The IOR
- * file is created atomically using a temporary file, then link()
- */
-
-char*
-gconf_get_daemon_dir (void)
-{  
-  if (gconf_use_local_locks ())
-    {
-      char *s;
-      char *subdir;
-
-      subdir = g_strconcat ("gconfd-", g_get_user_name (), NULL);
-      
-      s = g_build_filename (g_get_tmp_dir (), subdir, NULL);
-
-      g_free (subdir);
-
-      return s;
-    }
-  else
-    return g_strconcat (g_get_home_dir (), "/.gconfd", NULL);
-}
-
-char*
-gconf_get_lock_dir (void)
-{
-  char *gconfd_dir;
-  char *lock_dir;
-  
-  gconfd_dir = gconf_get_daemon_dir ();
-  lock_dir = g_strconcat (gconfd_dir, "/lock", NULL);
-
-  g_free (gconfd_dir);
-  return lock_dir;
-}
-
-void
-_gconf_init_i18n (void)
-{
-  static gboolean done = FALSE;
-
-  if (!done)
-    {
-      bindtextdomain (GETTEXT_PACKAGE, GCONF_LOCALE_DIR);
-#ifdef HAVE_BIND_TEXTDOMAIN_CODESET
-      bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-#endif
-      done = TRUE;
-    }
-}
-
-enum { UNKNOWN, LOCAL, NORMAL };
-
-gboolean
-gconf_use_local_locks (void)
-{
-  static int local_locks = UNKNOWN;
-  
-  if (local_locks == UNKNOWN)
-    {
-      const char *l =
-        g_getenv ("GCONF_GLOBAL_LOCKS");
-
-      if (l && atoi (l) == 1)
-        local_locks = NORMAL;
-      else
-        local_locks = LOCAL;
-    }
-
-  return local_locks == LOCAL;
-}
-
+#ifdef HAVE_CORBA
 
 /*
  * Locks
@@ -1782,30 +2241,22 @@ struct _GConfLock {
   int    lock_fd;
 };
 
-#ifdef HAVE_ORBIT
-
-#define lock_entire_file(fd) \
-  lock_reg ((fd), F_SETLK, F_WRLCK, 0, SEEK_SET, 0)
-#define unlock_entire_file(fd) \
-  lock_reg ((fd), F_SETLK, F_UNLCK, 0, SEEK_SET, 0)
-
-/* Your basic Stevens cut-and-paste */
-static int
-lock_reg (int fd, int cmd, int type, off_t offset, int whence, off_t len)
+static void
+gconf_lock_destroy (GConfLock* lock)
 {
-  struct flock lock;
-
-  lock.l_type = type; /* F_RDLCK, F_WRLCK, F_UNLCK */
-  lock.l_start = offset; /* byte offset relative to whence */
-  lock.l_whence = whence; /* SEEK_SET, SEEK_CUR, SEEK_END */
-  lock.l_len = len; /* #bytes, 0 for eof */
-
-  return fcntl (fd, cmd, &lock);
+  if (lock->lock_fd >= 0)
+    close (lock->lock_fd);
+  g_free (lock->iorfile);
+  g_free (lock->lock_directory);
+  g_free (lock);
 }
+
+#ifndef G_OS_WIN32
 
 static void
 set_close_on_exec (int fd)
 {
+#if defined (F_GETFD) && defined (FD_CLOEXEC)
   int val;
 
   val = fcntl (fd, F_GETFD, 0);
@@ -1819,7 +2270,64 @@ set_close_on_exec (int fd)
 
   if (fcntl (fd, F_SETFD, val) < 0)
     gconf_log (GCL_DEBUG, "couldn't F_SETFD: %s\n", g_strerror (errno));
+#endif
 }
+
+#endif
+
+#ifdef F_SETLK
+/* Your basic Stevens cut-and-paste */
+static int
+lock_reg (int fd, int cmd, int type, off_t offset, int whence, off_t len)
+{
+  struct flock lock;
+
+  lock.l_type = type; /* F_RDLCK, F_WRLCK, F_UNLCK */
+  lock.l_start = offset; /* byte offset relative to whence */
+  lock.l_whence = whence; /* SEEK_SET, SEEK_CUR, SEEK_END */
+  lock.l_len = len; /* #bytes, 0 for eof */
+
+  return fcntl (fd, cmd, &lock);
+}
+#endif
+
+#ifdef F_SETLK
+#define lock_entire_file(fd) \
+  lock_reg ((fd), F_SETLK, F_WRLCK, 0, SEEK_SET, 0)
+#define unlock_entire_file(fd) \
+  lock_reg ((fd), F_SETLK, F_UNLCK, 0, SEEK_SET, 0)
+#elif defined (G_OS_WIN32)
+/* We don't use these macros */
+#else
+#warning Please implement proper locking
+#define lock_entire_file(fd) 0
+#define unlock_entire_file(fd) 0
+#endif
+
+static gboolean
+file_locked_by_someone_else (int fd)
+{
+#ifdef F_SETLK
+  struct flock lock;
+
+  lock.l_type = F_WRLCK;
+  lock.l_start = 0;
+  lock.l_whence = SEEK_SET;
+  lock.l_len = 0;
+
+  if (fcntl (fd, F_GETLK, &lock) < 0)
+    return TRUE; /* pretend it's locked */
+
+  if (lock.l_type == F_UNLCK)
+    return FALSE; /* we have the lock */
+  else
+    return TRUE; /* someone else has it */
+#else
+  return FALSE;
+#endif
+}
+
+#ifndef G_OS_WIN32
 
 static char*
 unique_filename (const char *directory)
@@ -1834,13 +2342,174 @@ unique_filename (const char *directory)
   return uniquefile;
 }
 
+#endif
+
+static int
+create_new_locked_file (const gchar *directory,
+                        const gchar *filename,
+                        GError     **err)
+{
+  int fd;
+  gboolean got_lock = FALSE;
+
+#ifndef G_OS_WIN32
+
+  char *uniquefile = unique_filename (directory);
+
+  fd = open (uniquefile, O_WRONLY | O_CREAT, 0700);
+
+  /* Lock our temporary file, lock hopefully applies to the
+   * inode and so also counts once we link it to the new name
+   */
+  if (lock_entire_file (fd) < 0)
+    {
+      g_set_error (err,
+                   GCONF_ERROR,
+                   GCONF_ERROR_LOCK_FAILED,
+                   _("Could not lock temporary file '%s': %s"),
+                   uniquefile, g_strerror (errno));
+      goto out;
+    }
+  
+  /* Create lockfile as a link to unique file */
+  if (link (uniquefile, filename) == 0)
+    {
+      /* filename didn't exist before, and open succeeded, and we have the lock */
+      got_lock = TRUE;
+      goto out;
+    }
+  else
+    {
+      /* see if the link really succeeded */
+      struct stat sb;
+      if (stat (uniquefile, &sb) == 0 &&
+          sb.st_nlink == 2)
+        {
+          got_lock = TRUE;
+          goto out;
+        }
+      else
+        {
+          g_set_error (err,
+                       GCONF_ERROR,
+                       GCONF_ERROR_LOCK_FAILED,
+                       _("Could not create file '%s', probably because it already exists"),
+                       filename);
+          goto out;
+        }
+    }
+  
+ out:
+  if (got_lock)
+    set_close_on_exec (fd);
+  
+  unlink (uniquefile);
+  g_free (uniquefile);
+
+#else
+
+  if (G_WIN32_HAVE_WIDECHAR_API ())
+    {
+      wchar_t *wfilename = g_utf8_to_utf16 (filename, -1, NULL, NULL, NULL);
+      fd = _wsopen (wfilename, O_WRONLY|O_CREAT|O_EXCL, SH_DENYWR, 0700);
+      g_free (wfilename);
+    }
+  else
+    {
+      char *cpfilename = g_locale_from_utf8 (filename, -1, NULL, NULL, NULL);
+      fd = _sopen (cpfilename, O_WRONLY|O_CREAT|O_EXCL, SH_DENYWR, 0700);
+      g_free (cpfilename);
+    }
+
+  got_lock = (fd >= 0);
+
+#endif
+
+  if (!got_lock)
+    {
+      if (fd >= 0)
+        close (fd);
+      fd = -1;
+    }
+  
+  return fd;
+}
+
+static int
+open_empty_locked_file (const gchar *directory,
+                        const gchar *filename,
+                        GError     **err)
+{
+  int fd;
+
+  fd = create_new_locked_file (directory, filename, NULL);
+
+  if (fd >= 0)
+    return fd;
+  
+  /* We failed to create the file, most likely because it already
+   * existed; try to get the lock on the existing file, and if we can
+   * get that lock, delete it, then start over.
+   */
+
+#ifndef G_OS_WIN32
+
+  fd = open (filename, O_RDWR, 0700);
+  if (fd < 0)
+    {
+      /* File has gone away? */
+      g_set_error (err,
+                   GCONF_ERROR,
+                   GCONF_ERROR_LOCK_FAILED,
+                   _("Failed to create or open '%s'"),
+                   filename);
+      return -1;
+    }
+
+  if (lock_entire_file (fd) < 0)
+    {
+      g_set_error (err,
+                   GCONF_ERROR,
+                   GCONF_ERROR_LOCK_FAILED,
+                   _("Failed to lock '%s': probably another process has the lock, or your operating system has NFS file locking misconfigured (%s)"),
+                   filename, g_strerror (errno));
+      close (fd);
+      return -1;
+    }
+
+  /* We have the lock on filename, so delete it */
+  /* FIXME this leaves .nfs32423432 cruft */
+  unlink (filename);
+  close (fd);
+  fd = -1;
+
+#else
+  /* Unlinking open files fail on Win32 */
+
+  if (g_remove (filename) == -1)
+    {
+      g_set_error (err,
+		   GCONF_ERROR,
+		   GCONF_ERROR_LOCK_FAILED,
+		   _("Failed to remove '%s': %s"),
+		   filename, g_strerror (errno));
+      return -1;
+    }
+#endif
+
+  /* Now retry creating our file */
+  fd = create_new_locked_file (directory, filename, err);
+  
+  return fd;
+}
+
 static ConfigServer
 read_current_server_and_set_warning (const gchar *iorfile,
                                      GString     *warning)
 {
   FILE *fp;
   
-  fp = fopen (iorfile, "r");
+  fp = g_fopen (iorfile, "r");
           
   if (fp == NULL)
     {
@@ -1863,7 +2532,7 @@ read_current_server_and_set_warning (const gchar *iorfile,
        * or <pid>:none for gconftool
        */
       str = buf;
-      while (isdigit((unsigned char) *str))
+      while (isdigit ((unsigned char) *str))
         ++str;
 
       if (*str == ':')
@@ -1927,296 +2596,22 @@ read_current_server (const gchar *iorfile,
 
   server = read_current_server_and_set_warning (iorfile, warning);
 
-  if (warning->len > 0)
-    gconf_log (GCL_WARNING, "%s", warning->str);
+  if (warning)
+    {
+      if (warning->len > 0)
+	gconf_log (GCL_WARNING, "%s", warning->str);
 
-  g_string_free (warning, TRUE);
+      g_string_free (warning, TRUE);
+    }
 
   return server;
 }
 
-static int
-create_new_locked_file (const gchar *directory,
-                        const gchar *filename,
-                        GError     **err)
-{
-  int fd;
-  char *uniquefile;
-  gboolean got_lock;
-  
-  got_lock = FALSE;
-  
-  uniquefile = unique_filename (directory);
-
-  fd = open (uniquefile, O_WRONLY | O_CREAT, 0700);
-
-  /* Lock our temporary file, lock hopefully applies to the
-   * inode and so also counts once we link it to the new name
-   */
-  if (lock_entire_file (fd) < 0)
-    {
-      g_set_error (err,
-                   GCONF_ERROR,
-                   GCONF_ERROR_LOCK_FAILED,
-                   _("Could not lock temporary file '%s': %s"),
-                   uniquefile, g_strerror (errno));
-      goto out;
-    }
-  
-  /* Create lockfile as a link to unique file */
-  if (link (uniquefile, filename) == 0)
-    {
-      /* filename didn't exist before, and open succeeded, and we have the lock */
-      got_lock = TRUE;
-      goto out;
-    }
-  else
-    {
-      /* see if the link really succeeded */
-      struct stat sb;
-      if (stat (uniquefile, &sb) == 0 &&
-          sb.st_nlink == 2)
-        {
-          got_lock = TRUE;
-          goto out;
-        }
-      else
-        {
-          g_set_error (err,
-                       GCONF_ERROR,
-                       GCONF_ERROR_LOCK_FAILED,
-                       _("Could not create file '%s', probably because it already exists"),
-                       filename);
-          goto out;
-        }
-    }
-  
- out:
-  if (got_lock)
-    set_close_on_exec (fd);
-  
-  unlink (uniquefile);
-  g_free (uniquefile);
-
-  if (!got_lock)
-    {
-      if (fd >= 0)
-        close (fd);
-      fd = -1;
-    }
-  
-  return fd;
-}
-
-
-static int
-open_empty_locked_file (const gchar *directory,
-                        const gchar *filename,
-                        GError     **err)
-{
-  int fd;
-
-  fd = create_new_locked_file (directory, filename, NULL);
-
-  if (fd >= 0)
-    return fd;
-  
-  /* We failed to create the file, most likely because it already
-   * existed; try to get the lock on the existing file, and if we can
-   * get that lock, delete it, then start over.
-   */
-  fd = open (filename, O_RDWR, 0700);
-  if (fd < 0)
-    {
-      /* File has gone away? */
-      g_set_error (err,
-                   GCONF_ERROR,
-                   GCONF_ERROR_LOCK_FAILED,
-                   _("Failed to create or open '%s'"),
-                   filename);
-      return -1;
-    }
-
-  if (lock_entire_file (fd) < 0)
-    {
-      g_set_error (err,
-                   GCONF_ERROR,
-                   GCONF_ERROR_LOCK_FAILED,
-                   _("Failed to lock '%s': probably another process has the lock, or your operating system has NFS file locking misconfigured (%s)"),
-                   filename, strerror (errno));
-      close (fd);
-      return -1;
-    }
-
-  /* We have the lock on filename, so delete it */
-  /* FIXME this leaves .nfs32423432 cruft */
-  unlink (filename);
-  close (fd);
-  fd = -1;
-
-  /* Now retry creating our file */
-  fd = create_new_locked_file (directory, filename, err);
-  
-  return fd;
-}
-
-static void
-gconf_lock_destroy (GConfLock* lock)
-{
-  if (lock->lock_fd >= 0)
-    close (lock->lock_fd);
-  g_free (lock->iorfile);
-  g_free (lock->lock_directory);
-  g_free (lock);
-}
-
-
-static gboolean
-file_locked_by_someone_else (int fd)
-{
-  struct flock lock;
-
-  lock.l_type = F_WRLCK;
-  lock.l_start = 0;
-  lock.l_whence = SEEK_SET;
-  lock.l_len = 0;
-
-  if (fcntl (fd, F_GETLK, &lock) < 0)
-    return TRUE; /* pretend it's locked */
-
-  if (lock.l_type == F_UNLCK)
-    return FALSE; /* we have the lock */
-  else
-    return TRUE; /* someone else has it */
-}
-#endif
-
-GConfLock*
-gconf_get_lock (const gchar *lock_directory,
-                GError     **err)
-{
-#ifdef HAVE_ORBIT
-  return gconf_get_lock_or_current_holder (lock_directory, NULL, err);
-#else
-  /* Just use a fake lock to get something to return that is != NULL. */
-  static GConfLock lock;
-  return &lock;
-#endif
-}
-
-gboolean
-gconf_release_lock (GConfLock *lock,
-                    GError   **err)
-{
-#ifdef HAVE_ORBIT
-  gboolean retval;
-  char *uniquefile;
-  
-  retval = FALSE;
-  uniquefile = NULL;
-  
-  /* A paranoia check to avoid disaster if e.g.
-   * some random client code opened and closed the
-   * lockfile (maybe Nautilus checking its MIME type or
-   * something)
-   */
-  if (lock->lock_fd < 0 ||
-      file_locked_by_someone_else (lock->lock_fd))
-    {
-      g_set_error (err,
-                   GCONF_ERROR,
-                   GCONF_ERROR_FAILED,
-                   _("We didn't have the lock on file `%s', but we should have"),
-                   lock->iorfile);
-      goto out;
-    }
-
-  /* To avoid annoying .nfs3435314513453145 files on unlink, which keep us
-   * from removing the lock directory, we don't want to hold the
-   * lockfile open after removing all links to it. But we can't
-   * close it then unlink, because then we would be unlinking without
-   * holding the lock. So, we create a unique filename and link it too
-   * the locked file, then unlink the locked file, then drop our locks
-   * and close file descriptors, then unlink the unique filename
-   */
-  
-  uniquefile = unique_filename (lock->lock_directory);
-
-  if (link (lock->iorfile, uniquefile) < 0)
-    {
-      g_set_error (err,
-                   GCONF_ERROR,
-                   GCONF_ERROR_FAILED,
-                   _("Failed to link '%s' to '%s': %s"),
-                   uniquefile, lock->iorfile, g_strerror (errno));
-
-      goto out;
-    }
-  
-  /* Note that we unlink while still holding the lock to avoid races */
-  if (unlink (lock->iorfile) < 0)
-    {
-      g_set_error (err,
-                   GCONF_ERROR,
-                   GCONF_ERROR_FAILED,
-                   _("Failed to remove lock file `%s': %s"),
-                   lock->iorfile,
-                   g_strerror (errno));
-      goto out;
-    }
-
-  /* Now drop our lock */
-  if (lock->lock_fd >= 0)
-    {
-      close (lock->lock_fd);
-      lock->lock_fd = -1;
-    }
-
-  /* Now remove the temporary link we used to avoid .nfs351453 garbage */
-  if (unlink (uniquefile) < 0)
-    {
-      g_set_error (err,
-                   GCONF_ERROR,
-                   GCONF_ERROR_FAILED,
-                   _("Failed to clean up file '%s': %s"),
-                   uniquefile, g_strerror (errno));
-
-      goto out;
-    }
-
-  /* And finally clean up the directory - this would have failed if
-   * we had .nfs323423423 junk
-   */
-  if (rmdir (lock->lock_directory) < 0)
-    {
-      g_set_error (err,
-                   GCONF_ERROR,
-                   GCONF_ERROR_FAILED,
-                   _("Failed to remove lock directory `%s': %s"),
-                   lock->lock_directory,
-                   g_strerror (errno));
-      goto out;
-    }
-
-  retval = TRUE;
-  
- out:
-
-  g_free (uniquefile);
-  gconf_lock_destroy (lock);
-  return retval;
-#else
-  return TRUE;
-#endif
-}
-
-#ifdef HAVE_ORBIT
 GConfLock*
 gconf_get_lock_or_current_holder (const gchar  *lock_directory,
                                   ConfigServer *current_server,
                                   GError      **err)
 {
-  ConfigServer server;
   GConfLock* lock;
   
   g_return_val_if_fail(lock_directory != NULL, NULL);
@@ -2224,7 +2619,7 @@ gconf_get_lock_or_current_holder (const gchar  *lock_directory,
   if (current_server)
     *current_server = CORBA_OBJECT_NIL;
   
-  if (mkdir (lock_directory, 0700) < 0 &&
+  if (g_mkdir (lock_directory, 0700) < 0 &&
       errno != EEXIST)
     {
       gconf_set_error (err,
@@ -2235,8 +2630,6 @@ gconf_get_lock_or_current_holder (const gchar  *lock_directory,
       return NULL;
     }
 
-  server = CORBA_OBJECT_NIL;
-    
   lock = g_new0 (GConfLock, 1);
 
   lock->lock_directory = g_strdup (lock_directory);
@@ -2291,7 +2684,7 @@ gconf_get_lock_or_current_holder (const gchar  *lock_directory,
                            _("Can't write to file `%s': %s"),
                            lock->iorfile, g_strerror (errno));
 
-          unlink (lock->iorfile);
+          g_unlink (lock->iorfile);
           gconf_lock_destroy (lock);
 
           return NULL;
@@ -2300,9 +2693,124 @@ gconf_get_lock_or_current_holder (const gchar  *lock_directory,
 
   return lock;
 }
+
+GConfLock*
+gconf_get_lock (const gchar *lock_directory,
+                GError     **err)
+{
+  return gconf_get_lock_or_current_holder (lock_directory, NULL, err);
+}
+
+gboolean
+gconf_release_lock (GConfLock *lock,
+                    GError   **err)
+{
+  gboolean retval;
+  char *uniquefile;
+  
+  retval = FALSE;
+  uniquefile = NULL;
+  
+  /* A paranoia check to avoid disaster if e.g.
+   * some random client code opened and closed the
+   * lockfile (maybe Nautilus checking its MIME type or
+   * something)
+   */
+  if (lock->lock_fd < 0 ||
+      file_locked_by_someone_else (lock->lock_fd))
+    {
+      g_set_error (err,
+                   GCONF_ERROR,
+                   GCONF_ERROR_FAILED,
+                   _("We didn't have the lock on file `%s', but we should have"),
+                   lock->iorfile);
+      goto out;
+    }
+
+#ifndef G_OS_WIN32
+
+  /* To avoid annoying .nfs3435314513453145 files on unlink, which keep us
+   * from removing the lock directory, we don't want to hold the
+   * lockfile open after removing all links to it. But we can't
+   * close it then unlink, because then we would be unlinking without
+   * holding the lock. So, we create a unique filename and link it too
+   * the locked file, then unlink the locked file, then drop our locks
+   * and close file descriptors, then unlink the unique filename
+   */
+  
+  uniquefile = unique_filename (lock->lock_directory);
+
+  if (link (lock->iorfile, uniquefile) < 0)
+    {
+      g_set_error (err,
+                   GCONF_ERROR,
+                   GCONF_ERROR_FAILED,
+                   _("Failed to link '%s' to '%s': %s"),
+                   uniquefile, lock->iorfile, g_strerror (errno));
+
+      goto out;
+    }
+  
+  /* Note that we unlink while still holding the lock to avoid races */
+  if (unlink (lock->iorfile) < 0)
+    {
+      g_set_error (err,
+                   GCONF_ERROR,
+                   GCONF_ERROR_FAILED,
+                   _("Failed to remove lock file `%s': %s"),
+                   lock->iorfile,
+                   g_strerror (errno));
+      goto out;
+    }
+
 #endif
 
-#ifdef HAVE_ORBIT
+  /* Now drop our lock */
+  if (lock->lock_fd >= 0)
+    {
+      close (lock->lock_fd);
+      lock->lock_fd = -1;
+    }
+
+#ifndef G_OS_WIN32
+
+  /* Now remove the temporary link we used to avoid .nfs351453 garbage */
+  if (unlink (uniquefile) < 0)
+    {
+      g_set_error (err,
+                   GCONF_ERROR,
+                   GCONF_ERROR_FAILED,
+                   _("Failed to clean up file '%s': %s"),
+                   uniquefile, g_strerror (errno));
+
+      goto out;
+    }
+
+#endif
+
+  /* And finally clean up the directory - this would have failed if
+   * we had .nfs323423423 junk
+   */
+  if (g_rmdir (lock->lock_directory) < 0)
+    {
+      g_set_error (err,
+                   GCONF_ERROR,
+                   GCONF_ERROR_FAILED,
+                   _("Failed to remove lock directory `%s': %s"),
+                   lock->lock_directory,
+                   g_strerror (errno));
+      goto out;
+    }
+
+  retval = TRUE;
+  
+ out:
+
+  g_free (uniquefile);
+  gconf_lock_destroy (lock);
+  return retval;
+}
+
 /* This function doesn't try to see if the lock is valid or anything
  * of the sort; it just reads it. It does do the object_to_string
  */
@@ -2318,25 +2826,360 @@ gconf_get_current_lock_holder  (const gchar *lock_directory,
   g_free (iorfile);
   return server;
 }
-#endif
 
 void
 gconf_daemon_blow_away_locks (void)
 {
-#ifdef HAVE_ORBIT
   char *lock_directory;
   char *iorfile;
-   
+  
   lock_directory = gconf_get_lock_dir ();
- 
+
   iorfile = g_strconcat (lock_directory, "/ior", NULL);
- 
-  if (unlink (iorfile) < 0)
+
+  if (g_unlink (iorfile) < 0)
     g_printerr (_("Failed to unlink lock file %s: %s\n"),
                 iorfile, g_strerror (errno));
- 
+
   g_free (iorfile);
   g_free (lock_directory);
-#endif
 }
 
+static CORBA_ORB gconf_orb = CORBA_OBJECT_NIL;      
+
+CORBA_ORB
+gconf_orb_get (void)
+{
+  if (gconf_orb == CORBA_OBJECT_NIL)
+    {
+      CORBA_Environment ev;
+      int argc = 1;
+      char *argv[] = { "gconf", NULL };
+
+      _gconf_init_i18n ();
+      
+      CORBA_exception_init (&ev);
+      
+      gconf_orb = CORBA_ORB_init (&argc, argv, "orbit-local-orb", &ev);
+      g_assert (ev._major == CORBA_NO_EXCEPTION);
+
+      CORBA_exception_free (&ev);
+    }
+
+  return gconf_orb;
+}
+
+int
+gconf_orb_release (void)
+{
+  int ret = 0;
+
+  if (gconf_orb != CORBA_OBJECT_NIL)
+    {
+      CORBA_ORB orb = gconf_orb;
+      CORBA_Environment ev;
+
+      gconf_orb = CORBA_OBJECT_NIL;
+
+      CORBA_exception_init (&ev);
+
+      CORBA_ORB_destroy (orb, &ev);
+      CORBA_Object_release ((CORBA_Object)orb, &ev);
+
+      if (ev._major != CORBA_NO_EXCEPTION)
+        {
+          ret = 1;
+        }
+      CORBA_exception_free (&ev);
+    }
+
+  return ret;
+}
+
+char*
+gconf_get_daemon_dir (void)
+{  
+  if (gconf_use_local_locks ())
+    {
+      char *s;
+      char *subdir;
+
+      subdir = g_strconcat ("gconfd-", g_get_user_name (), NULL);
+      
+      s = g_build_filename (g_get_tmp_dir (), subdir, NULL);
+
+      g_free (subdir);
+
+      return s;
+    }
+  else
+    {
+#ifndef G_OS_WIN32
+      const char *home = g_get_home_dir ();
+#else
+      const char *home = _gconf_win32_get_home_dir ();
+#endif
+      return g_strconcat (home, "/.gconfd", NULL);
+    }
+}
+
+char*
+gconf_get_lock_dir (void)
+{
+  char *gconfd_dir;
+  char *lock_dir;
+  
+  gconfd_dir = gconf_get_daemon_dir ();
+  lock_dir = g_strconcat (gconfd_dir, "/lock", NULL);
+
+  g_free (gconfd_dir);
+  return lock_dir;
+}
+
+#if defined (F_SETFD) && defined (FD_CLOEXEC)
+
+static void
+set_cloexec (gint fd)
+{
+  fcntl (fd, F_SETFD, FD_CLOEXEC);
+}
+
+static void
+close_fd_func (gpointer data)
+{
+  int *pipes = data;
+  
+  gint open_max;
+  gint i;
+  
+  open_max = sysconf (_SC_OPEN_MAX);
+  for (i = 3; i < open_max; i++)
+    {
+      /* don't close our write pipe */
+      if (i != pipes[1])
+        set_cloexec (i);
+    }
+}
+
+#else
+
+#define close_fd_func NULL
+
+#endif
+
+ConfigServer
+gconf_activate_server (gboolean  start_if_not_found,
+                       GError  **error)
+{
+  ConfigServer server = CORBA_OBJECT_NIL;
+  int p[2] = { -1, -1 };
+  char buf[1];
+  GError *tmp_err;
+  char *argv[3];
+  char *gconfd_dir;
+  char *lock_dir;
+  GString *failure_log;
+  struct stat statbuf;
+  CORBA_Environment ev;
+  gboolean dir_accessible;
+
+  failure_log = g_string_new (NULL);
+  
+  gconfd_dir = gconf_get_daemon_dir ();
+  
+  dir_accessible = g_stat (gconfd_dir, &statbuf) >= 0;
+
+  if (!dir_accessible && errno != ENOENT)
+    {
+      server = CORBA_OBJECT_NIL;
+      gconf_log (GCL_WARNING, _("Failed to stat %s: %s"),
+		 gconfd_dir, g_strerror (errno));
+    }
+  else if (dir_accessible)
+    {
+      g_string_append (failure_log, " 1: ");
+      lock_dir = gconf_get_lock_dir ();
+      server = gconf_get_current_lock_holder (lock_dir, failure_log);
+      g_free (lock_dir);
+
+      /* Confirm server exists */
+      CORBA_exception_init (&ev);
+
+      if (!CORBA_Object_is_nil (server, &ev))
+	{
+	  ConfigServer_ping (server, &ev);
+      
+	  if (ev._major != CORBA_NO_EXCEPTION)
+	    {
+	      server = CORBA_OBJECT_NIL;
+
+	      g_string_append_printf (failure_log,
+				      _("Server ping error: %s"),
+				      CORBA_exception_id (&ev));
+	    }
+	}
+
+      CORBA_exception_free (&ev);
+  
+      if (server != CORBA_OBJECT_NIL)
+	{
+	  g_string_free (failure_log, TRUE);
+	  g_free (gconfd_dir);
+	  return server;
+	}
+    }
+
+  g_free (gconfd_dir);
+
+  if (start_if_not_found)
+    {
+      /* Spawn server */
+      if (pipe (p) < 0)
+        {
+          g_set_error (error,
+                       GCONF_ERROR,
+                       GCONF_ERROR_NO_SERVER,
+                       _("Failed to create pipe for communicating with spawned gconf daemon: %s\n"),
+                       g_strerror (errno));
+          goto out;
+        }
+
+      argv[0] = g_build_filename (GCONF_SERVERDIR, GCONFD, NULL);
+      argv[1] = g_strdup_printf ("%d", p[1]);
+      argv[2] = NULL;
+  
+      tmp_err = NULL;
+      if (!g_spawn_async (NULL,
+                          argv,
+                          NULL,
+                          G_SPAWN_LEAVE_DESCRIPTORS_OPEN,
+                          close_fd_func,
+			  p,
+                          NULL,
+                          &tmp_err))
+        {
+          g_free (argv[0]);
+          g_free (argv[1]);
+          g_set_error (error,
+                       GCONF_ERROR,
+                       GCONF_ERROR_NO_SERVER,
+                       _("Failed to launch configuration server: %s\n"),
+                       tmp_err->message);
+          g_error_free (tmp_err);
+          goto out;
+        }
+      
+      g_free (argv[0]);
+      g_free (argv[1]);
+  
+      /* Block until server starts up */
+      read (p[0], buf, 1);
+
+      g_string_append (failure_log, " 2: ");
+      lock_dir = gconf_get_lock_dir ();
+      server = gconf_get_current_lock_holder (lock_dir, failure_log);
+      g_free (lock_dir);
+    }
+  
+ out:
+  if (server == CORBA_OBJECT_NIL &&
+      error &&
+      *error == NULL)
+    g_set_error (error,
+                 GCONF_ERROR,
+                 GCONF_ERROR_NO_SERVER,
+                 _("Failed to contact configuration server; some possible causes are that you need to enable TCP/IP networking for ORBit, or you have stale NFS locks due to a system crash. See http://www.gnome.org/projects/gconf/ for information. (Details - %s)"),
+                 failure_log->len > 0 ? failure_log->str : _("none"));
+
+  g_string_free (failure_log, TRUE);
+  
+  if (p[0] != -1)
+    close (p[0]);
+  if (p[1] != -1)
+    close (p[1]);
+  
+  return server;
+}
+
+gboolean
+gconf_CORBA_Object_equal (gconstpointer a, gconstpointer b)
+{
+  CORBA_Environment ev;
+  CORBA_Object _obj_a = (gpointer)a;
+  CORBA_Object _obj_b = (gpointer)b;
+  gboolean retval;
+
+  CORBA_exception_init (&ev);
+  retval = CORBA_Object_is_equivalent(_obj_a, _obj_b, &ev);
+  CORBA_exception_free (&ev);
+
+  return retval;
+}
+
+guint
+gconf_CORBA_Object_hash (gconstpointer key)
+{
+  CORBA_Environment ev;
+  CORBA_Object _obj = (gpointer)key;
+  CORBA_unsigned_long retval;
+
+  CORBA_exception_init (&ev);
+  retval = CORBA_Object_hash(_obj, G_MAXUINT, &ev);
+  CORBA_exception_free (&ev);
+
+  return retval;
+}
+
+#endif /* HAVE_CORBA */
+
+void
+_gconf_init_i18n (void)
+{
+  static gboolean done = FALSE;
+
+  if (!done)
+    {
+      bindtextdomain (GETTEXT_PACKAGE, GCONF_LOCALE_DIR);
+#ifdef HAVE_BIND_TEXTDOMAIN_CODESET
+      bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+#endif
+      done = TRUE;
+    }
+}
+
+enum { UNKNOWN, LOCAL, NORMAL };
+
+gboolean
+gconf_use_local_locks (void)
+{
+  static int local_locks = UNKNOWN;
+  
+  if (local_locks == UNKNOWN)
+    {
+      const char *l =
+        g_getenv ("GCONF_GLOBAL_LOCKS");
+
+      if (l && atoi (l) == 1)
+        local_locks = NORMAL;
+      else
+        local_locks = LOCAL;
+    }
+
+  return local_locks == LOCAL;
+}
+
+/* Fake implementations of those. */
+GConfLock*
+gconf_get_lock (const gchar *lock_directory,
+                GError     **err)
+{
+  return (GConfLock *) g_strdup ("fake");
+}
+
+gboolean
+gconf_release_lock (GConfLock *lock,
+                    GError   **err)
+{
+  g_free (lock);
+  return TRUE;
+}

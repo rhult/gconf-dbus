@@ -2,6 +2,7 @@
 
 /* GConf
  * Copyright (C) 1999, 2000 Red Hat Inc.
+ * Copyright (C) 2003 Imendio AB
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -57,11 +58,16 @@ struct _GConfEngine {
   /* If non-NULL, this is a local engine;
      local engines don't do notification! */
   GConfSources* local_sources;
-  
-  /* An address if this is not the default engine;
+
+  /* A list of addresses that make up this db
+   * if this is not the default engine;
    * NULL if it's the default
    */
-  gchar *address;
+  GSList *addresses;
+
+  /* A concatentation of the addresses above.
+   */
+  char *persistent_address;
 
   gpointer user_data;
   GDestroyNotify dnotify;
@@ -104,14 +110,13 @@ static gboolean     ensure_service              (gboolean          start_if_not_
 static gboolean     ensure_database             (GConfEngine      *conf,
 						 gboolean          start_if_not_found,
 						 GError          **err);
+
 static void         gconf_engine_detach         (GConfEngine      *conf);
 static void         gconf_engine_set_database   (GConfEngine      *conf,
 						 const gchar      *db);
 static const gchar *gconf_engine_get_database   (GConfEngine      *conf,
 						 gboolean          start_if_not_found,
 						 GError          **err);
-
-
 
 static void         register_engine             (GConfEngine      *conf);
 static void         unregister_engine           (GConfEngine      *conf);
@@ -122,7 +127,6 @@ static GConfCnxn *  gconf_cnxn_new              (GConfEngine      *conf,
 static void         gconf_cnxn_destroy          (GConfCnxn        *cnxn);
 static void         gconf_cnxn_notify           (GConfCnxn        *cnxn,
 						 GConfEntry       *entry);
-
 static GConfCnxn *  gconf_cnxn_lookup_id        (GConfEngine      *conf,
 						 guint             client_id);
 static GList *      gconf_cnxn_lookup_dir       (GConfEngine      *conf,
@@ -138,10 +142,10 @@ static gboolean     send_notify_add             (GConfEngine      *conf,
 						 GError          **err);
 static void         reinitialize_databases      (void);
 static DBusHandlerResult
-gconf_dbus_message_filter                       (DBusConnection   *dbus_conn,
+                    gconf_dbus_message_filter   (DBusConnection   *dbus_conn,
 						 DBusMessage      *message,
 						 gpointer          user_data);
-static GConfEngine *lookup_engine_by_address    (const gchar      *address);
+static GConfEngine *lookup_engine_by_addresses  (GSList           *addresses);
 static GConfEngine *lookup_engine_by_database   (const gchar      *db);
 static gboolean     gconf_handle_dbus_exception (DBusMessage      *message,
 						 DBusError        *derr,
@@ -153,11 +157,12 @@ static DBusHandlerResult
 						 GConfEngine      *conf);
 
 
-#define CHECK_OWNER_USE(engine)   \
+#define CHECK_OWNER_USE(engine) \
   do { if ((engine)->owner && (engine)->owner_use_count == 0) \
-     g_warning ("%s: You can't use a GConfEngine that has an active GConfClient wrapper object. Use GConfClient API instead.", G_GNUC_FUNCTION);  \
+      g_warning ("%s: You can't use a GConfEngine that has an active " \
+		 "GConfClient wrapper object. Use GConfClient API instead.", \
+		 G_GNUC_FUNCTION); \
   } while (0)
-
 
 
 static GConfError
@@ -471,9 +476,9 @@ ensure_service (gboolean  start_if_not_found,
 }
 
 static gboolean
-ensure_database (GConfEngine *conf,
-		 gboolean start_if_not_found,
-		 GError **err)
+ensure_database (GConfEngine  *conf,
+		 gboolean      start_if_not_found,
+		 GError      **err)
 {
   DBusMessage *message, *reply;
   DBusError error;
@@ -505,13 +510,19 @@ ensure_database (GConfEngine *conf,
     }
   else
     {
+      gchar *addresses;
+
+      addresses = gconf_address_list_get_persistent_name (conf->addresses);
+      
       message = dbus_message_new_method_call (GCONF_DBUS_SERVICE,
 					      GCONF_DBUS_SERVER_OBJECT,
 					      GCONF_DBUS_SERVER_INTERFACE,
 					      GCONF_DBUS_SERVER_GET_DB);
       dbus_message_append_args (message,
-				DBUS_TYPE_STRING, &conf->address,
+				DBUS_TYPE_STRING, &addresses,
 				DBUS_TYPE_INVALID);
+      
+      g_free (addresses);
     }
 
   dbus_error_init (&error);
@@ -535,7 +546,7 @@ ensure_database (GConfEngine *conf,
       if (err)
         *err = gconf_error_new (GCONF_ERROR_BAD_ADDRESS,
 				_("Server couldn't resolve the address `%s'"),
-				conf->address ? conf->address : "default");
+				conf->persistent_address);
       
       return FALSE;
     }
@@ -562,24 +573,33 @@ gconf_engine_is_local (GConfEngine* conf)
   return conf->is_local;
 }
 
+// foooo
 static void
 register_engine (GConfEngine *conf)
 {
-  g_return_if_fail (conf->address != NULL);
+  g_return_if_fail (conf->addresses != NULL);
+
+  g_assert (conf->persistent_address == NULL);
+
+  conf->persistent_address = 
+          gconf_address_list_get_persistent_name (conf->addresses);
 
   if (engines_by_address == NULL)
     engines_by_address = g_hash_table_new (g_str_hash, g_str_equal);
 
-  g_hash_table_insert (engines_by_address, conf->address, conf);
+  g_hash_table_insert (engines_by_address, conf->persistent_address, conf);
 }
 
 static void
 unregister_engine (GConfEngine *conf)
 {
-  g_return_if_fail (conf->address != NULL);
   g_return_if_fail (engines_by_address != NULL);
-  
-  g_hash_table_remove (engines_by_address, conf->address);
+
+  g_assert (conf->persistent_address != NULL);
+
+  g_hash_table_remove (engines_by_address, conf->persistent_address);
+  g_free (conf->persistent_address);
+  conf->persistent_address = NULL;
 
   if (g_hash_table_size (engines_by_address) == 0)
     {
@@ -590,12 +610,23 @@ unregister_engine (GConfEngine *conf)
 }
 
 static GConfEngine *
-lookup_engine_by_address (const gchar *address)
+lookup_engine_by_addresses (GSList *addresses)
 {
-  if (engines_by_address)
-    return g_hash_table_lookup (engines_by_address, address);
-  else
-    return NULL;
+  if (engines_by_address != NULL)
+    {
+      GConfEngine *retval;
+      char        *key;
+
+      key = gconf_address_list_get_persistent_name (addresses);
+
+      retval = g_hash_table_lookup (engines_by_address, key);
+
+      g_free (key);
+
+      return retval;
+    }
+
+  return NULL;
 }
 
 
@@ -734,6 +765,24 @@ gconf_engine_get_local      (const gchar* address,
   return conf;
 }
 
+GConfEngine *
+gconf_engine_get_local_for_addresses (GSList  *addresses,
+				      GError **err)
+{
+  GConfEngine *conf;
+
+  g_return_val_if_fail (addresses != NULL, NULL);
+  g_return_val_if_fail (err == NULL || *err == NULL, NULL);
+  
+  conf = gconf_engine_blank (FALSE);
+
+  conf->local_sources = gconf_sources_new_from_addresses (addresses, err);
+
+  g_assert (gconf_engine_is_local (conf));
+  
+  return conf;
+}
+
 GConfEngine*
 gconf_engine_get_default (void)
 {
@@ -759,16 +808,19 @@ gconf_engine_get_default (void)
 GConfEngine*
 gconf_engine_get_for_address (const gchar* address, GError** err)
 {
-  GConfEngine* conf;
+  GConfEngine *conf;
+  GSList      *addresses;
+  
+  addresses = g_slist_append (NULL, g_strdup (address));
 
-  conf = lookup_engine_by_address (address);
+  conf = lookup_engine_by_addresses (addresses);
 
   if (conf == NULL)
     {
       conf = gconf_engine_blank (TRUE);
 
       conf->is_default = FALSE;
-      conf->address = g_strdup (address);
+      conf->addresses = addresses;
 
       if (!ensure_database (conf, TRUE, err))
         {
@@ -776,6 +828,48 @@ gconf_engine_get_for_address (const gchar* address, GError** err)
           return NULL;
         }
       
+      register_engine (conf);
+    }
+  else
+    {
+      g_free (addresses->data);
+      g_slist_free (addresses);
+      conf->refcount += 1;
+    }
+  
+  return conf;
+}
+
+GConfEngine*
+gconf_engine_get_for_addresses (GSList *addresses, GError** err)
+{
+  GConfEngine* conf;
+
+  conf = lookup_engine_by_addresses (addresses);
+
+  if (conf == NULL)
+    {
+      GSList *tmp;
+
+      conf = gconf_engine_blank (TRUE);
+
+      conf->is_default = FALSE;
+      conf->addresses = NULL;
+
+      tmp = addresses;
+      while (tmp != NULL)
+        {
+          conf->addresses = g_slist_append (conf->addresses,
+                                            g_strdup (tmp->data));
+          tmp = tmp->next;
+        }
+
+      if (!ensure_database (conf, TRUE, err))
+        {
+          gconf_engine_unref (conf);
+          return NULL;
+        }
+
       register_engine (conf);
     }
   else
@@ -822,9 +916,17 @@ gconf_engine_unref (GConfEngine* conf)
           
           /* do this after removing the notifications,
              to avoid funky race conditions */
-          if (conf->address)
-            unregister_engine (conf);
+          if (conf->addresses)
+	    {
+	      gconf_address_list_free (conf->addresses);
+	      conf->addresses = NULL;
+	    }
 
+	  if (conf->persistent_address)
+	    {
+	      unregister_engine (conf);
+	    }
+	  
           /* Release the ConfigDatabase */
           gconf_engine_detach (conf);
 
@@ -1205,9 +1307,93 @@ gconf_engine_get_default_from_schema (GConfEngine* conf,
                                       const gchar* key,
                                       GError** err)
 {
-  return gconf_engine_get_fuller (conf, key, NULL, 
-				  TRUE, /* use_schema_default */
-				  NULL, NULL, NULL, err);
+  GConfValue* val;
+  const gchar *db;
+  const gchar *locale;
+  DBusMessage *message, *reply;
+  DBusError error;
+  DBusMessageIter iter;
+  
+  g_return_val_if_fail(conf != NULL, NULL);
+  g_return_val_if_fail(key != NULL, NULL);
+  g_return_val_if_fail(err == NULL || *err == NULL, NULL);
+
+  CHECK_OWNER_USE (conf);
+  
+  if (!gconf_key_check (key, err))
+    return NULL;
+
+  if (gconf_engine_is_local(conf))
+    {
+      gchar** locale_list;
+
+      locale_list = gconf_split_locale(gconf_current_locale());
+      
+      val = gconf_sources_query_default_value(conf->local_sources,
+                                              key,
+                                              (const gchar**)locale_list,
+                                              NULL,
+                                              err);
+
+      if (locale_list != NULL)
+        g_strfreev(locale_list);
+      
+      return val;
+    }
+
+  g_assert (!gconf_engine_is_local (conf));
+
+  db = gconf_engine_get_database (conf, TRUE, err);
+
+  if (db == NULL)
+    {
+      g_return_val_if_fail(err == NULL || *err != NULL, NULL);
+      return NULL;
+    }
+
+  message = dbus_message_new_method_call (GCONF_DBUS_SERVICE,
+					  db,
+					  GCONF_DBUS_DATABASE_INTERFACE,
+					  GCONF_DBUS_DATABASE_LOOKUP_DEFAULT);
+
+  locale = gconf_current_locale();
+  
+  dbus_message_append_args (message,
+			    DBUS_TYPE_STRING, &key,
+			    DBUS_TYPE_STRING, &locale,
+			    DBUS_TYPE_INVALID);
+
+  dbus_error_init (&error);
+  reply = dbus_connection_send_with_reply_and_block (global_conn, message, -1, &error);
+  dbus_message_unref (message);
+
+  if (gconf_handle_dbus_exception (reply, &error, err))
+    return NULL;
+
+  dbus_message_iter_init (reply, &iter);
+
+  /* If there is no struct (entry) here, there is no value. */
+  if (dbus_message_iter_get_arg_type (&iter) != DBUS_TYPE_STRUCT)
+    {
+      dbus_message_unref (reply);
+      return NULL;
+    }
+  
+  val = gconf_dbus_utils_get_value (&iter);
+  
+  dbus_message_unref (reply);
+  
+  if (!val)
+    {
+      if (err)
+	g_set_error (err, GCONF_ERROR,
+		     GCONF_ERROR_FAILED,
+		     _("Couldn't get value"));
+      
+      return NULL;
+    }
+  
+  return val;
 }
 
 gboolean
@@ -1241,7 +1427,7 @@ gconf_engine_set (GConfEngine* conf, const gchar* key,
     {
       GError* error = NULL;
       
-      gconf_sources_set_value (conf->local_sources, key, value, &error);
+      gconf_sources_set_value (conf->local_sources, key, value, NULL, &error);
 
       if (error != NULL)
         {
@@ -1315,7 +1501,7 @@ gconf_engine_unset (GConfEngine* conf, const gchar* key, GError** err)
     {
       GError* error = NULL;
       
-      gconf_sources_unset_value (conf->local_sources, key, NULL, &error);
+      gconf_sources_unset_value (conf->local_sources, key, NULL, NULL, &error);
 
       if (error != NULL)
         {

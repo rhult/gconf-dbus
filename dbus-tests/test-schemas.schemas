@@ -1,0 +1,23 @@
+<gconfschemafile>
+  <schemalist>
+
+    <schema>
+      <key>/schemas/foo/bar/string</key>
+      <applyto>/foo/bar/string</applyto>
+      <owner>foo</owner>
+      <type>string</type>
+      <default>baz</default>
+      <locale name="C">
+        <short>Test string schema</short>
+	<long>
+	Used to test schemas in gconf.
+	</long>
+      </locale>
+    </schema>
+
+  </schemalist>  
+</gconfschemafile>
+
+
+
+

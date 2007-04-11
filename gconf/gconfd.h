@@ -25,21 +25,38 @@
 G_BEGIN_DECLS
 
 #include "gconf-error.h"
+/*#include "GConfX.h"*/
 #include "gconf-database.h"
 
+#ifdef HAVE_CORBA
+PortableServer_POA gconf_get_poa (void);
+
+/* return TRUE if the exception was set, clear err if needed */
+gboolean gconf_set_exception (GError** err, CORBA_Environment* ev);
+
+gboolean gconfd_logfile_change_listener (GConfDatabase *db,
+                                         gboolean add,
+                                         guint connection_id,
+                                         ConfigListener listener,
+                                         const gchar *where,
+                                         GError **err);
+
+gboolean gconfd_check_in_shutdown (CORBA_Environment *ev);
+#endif
+
+void gconfd_notify_other_listeners (GConfDatabase *modified_db,
+				    GConfSources  *modified_sources,
+                                    const char    *key);
 
 void gconfd_need_log_cleanup (void);
 
-/* This list should not be freed */
-GList *        gconfd_get_database_list (void);
+GConfDatabase*       gconfd_lookup_database (GSList  *addresses);
+GConfDatabase*       gconfd_obtain_database (GSList  *addresses,
+					     GError **err);
 
-GConfDatabase *gconfd_lookup_database   (const gchar  *address);
-GConfDatabase* gconfd_obtain_database   (const gchar  *address,
-					 GError      **err);
+void     gconf_main_quit       (void);
+gboolean gconfd_in_shutdown    (void);
 
-void gconf_main_quit (void);
-
-gboolean gconfd_in_shutdown (void);
 
 G_END_DECLS
 

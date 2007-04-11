@@ -186,15 +186,6 @@ Returns the ORB GConf is using.
 
 @Returns: the ORB GConf is using.
 
-<!-- ##### FUNCTION gconf_handle_oaf_exception ##### -->
-<para>
-
-</para>
-
-@ev: 
-@err: 
-@Returns: 
-
 <!-- ##### FUNCTION gconf_init_orb ##### -->
 <para>
 Initializes CORBA and a connection to the ORB, sets up authentication, 
@@ -215,6 +206,14 @@ and @argv. It returns an error if CORBA initialization failes.
 @argv: argv.
 @err: the return location for an allocated #GError, or <symbol>NULL</symbol> to ignore errors.
 @Returns: the ORB object reference.
+
+<!-- ##### FUNCTION gconf_quote_percents ##### -->
+<para>
+
+</para>
+
+@src: 
+@Returns: 
 
 <!-- ##### FUNCTION gconf_read_server_ior ##### -->
 <para>

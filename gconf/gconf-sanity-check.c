@@ -21,38 +21,14 @@
 #include "gconf-internals.h"
 #include "gconf-sources.h"
 #include "gconf-backend.h"
-#ifdef HAVE_ORBIT
-#include "gconf-corba-utils.h"
-#endif
+#include <glib/gstdio.h>
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
-#include <popt.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <fcntl.h>
-
-struct poptOption options[] = {
-  { 
-    NULL, 
-    '\0', 
-    POPT_ARG_INCLUDE_TABLE, 
-    poptHelpOptions,
-    0, 
-    N_("Help options"), 
-    NULL 
-  },
-  {
-    NULL,
-    '\0',
-    0,
-    NULL,
-    0,
-    NULL,
-    NULL
-  }
-};
 
 static gboolean ensure_gtk (void);
 static void     show_fatal_error_dialog (const char *format,
@@ -64,26 +40,24 @@ static gboolean check_gconf (gboolean display_errors);
 int 
 main (int argc, char** argv)
 {
-  poptContext ctx;
-  gint nextopt;
+  GOptionContext *context;
+  GError *error;
   
-  ctx = poptGetContext ("gconf-sanity-check-2", argc, (const char **) argv, options, 0);
+  context = g_option_context_new (_("- Sanity checks for GConf"));
+  g_option_context_add_group (context, gtk_get_option_group (TRUE));
 
-  poptReadDefaultConfig (ctx, TRUE);
+  error = NULL;
+  g_option_context_parse (context, &argc, &argv, &error);
+  g_option_context_free (context);
 
-  while ((nextopt = poptGetNextOpt(ctx)) > 0)
-    /*nothing*/;
-
-  if (nextopt != -1) 
+  if (error)
     {
-      g_printerr (_("Error on option %s: %s.\nRun '%s --help' to see a full list of available command line options.\n"),
-                  poptBadOption(ctx, 0),
-                  poptStrerror(nextopt),
+      g_printerr (_("Error while parsing options: %s.\nRun '%s --help' to see a full list of available command line options.\n"),
+                  error->message,
                   argv[0]);
+      g_error_free (error);
       return 1;
     }
-
-  poptFreeContext (ctx);
 
   if (!check_file_locking ())
     return 1;
@@ -91,7 +65,7 @@ main (int argc, char** argv)
   if (!check_gconf (FALSE))
     {
       if (!offer_delete_locks ())
-    return 1;
+        return 1;
   
       if (!check_gconf (TRUE))
         return 1;
@@ -100,6 +74,7 @@ main (int argc, char** argv)
   return 0;
 }
 
+#ifdef F_SETLK
 /* Your basic Stevens cut-and-paste */
 static int
 lock_reg (int fd, int cmd, int type, off_t offset, int whence, off_t len)
@@ -113,11 +88,18 @@ lock_reg (int fd, int cmd, int type, off_t offset, int whence, off_t len)
 
   return fcntl (fd, cmd, &lock);
 }
+#endif
 
+#ifdef F_SETLK
 #define lock_entire_file(fd) \
   lock_reg ((fd), F_SETLK, F_WRLCK, 0, SEEK_SET, 0)
 #define unlock_entire_file(fd) \
   lock_reg ((fd), F_SETLK, F_UNLCK, 0, SEEK_SET, 0)
+#else
+#warning Please implement proper locking
+#define lock_entire_file(fd) 0
+#define unlock_entire_file(fd) 0
+#endif
 
 static gboolean
 check_file_locking (void)
@@ -155,26 +137,26 @@ check_file_locking (void)
     }
   else
     {
-  testfile = g_build_filename (g_get_home_dir (),
-                               ".gconf-test-locking-file",
-                               NULL);
+      testfile = g_build_filename (g_get_home_dir (),
+                                   ".gconf-test-locking-file",
+                                   NULL);
+      
+      /* keep the open from failing due to non-writable old file or something */
+      g_unlink (testfile);
   
-  /* keep the open from failing due to non-writable old file or something */
-  unlink (testfile);
-  
-  fd = open (testfile, O_WRONLY | O_CREAT, 0700);
+      fd = g_open (testfile, O_WRONLY | O_CREAT, 0700);
 
-  if (fd < 0)
-    {      
-      show_fatal_error_dialog (_("Please contact your system administrator to resolve the following problem:\n"
-                                 "Could not open or create the file \"%s\"; this indicates "
-                                 "that there may be a problem with your configuration, "
-                                 "as many programs will need to create files in your "
-                                 "home directory. The error was \"%s\" (errno = %d)."),
-                               testfile, strerror (errno), errno);
-
-      goto out;
-    }
+      if (fd < 0)
+        {      
+          show_fatal_error_dialog (_("Please contact your system administrator to resolve the following problem:\n"
+                                     "Could not open or create the file \"%s\"; this indicates "
+                                     "that there may be a problem with your configuration, "
+                                     "as many programs will need to create files in your "
+                                     "home directory. The error was \"%s\" (errno = %d)."),
+                                   testfile, g_strerror (errno), errno);
+          
+          goto out;
+        }
     }
       
 
@@ -188,7 +170,7 @@ check_file_locking (void)
                                  "See the rpc.statd and rpc.lockd documentation. "
                                  "A common cause of this error is that the \"nfslock\" service has been disabled."
                                  "The error was \"%s\" (errno = %d)."),
-                               testfile, strerror (errno), errno); 
+                               testfile, g_strerror (errno), errno); 
       goto out;
     }
 
@@ -196,8 +178,8 @@ check_file_locking (void)
 
  out:
   close (fd);
-  if (unlink (testfile) < 0)
-    g_printerr (_("Can't remove file %s: %s\n"), testfile, strerror (errno));
+  if (g_unlink (testfile) < 0)
+    g_printerr (_("Can't remove file %s: %s\n"), testfile, g_strerror (errno));
   g_free (testfile);
   
   return retval;
@@ -225,7 +207,7 @@ check_gconf (gboolean display_errors)
       goto out;
     }
   
-  conffile = g_strconcat (GCONF_CONFDIR, "/path", NULL);
+  conffile = g_build_filename (GCONF_CONFDIR, "path", NULL);
 
   error = NULL;
   addresses = gconf_load_source_path (conffile, &error);
@@ -233,11 +215,11 @@ check_gconf (gboolean display_errors)
   if (addresses == NULL)
     {
       if (display_errors)
-      show_fatal_error_dialog (_("Please contact your system administrator to resolve the following problem:\n"
-                                 "No configuration sources in the configuration file \"%s\"; this means that preferences and other settings can't be saved. %s%s"),
-                               conffile,
-                               error ? _("Error reading the file: ") : "",
-                               error ? error->message : "");
+        show_fatal_error_dialog (_("Please contact your system administrator to resolve the following problem:\n"
+                                   "No configuration sources in the configuration file \"%s\"; this means that preferences and other settings can't be saved. %s%s"),
+                                 conffile,
+                                 error ? _("Error reading the file: ") : "",
+                                 error ? error->message : "");
 
       if (error)
         g_error_free (error);
@@ -259,9 +241,9 @@ check_gconf (gboolean display_errors)
       if (error)
         {
           if (display_errors)
-          show_fatal_error_dialog (_("Please contact your system administrator to resolve the following problem:\n"
-                                     "Could not resolve the address \"%s\" in the configuration file \"%s\": %s"),
-                                   address, conffile, error->message);
+            show_fatal_error_dialog (_("Please contact your system administrator to resolve the following problem:\n"
+                                       "Could not resolve the address \"%s\" in the configuration file \"%s\": %s"),
+                                     address, conffile, error->message);
           g_error_free (error);
           goto out;
         }
@@ -372,7 +354,7 @@ offer_delete_locks (void)
       GSList* tmp;
       char *conffile;
       
-      conffile = g_strconcat (GCONF_CONFDIR, "/path", NULL);
+      conffile = g_build_filename (GCONF_CONFDIR, "path", NULL);
       
       addresses = gconf_load_source_path (conffile, NULL);
 
@@ -387,7 +369,7 @@ offer_delete_locks (void)
           const char *address;
           
           address = tmp->data;
-         
+          
           gconf_blow_away_locks (address);
 
           g_free (tmp->data);
@@ -400,7 +382,7 @@ offer_delete_locks (void)
 #ifdef HAVE_ORBIT
       gconf_daemon_blow_away_locks ();
 #endif
-
+      
       return TRUE;
     }
 
@@ -418,7 +400,7 @@ ensure_gtk (void)
   
   if (!done_init)
     {
-      ok = gtk_init_check (0, NULL);
+      ok = gtk_init_check (NULL, NULL);
       done_init = TRUE;
     }
   

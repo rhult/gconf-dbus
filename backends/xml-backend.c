@@ -38,7 +38,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
-#include <dirent.h>
 #include <limits.h>
 
 /*
@@ -209,6 +208,7 @@ static void          clear_cache     (GConfSource* source);
 static void          blow_away_locks (const char *address);
 
 static GConfBackendVTable xml_vtable = {
+  sizeof (GConfBackendVTable),
   x_shutdown,
   resolve_address,
   lock,
@@ -227,7 +227,10 @@ static GConfBackendVTable xml_vtable = {
   sync_all,
   destroy_source,
   clear_cache,
-  blow_away_locks
+  blow_away_locks,
+  NULL, /* set_notify_func */
+  NULL, /* add_listener    */
+  NULL  /* remove_listener */
 };
 
 static void          
@@ -325,7 +328,7 @@ resolve_address (const gchar* address, GError** err)
   if (root_dir == NULL)
     return NULL;
 
-  if (stat (root_dir, &statbuf) == 0)
+  if (g_stat (root_dir, &statbuf) == 0)
     {
       /* Already exists, base our dir_mode on it */
       dir_mode = _gconf_mode_t_to_mode (statbuf.st_mode);
@@ -333,7 +336,7 @@ resolve_address (const gchar* address, GError** err)
       /* dir_mode without search bits */
       file_mode = dir_mode & (~0111); 
     }
-  else if (mkdir (root_dir, dir_mode) < 0)
+  else if (g_mkdir (root_dir, dir_mode) < 0)
     {
       /* Error out even on EEXIST - shouldn't happen anyway */
       gconf_set_error (err, GCONF_ERROR_FAILED,
@@ -375,7 +378,7 @@ resolve_address (const gchar* address, GError** err)
       {
         testfile = g_strconcat(root_dir, "/.testing.writeability", NULL);    
         
-        fd = open(testfile, O_CREAT|O_WRONLY, S_IRWXU);
+        fd = g_open(testfile, O_CREAT|O_WRONLY, S_IRWXU);
         
         if (fd >= 0)
           {
@@ -383,7 +386,7 @@ resolve_address (const gchar* address, GError** err)
             close(fd);
           }
         
-        unlink(testfile);
+        g_unlink(testfile);
         
         g_free(testfile);
       }
@@ -419,14 +422,14 @@ resolve_address (const gchar* address, GError** err)
   {
     /* see if we're readable */
     gboolean readable = FALSE;
-    DIR* d;
+    GDir* d;
 
-    d = opendir(root_dir);
+    d = g_dir_open(root_dir, 0, NULL);
 
     if (d != NULL)
       {
         readable = TRUE;
-        closedir(d);
+        g_dir_close(d);
       }
     
     if (readable)
@@ -744,8 +747,8 @@ blow_away_locks (const char *address)
 {
   char *root_dir;
   char *lock_dir;
-  DIR *dp;
-  struct dirent *dent;
+  GDir *dp;
+  const char *dent;
 
   /* /tmp locks should never be stuck, and possible security issue to
    * blow them away
@@ -759,7 +762,7 @@ blow_away_locks (const char *address)
 
   lock_dir = get_lock_dir_from_root_dir (root_dir);
 
-  dp = opendir (lock_dir);
+  dp = g_dir_open (lock_dir, 0, NULL);
   
   if (dp == NULL)
     {
@@ -768,18 +771,13 @@ blow_away_locks (const char *address)
       goto out;
     }
   
-  while ((dent = readdir (dp)) != NULL)
+  while ((dent = g_dir_read_name (dp)) != NULL)
     {
       char *path;
       
-      /* ignore ., .. (and any ..foo as an intentional who-cares bug) */
-      if (dent->d_name[0] == '.' &&
-          (dent->d_name[1] == '\0' || dent->d_name[1] == '.'))
-        continue;
+      path = g_build_filename (lock_dir, dent, NULL);
 
-      path = g_build_filename (lock_dir, dent->d_name, NULL);
-
-      if (unlink (path) < 0)
+      if (g_unlink (path) < 0)
         {
           g_printerr (_("Could not remove file %s: %s\n"),
                       path, g_strerror (errno));
@@ -791,7 +789,7 @@ blow_away_locks (const char *address)
  out:
 
   if (dp)
-    closedir (dp);
+    g_dir_close (dp);
   
   g_free (root_dir);
   g_free (lock_dir);
@@ -799,7 +797,13 @@ blow_away_locks (const char *address)
 
 /* Initializer */
 
-G_MODULE_EXPORT const gchar*
+#ifndef G_OS_WIN32
+/* If we use G_MODULE_EXPORT, *only* thusly marked functions will be
+ * exported, and xml-test uses other ones, too.
+ */
+G_MODULE_EXPORT
+#endif
+const gchar*
 g_module_check_init (GModule *module)
 {
   gconf_log(GCL_DEBUG, _("Initializing XML backend module"));
@@ -810,7 +814,10 @@ g_module_check_init (GModule *module)
   return NULL;
 }
 
-G_MODULE_EXPORT GConfBackendVTable* 
+#ifndef G_OS_WIN32
+G_MODULE_EXPORT
+#endif
+GConfBackendVTable* 
 gconf_backend_get_vtable(void)
 {
   return &xml_vtable;

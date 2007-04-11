@@ -22,16 +22,14 @@
 
 #include <glib.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+G_BEGIN_DECLS
 
 #define GCONF_ERROR gconf_error_quark ()
 
 /* Error Numbers */
 
 /* Sync with ConfigErrorType in GConf.idl, and some switch statements in the code */
-typedef enum { /*< prefix=GCONF_ERROR >*/
+typedef enum {
   GCONF_ERROR_SUCCESS = 0,
   GCONF_ERROR_FAILED = 1,        /* Something didn't work, don't know why, probably unrecoverable
                                     so there's no point having a more specific errno */
@@ -56,9 +54,7 @@ typedef enum { /*< prefix=GCONF_ERROR >*/
 
 GQuark gconf_error_quark (void);
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+G_END_DECLS
 
 #endif
 

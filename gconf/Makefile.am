@@ -1,24 +1,28 @@
+NULL=
+
 GCONFD_BINARY_NAME=gconfd-2
 
 INCLUDES=								\
 	-I$(top_srcdir)							\
 	-I$(top_builddir)						\
 	$(DEPENDENT_WITH_XML_AND_GTK_CFLAGS) 				\
-	$(GCONF_IPC_CFLAGS)						\
 	-DG_LOG_DOMAIN=\"GConf\"					\
+	-DPREFIX=\""$(prefix)"\"					\
 	-DGCONF_LOCALE_DIR=\""$(gconflocaledir)"\"			\
-	-DGCONF_SRCDIR=\""$(absolute_top_srcdir)"\"			\
-	-DGCONF_CONFDIR=\""$(sysconfdir)/gconf/$(MAJOR_VERSION)"\"	\
-	-DGCONF_ETCDIR=\""$(sysconfdir)/gconf"\"			\
+        -DGCONF_SRCDIR=\""$(absolute_top_srcdir)"\"			\
+	-DGCONF_CONFDIR=\""$(sysgconfdir)/$(MAJOR_VERSION)"\"		\
+	-DGCONF_ETCDIR=\""$(sysgconfdir)"\"				\
 	-DGCONF_BINDIR=\""$(bindir)"\"					\
 	-DGCONF_SERVERDIR=\""$(libexecdir)"\"           		\
-	-DGCONF_LOCALSTATEDIR=\""$(localstatedir)"\"           		\
 	-DGCONF_BUILDDIR=\""$(top_builddir)"\"				\
 	-DGCONF_BACKEND_DIR=\""$(pkglibdir)/$(MAJOR_VERSION)"\"		\
 	-DVERSION=\""$(VERSION)"\"					\
 	-DGCONF_ENABLE_INTERNALS=1					\
-	-DGCONFD=\""$(GCONFD_BINARY_NAME)"\"				\
-	-DDBUS_API_SUBJECT_TO_CHANGE=\"1\"
+	-DGCONFD=\""$(GCONFD_BINARY_NAME)$(EXEEXT)"\"			\
+	-DDBUS_API_SUBJECT_TO_CHANGE=\"1\"				\
+	$(NULL)
+
+EFENCE=
 
 if GTK
 SANITY_CHECK=gconf-sanity-check-2
@@ -28,23 +32,21 @@ endif
 
 lib_LTLIBRARIES = libgconf-2.la
 
-bin_PROGRAMS = gconftool-2
+bin_PROGRAMS = gconftool-2 
 libexec_PROGRAMS = gconfd-2 $(SANITY_CHECK)
 
-## not BUILT_SOURCES which seems to make a mess. fix with automake 1.5?
-built_sourcecode = 			\
+#CORBA_SOURCECODE = GConfX-common.c GConfX-skels.c GConfX-stubs.c GConfX.h
+
+BUILT_SOURCES = 			\
+	$(CORBA_SOURCECODE)		\
 	gconfmarshal.h			\
 	gconfmarshal.c
 
 $(libgconf_2_la_OBJECTS) $(gconftool_2_OBJECTS) $(gconfd_2_OBJECTS): $(built_sourcecode)
 
-CLEANFILES = \
-	$(built_sourcecode)	\
-	stamp-gconfmarshal.h	\
-	stamp-gconfmarshal.c	\
-	stamp-gconfmarshal.h    \
-	stamp-gconfmarshal.c	\
-	gconf.service
+CLEANFILES = $(BUILT_SOURCES)
+
+DISTCLEANFILES = default.path
 
 dist-hook:
 	cd $(distdir) ; rm -f $(CLEANFILES)
@@ -64,52 +66,46 @@ gconfinclude_HEADERS = 		\
 	$(gconf_headers) 	\
 	gconf-enum-types.h
 
+## This is broken I know, I'm going to break the server/client up and have a library later
+
 gconfd_2_SOURCES = \
 	gconf-database.h	\
 	gconf-database.c	\
-	gconfd-dbus.c		\
-	gconfd-dbus.h		\
-	gconf-database-dbus.c	\
 	gconf-database-dbus.h	\
+	gconf-database-dbus.c	\
 	gconf-sources.h		\
 	gconfd.h		\
-	gconfd.c
+	gconfd.c		\
+	gconfd-dbus.c		\
+	gconfd-dbus.h
 
-# these were in the above
-#	gconf-dbus-utils.c	
-#	gconf-dbus-utils.h	
+gconfd_2_LDADD = $(EFENCE) $(INTLLIBS) $(DEPENDENT_LIBS) libgconf-$(MAJOR_VERSION).la
 
-gconfd_2_LDADD = \
-	$(INTLLIBS)		\
-	$(DEPENDENT_LIBS) 	\
-	$(GCONF_IPC_LIBS)	\
-	libgconf-$(MAJOR_VERSION).la
+# gconf_testclient_SOURCES = \
+# 	testclient.c
+
+# gconf_testclient_LDADD = $(GLIB_LIBS) $(OAF_LIBS) libgconf-client.la
 
 gconftool_2_SOURCES = \
 	gconftool.c
 
-gconftool_2_LDADD = \
-	$(INTLLIBS)		\
-	$(DEPENDENT_WITH_XML_LIBS) \
-	$(GCONF_IPC_LIBS) 	\
-	$(POPT_LIBS)		\
-	libgconf-$(MAJOR_VERSION).la
+gconftool_2_LDADD = $(EFENCE) $(INTLLIBS) $(DEPENDENT_WITH_XML_LIBS) libgconf-$(MAJOR_VERSION).la
 
 gconf_sanity_check_2_SOURCES = \
 	gconf-sanity-check.c
 
-gconf_sanity_check_2_LDADD = \
-	$(INTLLIBS)		\
-	$(DEPENDENT_WITH_XML_AND_GTK_LIBS) \
-	$(POPT_LIBS)		\
-	$(GCONF_IPC_LIBS)	\
-	libgconf-$(MAJOR_VERSION).la
+gconf_sanity_check_2_LDADD = $(EFENCE) $(INTLLIBS) $(DEPENDENT_WITH_XML_AND_GTK_LIBS) libgconf-$(MAJOR_VERSION).la
+
+#$(CORBA_SOURCECODE): $(srcdir)/GConfX.idl $(ORBIT_IDL)
+#	$(ORBIT_IDL) $(srcdir)/GConfX.idl
+
+if OS_WIN32
+WIN32_SOURCECODE = dllmain.c
+endif
 
 libgconf_2_la_SOURCES = \
 	gconf-internals.c	\
 	gconf-internals.h	\
-	gconf.h			\
-	gconf.c			\
 	gconf-backend.h		\
 	gconf-backend.c		\
 	gconf-changeset.c	\
@@ -120,14 +116,21 @@ libgconf_2_la_SOURCES = \
 	gconf-schema.c		\
 	gconf-sources.c		\
 	gconf-value.c		\
+	gconf.c			\
+	gconf-dbus.c		\
+	gconf-dbus-utils.c	\
+	gconf-dbus-utils.h	\
 	gconf-client.c		\
 	gconf-enum-types.c	\
-	gconf-dbus.c 		\
-	gconf-dbus-utils.c 	\
-	gconf-dbus-utils.h	
+	$(CORBA_SOURCECODE)	\
+	$(WIN32_SOURCECODE)
 
 libgconf_2_la_LDFLAGS = -version-info $(GCONF_CURRENT):$(GCONF_REVISION):$(GCONF_AGE) -no-undefined
-libgconf_2_la_LIBADD = $(INTLLIBS) $(DEPENDENT_LIBS) $(GCONF_IPC_LIBS)
+
+libgconf_2_la_LIBADD = $(INTLLIBS) $(DEPENDENT_LIBS)
+
+EXTRA_DIST=default.path.in gconfmarshal.list regenerate-enum-header.sh regenerate-enum-footer.sh gconf.service.in gconfd.conf
+
 
 servicedir       = $(DBUS_SERVICE_DIR)
 service_in_files = gconf.service.in
@@ -141,37 +144,24 @@ systembusconfdir = $(sysconfdir)/dbus-1/system.d
 systembusconf_DATA = gconfd.conf
 endif
 
-EXTRA_DIST = \
-	default.path.in		\
-	gconfmarshal.list	\
-	regenerate-enum-header.sh \
-	regenerate-enum-footer.sh \
-	gconf.service.in	\
-	gconfd.conf
+default.path: $(srcdir)/default.path.in
+	sed -e 's,[@]sysgconfdir[@],$(sysgconfdir),g' \
+		<$(srcdir)/default.path.in >default.path
 
-install-data-local:
-	-mkdir -p $(DESTDIR)$(sysconfdir)/gconf/$(MAJOR_VERSION)
-	$(INSTALL_DATA) default.path $(DESTDIR)$(sysconfdir)/gconf/$(MAJOR_VERSION)/path
+install-data-local: default.path
+	$(mkinstalldirs) $(DESTDIR)$(sysgconfdir)/$(MAJOR_VERSION)
+	$(INSTALL_DATA) default.path $(DESTDIR)$(sysgconfdir)/$(MAJOR_VERSION)/path
 
-gconfmarshal.h: @REBUILD@ stamp-gconfmarshal.h
-	@true
+uninstall-local:
+	rm -f $(DESTDIR)$(sysgconfdir)/$(MAJOR_VERSION)/path
 
-gconfmarshal.c: @REBUILD@ stamp-gconfmarshal.c
-	@true
+gconfmarshal.h: gconfmarshal.list $(GLIB_GENMARSHAL)
+	$(GLIB_GENMARSHAL) $< --header --prefix=gconf_marshal > $@
 
-stamp-gconfmarshal.h: @REBUILD@ gconfmarshal.list
-	cd $(srcdir) \
-	&& glib-genmarshal --prefix=gconf_marshal gconfmarshal.list --header >> xgen-gmh \
-	&& (cmp -s xgen-gmh gconfmarshal.h || cp xgen-gmh gconfmarshal.h) \
-	&& rm -f xgen-gmh xgen-gmh~
-
-stamp-gconfmarshal.c: @REBUILD@ gconfmarshal.list
-	cd $(srcdir) \
-	&& glib-genmarshal --prefix=gconf_marshal gconfmarshal.list --body >> xgen-gmc \
-	&& (cmp -s xgen-gmc gconfmarshal.c || cp xgen-gmc gconfmarshal.c) \
-	&& rm -f xgen-gmc xgen-gmc~
+gconfmarshal.c: gconfmarshal.list $(GLIB_GENMARSHAL)
+	echo "#include \"gconfmarshal.h\"" > $@ && \
+	$(GLIB_GENMARSHAL) $< --body --prefix=gconf_marshal >> $@
 
 regenerate-built-sources:
 	GCONF_SRCDIR=$(srcdir) $(srcdir)/regenerate-enum-header.sh $(gconf_headers)
 	GCONF_SRCDIR=$(srcdir) $(srcdir)/regenerate-enum-footer.sh $(gconf_headers)
-

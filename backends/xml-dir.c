@@ -31,7 +31,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
-#include <dirent.h>
 #include <limits.h>
 
 #include <gconf/gconf-internals.h>
@@ -163,13 +162,13 @@ dir_load (const gchar* key, const gchar* xml_root_dir, GError** err)
     struct stat s;
     gboolean notfound = FALSE;
     
-    if (stat(xml_filename, &s) != 0)
+    if (g_stat(xml_filename, &s) != 0)
       {
         if (errno != ENOENT)
           {
             gconf_set_error (err, GCONF_ERROR_FAILED,
                              _("Could not stat `%s': %s"),
-                             xml_filename, strerror(errno));
+                             xml_filename, g_strerror(errno));
 
           }
         
@@ -193,7 +192,7 @@ dir_load (const gchar* key, const gchar* xml_root_dir, GError** err)
     else
       {
         /* Take directory mode from the xml_root_dir, if possible */
-        if (stat (xml_root_dir, &s) == 0)
+        if (g_stat (xml_root_dir, &s) == 0)
           {
             dir_mode = _gconf_mode_t_to_mode (s.st_mode);
           }
@@ -382,10 +381,12 @@ gconf_xml_doc_dump (FILE *fp, xmlDocPtr doc)
   if ((fd = fileno (fp)) == -1)
     return -1;
   
+#ifdef HAVE_FSYNC
   /* sync kernel-space buffers to disk */
   if (fsync (fd) == -1)
     return -1;
-  
+#endif
+
   return 0;
 }
 
@@ -411,19 +412,19 @@ dir_sync (Dir      *d,
       gconf_log (GCL_DEBUG, "Deleting useless dir \"%s\"",
                  d->key);
       
-      if (unlink (d->xml_filename) != 0)
+      if (g_unlink (d->xml_filename) != 0)
         {
           gconf_set_error (err, GCONF_ERROR_FAILED, _("Failed to delete \"%s\": %s"),
-                           d->xml_filename, strerror (errno));
+                           d->xml_filename, g_strerror (errno));
           return FALSE;
         }
 
       if (strcmp (d->key, "/") != 0) /* don't delete root dir */
         {
-          if (rmdir (d->fs_dirname) != 0)
+          if (g_rmdir (d->fs_dirname) != 0)
             {
               gconf_set_error (err, GCONF_ERROR_FAILED, _("Failed to delete \"%s\": %s"),
-                               d->fs_dirname, strerror (errno));
+                               d->fs_dirname, g_strerror (errno));
               return FALSE;
             }
         }
@@ -448,7 +449,7 @@ dir_sync (Dir      *d,
       tmp_filename = g_strconcat(d->fs_dirname, "/%gconf.xml.tmp", NULL);
       old_filename = g_strconcat(d->fs_dirname, "/%gconf.xml.old", NULL);
 
-      outfile = fopen (tmp_filename, "w");
+      outfile = g_fopen (tmp_filename, "w");
 
       if (outfile == NULL)
         {
@@ -459,7 +460,7 @@ dir_sync (Dir      *d,
                                 d->root_dir_len,
                                 d->dir_mode, d->file_mode,
                                 err))
-                outfile = fopen (tmp_filename, "w");
+                outfile = g_fopen (tmp_filename, "w");
             }
 
           if (outfile == NULL)
@@ -469,7 +470,7 @@ dir_sync (Dir      *d,
                */
               if (err && *err == NULL)
                 gconf_set_error(err, GCONF_ERROR_FAILED, _("Failed to write file `%s': %s"), 
-                                tmp_filename, strerror(errno));
+                                tmp_filename, g_strerror(errno));
               
               retval = FALSE;
               
@@ -477,22 +478,24 @@ dir_sync (Dir      *d,
             }
         }
 
+#ifdef HAVE_FCHMOD
       /* Set permissions on the new file */
       if (fchmod (fileno (outfile), d->file_mode) != 0)
         {
           gconf_set_error(err, GCONF_ERROR_FAILED, 
                           _("Failed to set mode on `%s': %s"),
-                          tmp_filename, strerror(errno));
+                          tmp_filename, g_strerror(errno));
           
           retval = FALSE;
           goto failed_end_of_sync;
-        }  
+        }
+#endif
 
       if (gconf_xml_doc_dump (outfile, d->doc) < 0)
         {
           gconf_set_error (err, GCONF_ERROR_FAILED, 
                            _("Failed to write XML data to `%s': %s"),
-                           tmp_filename, strerror (errno));
+                           tmp_filename, g_strerror (errno));
           
           retval = FALSE;
           goto failed_end_of_sync;
@@ -502,39 +505,53 @@ dir_sync (Dir      *d,
         {
           gconf_set_error (err, GCONF_ERROR_FAILED, 
                            _("Failed to close file `%s': %s"),
-                           tmp_filename, strerror (errno));
+                           tmp_filename, g_strerror (errno));
           
           retval = FALSE;
+          outfile = NULL;
           goto failed_end_of_sync;
         }
 
       outfile = NULL;
       
+#ifndef HAVE_FCHMOD
+      /* Set permissions on the new file */
+      if (chmod (tmp_filename, d->file_mode) != 0)
+        {
+          gconf_set_error(err, GCONF_ERROR_FAILED, 
+                          _("Failed to set mode on `%s': %s"),
+                          tmp_filename, g_strerror(errno));
+          
+          retval = FALSE;
+          goto failed_end_of_sync;
+        }
+#endif
+
       old_existed = gconf_file_exists (d->xml_filename);
 
       if (old_existed)
         {
-          if (rename(d->xml_filename, old_filename) < 0)
+          if (g_rename(d->xml_filename, old_filename) < 0)
             {
               gconf_set_error(err, GCONF_ERROR_FAILED, 
                               _("Failed to rename `%s' to `%s': %s"),
-                              d->xml_filename, old_filename, strerror(errno));
+                              d->xml_filename, old_filename, g_strerror(errno));
 
               retval = FALSE;
               goto failed_end_of_sync;
             }
         }
 
-      if (rename(tmp_filename, d->xml_filename) < 0)
+      if (g_rename(tmp_filename, d->xml_filename) < 0)
         {
           gconf_set_error(err, GCONF_ERROR_FAILED, _("Failed to rename `%s' to `%s': %s"),
-                          tmp_filename, d->xml_filename, strerror(errno));
+                          tmp_filename, d->xml_filename, g_strerror(errno));
 
           /* Put the original file back, so this isn't a total disaster. */
-          if (rename(old_filename, d->xml_filename) < 0)
+          if (g_rename(old_filename, d->xml_filename) < 0)
             {
               gconf_set_error(err, GCONF_ERROR_FAILED, _("Failed to restore `%s' from `%s': %s"),
-                              d->xml_filename, old_filename, strerror(errno));
+                              d->xml_filename, old_filename, g_strerror(errno));
             }
 
           retval = FALSE;
@@ -543,10 +560,10 @@ dir_sync (Dir      *d,
 
       if (old_existed)
         {
-          if (unlink(old_filename) < 0)
+          if (g_unlink(old_filename) < 0)
             {
               gconf_log(GCL_WARNING, _("Failed to delete old file `%s': %s"),
-                         old_filename, strerror(errno));
+                         old_filename, g_strerror(errno));
               /* Not a failure, just leaves cruft around. */
             }
         }
@@ -816,8 +833,8 @@ copy_string_list (GSList *src)
 static gboolean
 dir_rescan_subdirs (Dir* d, GError** err)
 {
-  DIR* dp;
-  struct dirent* dent;
+  GDir* dp;
+  const char* dent;
   struct stat statbuf;
   GSList* retval = NULL;
   gchar* fullpath;
@@ -841,7 +858,7 @@ dir_rescan_subdirs (Dir* d, GError** err)
   g_slist_free (d->subdir_names);
   d->subdir_names = NULL;
   
-  dp = opendir (d->fs_dirname);
+  dp = g_dir_open (d->fs_dirname, 0, NULL);
 
   if (dp == NULL)
     {
@@ -860,35 +877,35 @@ dir_rescan_subdirs (Dir* d, GError** err)
   ++fullpath_end;
   *fullpath_end = '\0';
 
-  while ((dent = readdir(dp)) != NULL)
+  while ((dent = g_dir_read_name(dp)) != NULL)
     {
-      /* ignore ., .., and all dot-files */
-      if (dent->d_name[0] == '.')
+      /* ignore all dot-files */
+      if (dent[0] == '.')
         continue;
 
-      len = strlen(dent->d_name);
+      len = strlen(dent);
 
       if (len < subdir_len)
         {
-          strcpy(fullpath_end, dent->d_name);
+          strcpy(fullpath_end, dent);
           strncpy(fullpath_end+len, "/%gconf.xml", subdir_len - len);
         }
       else
         continue; /* Shouldn't ever happen since PATH_MAX is available */
       
-      if (stat(fullpath, &statbuf) < 0)
+      if (g_stat(fullpath, &statbuf) < 0)
         {
           /* This is some kind of cruft, not an XML directory */
           continue;
         }
       
-      retval = g_slist_prepend (retval, g_strdup(dent->d_name));
+      retval = g_slist_prepend (retval, g_strdup(dent));
     }
 
   /* if this fails, we really can't do a thing about it
    * and it's not a meaningful error
    */
-  closedir (dp);
+  g_dir_close (dp);
 
   g_free (fullpath);
 
@@ -968,7 +985,9 @@ dir_load_doc(Dir* d, GError** err)
           xml_already_exists = FALSE;
           break;
         case ENOTDIR:
+#ifdef ELOOP
         case ELOOP:
+#endif
         case EFAULT:
         case EACCES:
         case ENOMEM:
@@ -976,7 +995,7 @@ dir_load_doc(Dir* d, GError** err)
         default:
           /* These are all fatal errors */
           gconf_set_error(err, GCONF_ERROR_FAILED, _("Failed to stat `%s': %s"),
-                          d->xml_filename, strerror(errno));
+                          d->xml_filename, g_strerror(errno));
           return;
           break;
         }
@@ -1069,12 +1088,12 @@ dir_load_doc(Dir* d, GError** err)
       gchar* backup = g_strconcat(d->xml_filename, ".bak", NULL);
       int fd;
       
-      rename(d->xml_filename, backup);
+      g_rename(d->xml_filename, backup);
       
       /* Recreate %gconf.xml to maintain our integrity and be sure
          all_subdirs works */
       /* If we failed to rename, we just give up and truncate the file */
-      fd = open(d->xml_filename, O_CREAT | O_WRONLY | O_TRUNC, d->file_mode);
+      fd = g_open(d->xml_filename, O_CREAT | O_WRONLY | O_TRUNC, d->file_mode);
       if (fd >= 0)
         close(fd);
       
@@ -1247,7 +1266,7 @@ create_fs_dir(const gchar* dir, const gchar* xml_filename,
 
   gconf_log(GCL_DEBUG, "Making directory %s", dir);
   
-  if (mkdir(dir, dir_mode) < 0)
+  if (g_mkdir(dir, dir_mode) < 0)
     {
       if (errno != EEXIST)
         {
@@ -1262,14 +1281,14 @@ create_fs_dir(const gchar* dir, const gchar* xml_filename,
     {
       int fd;
       /* don't truncate the file, it may well already exist */
-      fd = open(xml_filename, O_CREAT | O_WRONLY, file_mode);
+      fd = g_open(xml_filename, O_CREAT | O_WRONLY, file_mode);
 
       gconf_log(GCL_DEBUG, "Creating XML file %s", xml_filename);
       
       if (fd < 0)
         {
           gconf_set_error(err, GCONF_ERROR_FAILED, _("Failed to create file `%s': %s"),
-                          xml_filename, strerror(errno));
+                          xml_filename, g_strerror(errno));
           
           return FALSE;
         }
@@ -1277,7 +1296,7 @@ create_fs_dir(const gchar* dir, const gchar* xml_filename,
       if (close(fd) < 0)
         {
           gconf_set_error(err, GCONF_ERROR_FAILED, _("Failed to close file `%s': %s"),
-                          xml_filename, strerror(errno));
+                          xml_filename, g_strerror(errno));
           
           return FALSE;
         }

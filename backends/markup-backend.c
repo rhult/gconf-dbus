@@ -31,7 +31,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
-#include <dirent.h>
 #include <limits.h>
 
 #include "markup-tree.h"
@@ -65,11 +64,13 @@ typedef struct
   MarkupTree *tree;
   guint dir_mode;
   guint file_mode;
+  guint merged : 1;
 } MarkupSource;
 
 static MarkupSource* ms_new     (const char   *root_dir,
                                  guint         dir_mode,
                                  guint         file_mode,
+                                 gboolean      merged,
                                  GConfLock    *lock);
 static void          ms_destroy (MarkupSource *source);
 
@@ -132,6 +133,7 @@ static void           blow_away_locks (const char        *address);
 
 
 static GConfBackendVTable markup_vtable = {
+  sizeof (GConfBackendVTable),
   x_shutdown,
   resolve_address,
   lock,
@@ -150,7 +152,10 @@ static GConfBackendVTable markup_vtable = {
   sync_all,
   destroy_source,
   clear_cache,
-  blow_away_locks
+  blow_away_locks,
+  NULL, /* set_notify_func */
+  NULL, /* add_listener    */
+  NULL  /* remove_listener */
 };
 
 static void          
@@ -227,7 +232,7 @@ get_dir_from_address (const char *address,
   /* Chop trailing '/' to canonicalize */
   len = strlen (root_dir);
 
-  if (root_dir[len-1] == '/')
+  if (G_IS_DIR_SEPARATOR (root_dir[len-1]))
     root_dir[len-1] = '\0';
 
   return root_dir;
@@ -258,12 +263,13 @@ resolve_address (const char *address,
   char** address_flags;
   char** iter;
   gboolean force_readonly;
+  gboolean merged;
 
   root_dir = get_dir_from_address (address, err);
   if (root_dir == NULL)
     return NULL;
 
-  if (stat (root_dir, &statbuf) == 0)
+  if (g_stat (root_dir, &statbuf) == 0)
     {
       /* Already exists, base our dir_mode on it */
       dir_mode = _gconf_mode_t_to_mode (statbuf.st_mode);
@@ -271,7 +277,7 @@ resolve_address (const char *address,
       /* dir_mode without search bits */
       file_mode = dir_mode & (~0111);
     }
-  else if (mkdir (root_dir, dir_mode) < 0)
+  else if (g_mkdir (root_dir, dir_mode) < 0)
     {
       /* Error out even on EEXIST - shouldn't happen anyway */
       gconf_set_error (err, GCONF_ERROR_FAILED,
@@ -282,6 +288,7 @@ resolve_address (const char *address,
     }
 
   force_readonly = FALSE;
+  merged = FALSE;
   
   address_flags = gconf_address_flags (address);  
   if (address_flags)
@@ -292,6 +299,10 @@ resolve_address (const char *address,
           if (strcmp (*iter, "readonly") == 0)
             {
               force_readonly = TRUE;
+            }
+          else if (strcmp (*iter, "merged") == 0)
+            {
+              merged = TRUE;
             }
 
           ++iter;
@@ -312,7 +323,7 @@ resolve_address (const char *address,
       {
         testfile = g_strconcat (root_dir, "/.testing.writeability", NULL);    
         
-        fd = open (testfile, O_CREAT|O_WRONLY, S_IRWXU);
+        fd = g_open (testfile, O_CREAT|O_WRONLY, S_IRWXU);
         
         if (fd >= 0)
           {
@@ -320,13 +331,15 @@ resolve_address (const char *address,
             close (fd);
           }
         
-        unlink (testfile);
+        g_unlink (testfile);
         
         g_free (testfile);
       }
     
     if (writable)
       flags |= GCONF_SOURCE_ALL_WRITEABLE;
+    else
+      flags |= GCONF_SOURCE_NEVER_WRITEABLE;
 
     /* We only do locking if it's writable,
      * and if not using local locks,
@@ -357,14 +370,14 @@ resolve_address (const char *address,
   {
     /* see if we're readable */
     gboolean readable = FALSE;
-    DIR* d;
+    GDir* d;
 
-    d = opendir (root_dir);
+    d = g_dir_open (root_dir, 0, NULL);
 
     if (d != NULL)
       {
         readable = TRUE;
-        closedir (d);
+        g_dir_close (d);
       }
     
     if (readable)
@@ -383,7 +396,7 @@ resolve_address (const char *address,
   
   /* Create the new source */
 
-  xsource = ms_new (root_dir, dir_mode, file_mode, lock);
+  xsource = ms_new (root_dir, dir_mode, file_mode, merged, lock);
 
   gconf_log (GCL_DEBUG,
              _("Directory/file permissions for XML source at root %s are: %o/%o"),
@@ -765,7 +778,7 @@ sync_all (GConfSource *source,
   return markup_tree_sync (ms->tree, err);
 }
 
-static void
+static void          
 destroy_source (GConfSource *source)
 {
   ms_destroy ((MarkupSource*)source);
@@ -790,10 +803,11 @@ clear_cache (GConfSource *source)
 static void
 blow_away_locks (const char *address)
 {
+#ifdef HAVE_CORBA
   char *root_dir;
   char *lock_dir;
-  DIR *dp;
-  struct dirent *dent;
+  GDir *dp;
+  const char *dent;
 
   /* /tmp locks should never be stuck, and possible security issue to
    * blow them away
@@ -807,7 +821,7 @@ blow_away_locks (const char *address)
 
   lock_dir = get_lock_dir_from_root_dir (root_dir);
 
-  dp = opendir (lock_dir);
+  dp = g_dir_open (lock_dir, 0, NULL);
   
   if (dp == NULL)
     {
@@ -816,18 +830,13 @@ blow_away_locks (const char *address)
       goto out;
     }
   
-  while ((dent = readdir (dp)) != NULL)
+  while ((dent = g_dir_read_name (dp)) != NULL)
     {
       char *path;
       
-      /* ignore ., .. (and any ..foo as an intentional who-cares bug) */
-      if (dent->d_name[0] == '.' &&
-          (dent->d_name[1] == '\0' || dent->d_name[1] == '.'))
-        continue;
+      path = g_build_filename (lock_dir, dent, NULL);
 
-      path = g_build_filename (lock_dir, dent->d_name, NULL);
-
-      if (unlink (path) < 0)
+      if (g_unlink (path) < 0)
         {
           g_printerr (_("Could not remove file %s: %s\n"),
                       path, g_strerror (errno));
@@ -839,10 +848,11 @@ blow_away_locks (const char *address)
  out:
 
   if (dp)
-    closedir (dp);
+    g_dir_close (dp);
   
   g_free (root_dir);
   g_free (lock_dir);
+#endif
 }
 
 /* Initializer */
@@ -886,6 +896,7 @@ static MarkupSource*
 ms_new (const char* root_dir,
         guint       dir_mode,
         guint       file_mode,
+        gboolean    merged,
         GConfLock  *lock)
 {
   MarkupSource* ms;
@@ -904,11 +915,13 @@ ms_new (const char* root_dir,
 
   ms->dir_mode = dir_mode;
   ms->file_mode = file_mode;
-
+  ms->merged = merged != FALSE;
+  
   ms->tree = markup_tree_get (ms->root_dir,
-			      ms->dir_mode,
-			      ms->file_mode);
-
+                              ms->dir_mode,
+                              ms->file_mode,
+                              ms->merged);
+  
   return ms;
 }
 

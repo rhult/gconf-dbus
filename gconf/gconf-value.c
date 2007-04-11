@@ -73,8 +73,7 @@ gconf_value_new(GConfValueType type)
       initted = TRUE;
     }
   
-  /* Probably want to use mem chunks here eventually. */
-  value = (GConfValue*) g_new0 (GConfRealValue, 1);
+  value = (GConfValue*) g_slice_new0 (GConfRealValue);
 
   value->type = type;
 
@@ -798,7 +797,7 @@ void
 gconf_value_free(GConfValue* value)
 {
   GConfRealValue *real;
-
+  
   g_return_if_fail(value != NULL);
 
   real = REAL_VALUE (value);
@@ -827,7 +826,7 @@ gconf_value_free(GConfValue* value)
       break;
     }
   
-  g_free(value);
+  g_slice_free(GConfRealValue, real);
 }
 
 const char*
@@ -1190,7 +1189,6 @@ gconf_value_compare (const GConfValue *value_a,
         return 1;
       else
         return 0;
-      break;
     case GCONF_VALUE_FLOAT:
       if (gconf_value_get_float (value_a) < gconf_value_get_float (value_b))
         return -1;
@@ -1198,11 +1196,9 @@ gconf_value_compare (const GConfValue *value_a,
         return 1;
       else
         return 0;
-      break;
     case GCONF_VALUE_STRING:
       return strcmp (gconf_value_get_string (value_a),
                      gconf_value_get_string (value_b));
-      break;
     case GCONF_VALUE_BOOL:
       if (gconf_value_get_bool (value_a) == gconf_value_get_bool (value_b))
         return 0;
@@ -1211,7 +1207,6 @@ gconf_value_compare (const GConfValue *value_a,
         return 1;
       else
         return -1;
-      break;
     case GCONF_VALUE_LIST:
       {
         GSList *list_a;
@@ -1240,7 +1235,6 @@ gconf_value_compare (const GConfValue *value_a,
         else
           return 0;
       }
-      break;
     case GCONF_VALUE_PAIR:
       {
         GConfValue *a_car, *b_car, *a_cdr, *b_cdr;
@@ -1277,10 +1271,8 @@ gconf_value_compare (const GConfValue *value_a,
 
         return 0;
       }
-      break;
     case GCONF_VALUE_INVALID:
       return 0;
-      break;
     case GCONF_VALUE_SCHEMA:
       {
         const char *locale_a, *locale_b;
@@ -1355,7 +1347,6 @@ gconf_value_compare (const GConfValue *value_a,
 
         return 0;
       }
-      break;
     }
 
   g_assert_not_reached ();
@@ -1382,6 +1373,8 @@ gconf_meta_info_new(void)
 void
 gconf_meta_info_free(GConfMetaInfo* gcmi)
 {
+  g_free(gcmi->schema);
+  g_free(gcmi->mod_user);
   g_free(gcmi);
 }
 
@@ -1438,16 +1431,9 @@ typedef struct {
   char *key;
   GConfValue *value;
   char *schema_name;
-  int pad1;
-  gpointer pad2;
-  gpointer pad3;
-  GTime pad4;
   int refcount;
   guint is_default : 1;
   guint is_writable : 1;
-  guint pad5 : 1;
-  guint pad6 : 1;
-  guint pad7 : 1;
 } GConfRealEntry;
 
 #define REAL_ENTRY(x) ((GConfRealEntry*)(x))
@@ -1466,7 +1452,7 @@ gconf_entry_new_nocopy (char* key, GConfValue* val)
 {
   GConfRealEntry* real;
 
-  real = g_new (GConfRealEntry, 1);
+  real = g_slice_new (GConfRealEntry);
 
   real->key   = key;
   real->value = val;
@@ -1505,7 +1491,7 @@ gconf_entry_unref (GConfEntry *entry)
         gconf_value_free (real->value);
       if (real->schema_name)
         g_free (real->schema_name);
-      g_free (real);
+      g_slice_free (GConfRealEntry, real);
     }
 }
 
@@ -1667,6 +1653,8 @@ gconf_value_validate (const GConfValue *value,
                       GError          **err)
 {
   GConfRealValue *real;
+
+  g_return_val_if_fail (value != NULL, FALSE);
 
   real = REAL_VALUE (value);
   

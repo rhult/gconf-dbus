@@ -23,18 +23,15 @@
 #include <dbus/dbus.h>
 #include "gconf-database.h"
 
-typedef struct _GConfDatabaseDBus GConfDatabaseDBus;
+void         gconf_database_dbus_setup            (GConfDatabase    *db);
+void         gconf_database_dbus_teardown         (GConfDatabase *db);
+const gchar *gconf_database_dbus_get_path         (GConfDatabase    *db);
+void         gconf_database_dbus_notify_listeners (GConfDatabase    *db,
+						   GConfSources     *modified_sources,
+						   const gchar      *key,
+						   const GConfValue *value,
+						   gboolean          is_default,
+						   gboolean          is_writable,
+						   gboolean          notify_others);
 
-GConfDatabaseDBus * gconf_database_dbus_get (DBusConnection *conn, 
-					     const gchar *address,
-					     GError **error);
-void                gconf_database_dbus_unregister_all (void);
-const gchar *       gconf_database_dbus_get_path (GConfDatabaseDBus *db);
-
-
-void     gconf_database_dbus_notify_listeners (GConfDatabase    *db,
-                                               const gchar      *key,
-                                               const GConfValue *value,
-                                               gboolean          is_default,
-                                               gboolean          is_writable);
 #endif

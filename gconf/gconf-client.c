@@ -983,7 +983,7 @@ remove_key_from_cache_foreach (const gchar *cached_key,
                                GConfEntry  *entry,
                                const gchar *key)
 {
-  if (!strcmp (cached_key, key) == 0)
+  if (strcmp (cached_key, key) == 0)
     {
       gconf_entry_free (entry);
       return TRUE;
@@ -997,7 +997,7 @@ remove_key_from_cache_recursively_foreach (const gchar *cached_key,
                                            GConfEntry  *entry,
                                            const gchar *key)
 {
-  if (gconf_key_is_below (cached_key, key) == 0)
+  if (gconf_key_is_below (cached_key, key) == 0 || strcmp (cached_key, key) == 0)
     {
       gconf_entry_free (entry);
       return TRUE;

@@ -1,3 +1,11 @@
+2007-05-15  Richard Hult  <richard@imendio.com>
+
+	* dbus-tests/test-stale-value-bug.c: Improve the test.
+
+        * gconf/gconf-client.c (remove_key_from_cache_recursively_foreach)
+        (remove_key_from_cache_foreach): Fix the checks for keys to
+        remove.
+
 2007-01-19  Richard Hult  <richard@imendio.com>
 
 	* gconf/gconftool.c: (main): Back out the "killall" change and put

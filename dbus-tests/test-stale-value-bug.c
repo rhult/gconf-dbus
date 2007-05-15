@@ -6,7 +6,8 @@
 #include <gconf/gconf-client.h>
 
 #define KEY_ROOT      "/foo"
-#define KEY_PRIMITIVE KEY_ROOT "/baz_primitive"
+#define KEY_UNCACHED  KEY_ROOT "/baz_primitive"
+#define KEY_PRIMITIVE KEY_ROOT "/bar/baz_primitive"
 #define KEY_PAIR      KEY_ROOT "/bar/baz_pair"
 #define KEY_LIST      KEY_ROOT "/bar/baz_list"
 
@@ -27,7 +28,12 @@ check_string (const gchar *key, const gchar *expected)
 		g_error_free (error);
 		return FALSE;
 	} 
-	
+
+        if (!str) {
+                g_warning ("String value is NULL\n");
+                return FALSE;
+        }
+        
 	ret = strcmp (str, expected) == 0;
 
 	g_free (str);
@@ -42,6 +48,7 @@ check_int (const gchar *key, gint expected)
 	GError *error = NULL;
 
 	i = gconf_client_get_int (client, key, &error);
+
 	if (error) {
 		g_error_free (error);
 		i = 0;
@@ -121,32 +128,35 @@ check_recursive_unset (void)
 
 	exists = gconf_client_dir_exists (client, KEY_ROOT, &error);
 	if (error) {
+                g_print ("Error when checking if root exists: %s\n", error->message);
 		g_error_free (error);
 		return FALSE;
 	}
 	if (exists) {
-		/* This is the same as upstream gconf, empty subdirs are not
-		 * clean up right away when they are empty.
-		 */
-		/*g_print ("Root exists\n");
-		  return FALSE;*/
+                /* Note that this might exist or might not. Upstream behaves
+                 * like this too for directories. The values are unset but the
+                 * directory structure still exists, until the next time the
+                 * database is synced to disk.
+                 */
+		/*g_print ("Root exists: %s\n", KEY_ROOT);
+                  return FALSE;*/
 	}
 
 	exists = gconf_client_dir_exists (client, KEY_ROOT "/bar", &error);
 	if (error) {
+                g_print ("Error when checking if dir exists: %s\n", error->message);
 		g_error_free (error);
 		return FALSE;
 	}
 	if (exists) {
-		/* This is the same as upstream gconf, empty subdirs are not
-		 * clean up right away when they are empty.
-		 */
-		/*g_print ("Subdirectory exists\n");
-		  return FALSE;*/
+                /* Same as above. */
+		/*g_print ("Subdirectory exists: %s\n", KEY_ROOT "/bar");
+                  return FALSE;*/
 	}
 
 	value = gconf_client_get (client, KEY_PRIMITIVE, &error);
 	if (error) {
+                g_print ("Error when checking primitie key: %s\n", error->message);
 		g_error_free (error);
 		return FALSE;
 	}
@@ -158,6 +168,7 @@ check_recursive_unset (void)
 	
 	value = gconf_client_get (client, KEY_PAIR, &error);
 	if (error) {
+                g_print ("Error when checking pair key: %s\n", error->message);
 		g_error_free (error);
 		return FALSE;
 	}
@@ -169,6 +180,7 @@ check_recursive_unset (void)
 	
 	value = gconf_client_get (client, KEY_LIST, &error);
 	if (error) {
+                g_print ("Error when checking list key: %s\n", error->message);
 		g_error_free (error);
 		return FALSE;
 	}
@@ -190,6 +202,15 @@ change_timeout_func (gpointer data)
 	gdouble      f;
 	GSList      *list;
 
+	/* String, uncached. */
+	s = g_strdup_printf ("test-%d", g_random_int_range (1, 100));
+	gconf_client_set_string (client, KEY_UNCACHED, s, NULL);
+	if (!check_string (KEY_UNCACHED, s)) {
+		g_print ("Uncached string FAILED\n");
+		exit (1);
+	}
+	g_free (s);
+	
 	/* String. */
 	s = g_strdup_printf ("test-%d", g_random_int_range (1, 100));
 	gconf_client_set_string (client, KEY_PRIMITIVE, s, NULL);
@@ -262,7 +283,7 @@ change_timeout_func (gpointer data)
 	/* Recursive unset. Unset the entire subtree and check that all the keys
 	 * are non-existing.
 	 */
-	gconf_client_recursive_unset (client, KEY_ROOT, 0, NULL);
+    	g_assert (gconf_client_recursive_unset (client, KEY_ROOT, 0, NULL) == TRUE);
 	if (!check_recursive_unset ()) {
 		g_print ("Recursive unset FAILED\n");
 		exit (1);
@@ -284,7 +305,13 @@ main (int argc, char **argv)
 	g_type_init ();
 
 	client = gconf_client_get_default ();
-	
+
+        /* Start out clean in case anything is left from earlier runs. */
+        gconf_client_recursive_unset (client, KEY_ROOT, 0, NULL);
+                
+        /* We add "/foo/bar" so that "/foo" is uncached to test both those
+         * cases.
+         */
 	gconf_client_add_dir (client,
 			      "/foo/bar",
 			      GCONF_CLIENT_PRELOAD_RECURSIVE,

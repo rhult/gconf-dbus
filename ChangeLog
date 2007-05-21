@@ -1,3 +1,10 @@
+2007-05-21  Richard Hult  <richard@imendio.com>
+
+	* gconf/gconf-dbus-utils.c: (utils_append_value_helper_pair),
+	(utils_append_value), (utils_append_entry_values),
+	(utils_get_value_helper_fundamental),
+	(utils_get_value_helper_pair): Handle empty pairs.
+
 2007-05-15  Richard Hult  <richard@imendio.com>
 
 	* dbus-tests/test-stale-value-bug.c: Improve the test.

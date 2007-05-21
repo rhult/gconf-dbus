@@ -214,15 +214,24 @@ utils_append_value_helper_pair (DBusMessageIter  *main_iter,
   cdr = gconf_value_get_cdr (value);
   
   /* The pair types. */
-  type = car->type;
+  if (car)
+    type = car->type;
+  else
+    type = GCONF_VALUE_INVALID;
   dbus_message_iter_append_basic (&struct_iter, DBUS_TYPE_INT32, &type);
   
-  type = cdr->type;
+  if (cdr)
+    type = cdr->type;
+  else
+    type = GCONF_VALUE_INVALID;
   dbus_message_iter_append_basic (&struct_iter, DBUS_TYPE_INT32, &type);
 
   /* The values. */
-  utils_append_value_helper_fundamental (&struct_iter, car);
-  utils_append_value_helper_fundamental (&struct_iter, cdr);
+  if (car)
+    utils_append_value_helper_fundamental (&struct_iter, car);
+
+  if (cdr)
+    utils_append_value_helper_fundamental (&struct_iter, cdr);
 
   dbus_message_iter_close_container (main_iter, &struct_iter);
 }
@@ -485,7 +494,7 @@ utils_append_entry_values (DBusMessageIter  *main_iter,
 			   gboolean          is_writable,
 			   const gchar      *schema_name)   
 {
-  DBusMessageIter  struct_iter;
+  DBusMessageIter struct_iter;
 
   d(g_print ("Appending entry %s\n", key));
   
@@ -504,8 +513,7 @@ utils_append_entry_values (DBusMessageIter  *main_iter,
 
   dbus_message_iter_append_basic (&struct_iter, DBUS_TYPE_BOOLEAN, &is_writable);
   
-  if (!dbus_message_iter_close_container (main_iter, &struct_iter))
-    g_error ("Out of memory");
+  dbus_message_iter_close_container (main_iter, &struct_iter);
 }
 
 /* Writes an entry, which is a struct. */
@@ -728,7 +736,7 @@ utils_get_value_helper_pair (DBusMessageIter *iter)
   GConfValue      *value;
   DBusMessageIter  struct_iter;
   gint32           car_type, cdr_type;
-  GConfValue      *car_value, *cdr_value;
+  GConfValue      *car_value = NULL, *cdr_value = NULL;
 
   d(g_print ("Get value (pair)\n"));
 
@@ -742,19 +750,22 @@ utils_get_value_helper_pair (DBusMessageIter *iter)
 
   /* Get the values. */
   dbus_message_iter_next (&struct_iter);
-  if (car_type != GCONF_VALUE_SCHEMA) 
-    car_value = utils_get_value_helper_fundamental (&struct_iter, car_type);
-  else
+  if (car_type == GCONF_VALUE_SCHEMA) 
     car_value = utils_get_schema_value (&struct_iter);
+  else if (car_type != GCONF_VALUE_INVALID)
+    car_value = utils_get_value_helper_fundamental (&struct_iter, car_type);
 
   dbus_message_iter_next (&struct_iter);
-  if (cdr_type != GCONF_VALUE_SCHEMA) 
-    cdr_value = utils_get_value_helper_fundamental (&struct_iter, cdr_type);
-  else 
+  if (cdr_type == GCONF_VALUE_SCHEMA) 
     cdr_value = utils_get_schema_value (&struct_iter);
+  else if (cdr_type != GCONF_VALUE_INVALID)
+    cdr_value = utils_get_value_helper_fundamental (&struct_iter, cdr_type);
 
-  gconf_value_set_car_nocopy (value, car_value);
-  gconf_value_set_cdr_nocopy (value, cdr_value);
+  if (car_value)
+    gconf_value_set_car_nocopy (value, car_value);
+
+  if (cdr_value)
+    gconf_value_set_cdr_nocopy (value, cdr_value);
 
   return value;
 }

@@ -1,3 +1,19 @@
+2007-05-22  Richard Hult  <richard@imendio.com>
+
+	* dbus-tests/test-getting-and-setting.sh:
+	* dbus-tests/test-schema-bug.c: (main):
+	* dbus-tests/test-schemas.schemas: Use different keys for the
+	different tests so they don't interfere with each other.
+	
+	* gconf/gconf-database-dbus.c:
+	(database_handle_name_owner_changed),
+	(gconf_database_dbus_teardown): Remove obsolete comments.
+	(gconf_database_dbus_notify_listeners): Notify other listeners.
+	
+	* gconf/gconf-dbus.c: (gconf_engine_is_local):
+	* gconf/gconfd-dbus.c: (gconfd_dbus_get_connection): Remove
+	obsolete comments.
+
 2007-05-21  Richard Hult  <richard@imendio.com>
 
 	* gconf/gconf-dbus-utils.c: (utils_append_value_helper_pair),

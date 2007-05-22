@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <gconf/gconf-client.h>
 
-#define KEY "/foo/bar/string"
+#define KEY "/foo-schemas/bar/string"
 
 int
 main (int argc, char **argv)
@@ -19,13 +19,13 @@ main (int argc, char **argv)
 	g_type_init ();
 	
 	system ("gconftool-2 --install-schema-file test-schemas.schemas");
-	
+        
 	client = gconf_client_get_default ();
 	
 	gconf_client_unset (client, KEY, &err);
 	if (err) {
 		goto error;
-	}
+        }
 
 	val = gconf_client_get_string (client, KEY, &err);
 	if (err) {

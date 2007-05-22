@@ -573,7 +573,6 @@ gconf_engine_is_local (GConfEngine* conf)
   return conf->is_local;
 }
 
-// foooo
 static void
 register_engine (GConfEngine *conf)
 {

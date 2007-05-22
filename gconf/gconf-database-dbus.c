@@ -237,8 +237,6 @@ database_handle_name_owner_changed (DBusConnection *connection,
       return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
     }
 
-  g_print ("client died\n");
-  
   g_hash_table_foreach (db->notifications, get_all_notifications_func,
 			&notifications);
   
@@ -257,7 +255,6 @@ database_handle_name_owner_changed (DBusConnection *connection,
   if (client)
     database_remove_listening_client (db, client);
 
-  /* FIXME: Remove notification on this client */
   g_list_free (notifications);
 
   return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
@@ -836,8 +833,6 @@ gconf_database_dbus_teardown (GConfDatabase *db)
 {
   DBusConnection *conn;
 
-  g_print ("tearing down...\n");
-
   conn = gconfd_dbus_get_connection ();
 
   dbus_connection_unregister_object_path (conn, db->object_path);
@@ -847,10 +842,6 @@ gconf_database_dbus_teardown (GConfDatabase *db)
 				 db);
   g_free (db->object_path);
   db->object_path = NULL;
-
-  // db->notifications
-  // db->listening_clients
-  
 }
 
 const char *
@@ -941,8 +932,7 @@ gconf_database_dbus_notify_listeners (GConfDatabase    *db,
     {
       g_return_if_fail (modified_sources != NULL);
       
-      // FIXME: Implement this:
-      //gconfd_notify_other_listeners (db, modified_sources, key);
+      gconfd_notify_other_listeners (db, modified_sources, key);
       
       g_list_free (modified_sources->sources);
       g_free (modified_sources);

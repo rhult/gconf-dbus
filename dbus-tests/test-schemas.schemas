@@ -2,8 +2,8 @@
   <schemalist>
 
     <schema>
-      <key>/schemas/foo/bar/string</key>
-      <applyto>/foo/bar/string</applyto>
+      <key>/schemas/foo-schemas/bar/string</key>
+      <applyto>/foo-schemas/bar/string</applyto>
       <owner>foo</owner>
       <type>string</type>
       <default>baz</default>

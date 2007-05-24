@@ -1863,6 +1863,7 @@ gconf_engine_all_dirs(GConfEngine* conf, const gchar* dir, GError** err)
   DBusMessage *message, *reply;
   DBusError error;
   DBusMessageIter iter;
+  DBusMessageIter array_iter;
   
   g_return_val_if_fail(conf != NULL, NULL);
   g_return_val_if_fail(dir != NULL, NULL);
@@ -1932,17 +1933,18 @@ gconf_engine_all_dirs(GConfEngine* conf, const gchar* dir, GError** err)
 
   dbus_message_iter_init (reply, &iter);
 
-  while (dbus_message_iter_get_arg_type (&iter) == DBUS_TYPE_STRING)
+  dbus_message_iter_recurse (&iter, &array_iter);
+  while (dbus_message_iter_get_arg_type (&array_iter) == DBUS_TYPE_STRING)
     {
       const gchar *key;
       gchar       *s;
       
-      dbus_message_iter_get_basic (&iter, &key);
+      dbus_message_iter_get_basic (&array_iter, &key);
       
       s = gconf_concat_dir_and_key (dir, key);
       subdirs = g_slist_prepend (subdirs, s);
       
-      if (!dbus_message_iter_next (&iter))
+      if (!dbus_message_iter_next (&array_iter))
 	break;
     }
   

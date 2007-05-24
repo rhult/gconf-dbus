@@ -1,3 +1,10 @@
+2007-05-24  Richard Hult  <richard@imendio.com>
+
+	* gconf/gconf-database-dbus.c: (database_handle_get_all_dirs):
+	* gconf/gconf-dbus.c: (gconf_engine_all_dirs): Use an array for
+	directories as well, to avoid hitting the max size for message
+	headers if there are many dirs (hundreds at the same level).
+
 2007-05-22  Richard Hult  <richard@imendio.com>
 
 	* dbus-tests/test-getting-and-setting.sh:

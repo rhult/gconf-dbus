@@ -1,5 +1,10 @@
 2007-06-27  Richard Hult  <richard@imendio.com>
 
+	* backends/Makefile.am: Patch from Ronald Bultje to fix
+	portability.
+
+2007-06-27  Richard Hult  <richard@imendio.com>
+
 	* gconf/gconf-database-dbus.c (database_handle_set_schema): Empty
 	schema name means unset.
 

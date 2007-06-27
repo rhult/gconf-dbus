@@ -10,7 +10,9 @@ endif
 
 backend_LTLIBRARIES = libgconfbackend-xml.la libgconfbackend-oldxml.la $(EVOLDAP_BACKEND)
 
-libgconfbackend_oldxml_la_SOURCES = \
+noinst_LTLIBRARIES = libgconfbackend-oldxml-noinst.la
+
+libgconfbackend_oldxml_noinst_la_SOURCES = \
 	xml-cache.h		\
 	xml-cache.c		\
 	xml-dir.h		\
@@ -18,9 +20,13 @@ libgconfbackend_oldxml_la_SOURCES = \
 	xml-entry.h		\
 	xml-entry.c		\
 	xml-backend.c
+libgconfbackend_oldxml_la_SOURCES =
 
 libgconfbackend_oldxml_la_LDFLAGS = -avoid-version -module -no-undefined
-libgconfbackend_oldxml_la_LIBADD  = $(DEPENDENT_WITH_XML_LIBS) $(top_builddir)/gconf/libgconf-$(MAJOR_VERSION).la $(INTLLIBS)
+libgconfbackend_oldxml_la_LIBADD  = $(DEPENDENT_WITH_XML_LIBS) \
+	$(top_builddir)/gconf/libgconf-$(MAJOR_VERSION).la \
+	libgconfbackend-oldxml-noinst.la \
+	$(INTLLIBS)
 
 libgconfbackend_xml_la_SOURCES = 	\
 	markup-backend.c		\
@@ -36,7 +42,7 @@ xml_test_SOURCES= xml-test.c
 xml_test_LDADD = \
 	$(DEPENDENT_WITH_XML_LIBS) \
 	$(top_builddir)/gconf/libgconf-$(MAJOR_VERSION).la \
-	libgconfbackend-oldxml.la
+	libgconfbackend-oldxml-noinst.la
 
 bin_PROGRAMS = gconf-merge-tree
 gconf_merge_tree_SOURCES = gconf-merge-tree.c

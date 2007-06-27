@@ -639,6 +639,10 @@ database_handle_set_schema (DBusConnection *conn,
 				     DBUS_TYPE_INVALID)) 
     return;
 
+  /* Empty schema key name means unset. */ 
+  if (schema_key[0] == '\0')
+    schema_key = NULL;
+  
   gconf_database_set_schema (db, key, schema_key, &gerror);
 
   if (gconfd_dbus_set_exception (conn, message, &gerror))

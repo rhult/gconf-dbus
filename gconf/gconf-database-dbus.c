@@ -81,6 +81,9 @@ static void     database_handle_get_all_dirs      (DBusConnection   *conn,
 static void     database_handle_set_schema        (DBusConnection   *conn,
 						   DBusMessage      *message,
 						   GConfDatabase    *db);
+static void     database_handle_suggest_sync      (DBusConnection   *conn,
+						   DBusMessage      *message,
+						   GConfDatabase    *db);
 static void     database_handle_add_notify        (DBusConnection   *conn,
 						   DBusMessage      *message,
 						   GConfDatabase    *db);
@@ -165,6 +168,11 @@ database_message_func (DBusConnection *connection,
 					GCONF_DBUS_DATABASE_INTERFACE,
 					GCONF_DBUS_DATABASE_SET_SCHEMA)) {
     database_handle_set_schema (connection, message, db);
+  }
+  else if (dbus_message_is_method_call (message,
+					GCONF_DBUS_DATABASE_INTERFACE,
+					GCONF_DBUS_DATABASE_SUGGEST_SYNC)) {
+    database_handle_suggest_sync (connection, message, db);
   }
   else if (dbus_message_is_method_call (message,
 					GCONF_DBUS_DATABASE_INTERFACE,
@@ -645,6 +653,24 @@ database_handle_set_schema (DBusConnection *conn,
   
   gconf_database_set_schema (db, key, schema_key, &gerror);
 
+  if (gconfd_dbus_set_exception (conn, message, &gerror))
+    return;
+
+  reply = dbus_message_new_method_return (message);
+  dbus_connection_send (conn, reply, NULL);
+  dbus_message_unref (reply);
+}
+
+static void
+database_handle_suggest_sync (DBusConnection *conn,
+		              DBusMessage    *message,
+		              GConfDatabase  *db)
+{
+  GError *gerror = NULL;
+  DBusMessage *reply;
+  
+  gconf_database_sync (db, &gerror);
+  
   if (gconfd_dbus_set_exception (conn, message, &gerror))
     return;
 

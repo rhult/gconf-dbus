@@ -1,5 +1,12 @@
 2007-06-27  Richard Hult  <richard@imendio.com>
 
+	* gconf/gconf-database-dbus.c: (database_message_func),
+	(database_handle_suggest_sync):
+	* gconf/gconf-dbus.c: (gconf_engine_suggest_sync): Implement
+	suggest_sync.
+
+2007-06-27  Richard Hult  <richard@imendio.com>
+
 	* backends/Makefile.am: Patch from Ronald Bultje to fix
 	portability.
 

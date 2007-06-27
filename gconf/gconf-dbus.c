@@ -1957,6 +1957,11 @@ gconf_engine_all_dirs(GConfEngine* conf, const gchar* dir, GError** err)
 void 
 gconf_engine_suggest_sync(GConfEngine* conf, GError** err)
 {
+  const gchar *db;
+  DBusMessage *message;
+  DBusMessage *reply;
+  DBusError error;
+  
   g_return_if_fail(conf != NULL);
   g_return_if_fail(err == NULL || *err == NULL);
 
@@ -1983,7 +1988,25 @@ gconf_engine_suggest_sync(GConfEngine* conf, GError** err)
       return;
     }
 
-  /* Do nothing for non-local case. */
+  g_assert(!gconf_engine_is_local(conf));
+
+  db = gconf_engine_get_database (conf, TRUE, err);
+
+  if (db == NULL)
+    {
+      g_return_if_fail (err == NULL || *err != NULL);
+    }
+  
+  message = dbus_message_new_method_call (GCONF_DBUS_SERVICE,
+					  db,
+					  GCONF_DBUS_DATABASE_INTERFACE,
+					  GCONF_DBUS_DATABASE_SUGGEST_SYNC);
+
+  dbus_error_init (&error);
+  reply = dbus_connection_send_with_reply_and_block (global_conn, message, -1, &error);
+  dbus_message_unref (message);
+
+  gconf_handle_dbus_exception (reply, &error, err);
 }
 
 void 

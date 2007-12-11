@@ -46,6 +46,8 @@
     "type='signal',member='NameOwnerChanged',arg0='org.gnome.GConf'"
 #define NOTIFY_RULE \
     "type='method_call',interface='org.gnome.GConf.Database'"
+#define DAEMON_DISCONNECTED_RULE \
+    "type='signal',member='Disconnected'"
 
 struct _GConfEngine {
   guint refcount;
@@ -103,6 +105,7 @@ static gboolean        needs_reconnect = FALSE;
 static GConfEngine    *default_engine = NULL;
 static GHashTable     *engines_by_db = NULL;
 static GHashTable     *engines_by_address = NULL;
+static gboolean        dbus_disconnected = FALSE;
 
 static gboolean     ensure_dbus_connection      (void);
 static gboolean     ensure_service              (gboolean          start_if_not_found,
@@ -390,7 +393,13 @@ ensure_dbus_connection (void)
 
   if (global_conn != NULL)
     return TRUE;
- 
+
+  if (dbus_disconnected)
+    {
+      g_warning ("The connection to DBus was broken. Can't reinitialize it.");
+      return FALSE;
+    }
+
   dbus_error_init (&error);
 
 #ifdef USE_SYSTEM_BUS
@@ -409,8 +418,11 @@ ensure_dbus_connection (void)
 	
   dbus_connection_setup_with_g_main (global_conn, NULL);
 
+  dbus_connection_set_exit_on_disconnect (global_conn, FALSE);
+
   dbus_bus_add_match (global_conn, DAEMON_NAME_OWNER_CHANGED_RULE, NULL);
   dbus_bus_add_match (global_conn, NOTIFY_RULE, NULL);
+  dbus_bus_add_match (global_conn, DAEMON_DISCONNECTED_RULE, NULL);
 
   dbus_connection_add_filter (global_conn, gconf_dbus_message_filter,
 			      NULL, NULL);
@@ -2241,17 +2253,14 @@ gconf_dbus_message_filter (DBusConnection    *dbus_conn,
 				   DBUS_INTERFACE_LOCAL,
 				   "Disconnected"))
     {
-      /* Note: This is a terminal situation. We can't live without the bus and
-       * we don't support starting it after the client. We could add support for
-       * that though.
-       */
-
       dbus_connection_unref (global_conn);
       global_conn = NULL;
       service_running = FALSE;
-            
-      d(g_print ("****** Disconnected!\n"));
-      return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;      
+      dbus_disconnected = TRUE;
+
+      g_warning ("Got Disconnected from DBus.\n");
+
+      return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
     }
   else if (dbus_message_is_signal (message,
 				   DBUS_INTERFACE_DBUS,

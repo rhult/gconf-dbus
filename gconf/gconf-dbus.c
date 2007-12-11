@@ -231,8 +231,11 @@ gconf_handle_dbus_exception (DBusMessage *message, DBusError *derr, GError **ger
       return TRUE;
     }
     
- if (dbus_message_get_type (message) != DBUS_MESSAGE_TYPE_ERROR)
+  if (dbus_message_get_type (message) != DBUS_MESSAGE_TYPE_ERROR)
     return FALSE;
+
+  if (derr)
+    dbus_error_free (derr);
 
   name = dbus_message_get_member (message);
 
@@ -1824,9 +1827,9 @@ gconf_engine_all_entries (GConfEngine* conf, const gchar* dir, GError** err)
   dbus_message_unref (message);
   
   if (gconf_handle_dbus_exception (reply, &error, err))
-    return FALSE;
+    return NULL;
   
-  g_return_val_if_fail (err == NULL || *err == NULL, FALSE);
+  g_return_val_if_fail (err == NULL || *err == NULL, NULL);
 
   dbus_message_iter_init (reply, &iter);
   
@@ -1927,9 +1930,9 @@ gconf_engine_all_dirs(GConfEngine* conf, const gchar* dir, GError** err)
   dbus_message_unref (message);
   
   if (gconf_handle_dbus_exception (reply, &error, err))
-    return FALSE;
+    return NULL;
 
-  g_return_val_if_fail (err == NULL || *err == NULL, FALSE);
+  g_return_val_if_fail (err == NULL || *err == NULL, NULL);
 
   dbus_message_iter_init (reply, &iter);
 
@@ -2006,7 +2009,8 @@ gconf_engine_suggest_sync(GConfEngine* conf, GError** err)
   reply = dbus_connection_send_with_reply_and_block (global_conn, message, -1, &error);
   dbus_message_unref (message);
 
-  gconf_handle_dbus_exception (reply, &error, err);
+  if (!gconf_handle_dbus_exception (reply, &error, err))
+    dbus_message_unref (reply);
 }
 
 void 
@@ -2125,8 +2129,9 @@ gconf_engine_dir_exists (GConfEngine *conf, const gchar *dir, GError** err)
 
   g_return_val_if_fail (err == NULL || *err == NULL, FALSE);
 
+  exists = FALSE;
   dbus_message_get_args (reply,
-			 &error,
+			 NULL,
 			 DBUS_TYPE_BOOLEAN, &exists,
 			 DBUS_TYPE_INVALID);
 

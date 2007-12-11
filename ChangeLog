@@ -1,3 +1,11 @@
+2007-11-10  Richard Hult  <richard@imendio.com>
+
+	* gconf/gconf-dbus.c: (gconf_handle_dbus_exception),
+	(gconf_engine_all_entries), (gconf_engine_all_dirs),
+	(gconf_engine_suggest_sync), (gconf_engine_dir_exists): Plug
+	leaks (also do some s/bool/pointer/ in g_return_val_if_fail
+	macros).
+
 2007-06-27  Richard Hult  <richard@imendio.com>
 
 	* gconf/gconf-database-dbus.c: (database_message_func),

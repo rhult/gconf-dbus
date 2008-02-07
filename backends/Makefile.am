@@ -20,13 +20,14 @@ libgconfbackend_oldxml_noinst_la_SOURCES = \
 	xml-entry.h		\
 	xml-entry.c		\
 	xml-backend.c
+libgconfbackend_oldxml_noinst_la_LIBADD  = $(DEPENDENT_WITH_XML_LIBS) \
+	$(top_builddir)/gconf/libgconf-$(MAJOR_VERSION).la \
+	$(INTLLIBS)
+
 libgconfbackend_oldxml_la_SOURCES =
 
 libgconfbackend_oldxml_la_LDFLAGS = -avoid-version -module -no-undefined
-libgconfbackend_oldxml_la_LIBADD  = $(DEPENDENT_WITH_XML_LIBS) \
-	$(top_builddir)/gconf/libgconf-$(MAJOR_VERSION).la \
-	libgconfbackend-oldxml-noinst.la \
-	$(INTLLIBS)
+libgconfbackend_oldxml_la_LIBADD  = libgconfbackend-oldxml-noinst.la
 
 libgconfbackend_xml_la_SOURCES = 	\
 	markup-backend.c		\

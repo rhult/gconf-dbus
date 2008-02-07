@@ -1,3 +1,8 @@
+2008-02-07  Richard Hult  <richard@imendio.com>
+
+	* backends/Makefile.am: Patch from Ross Burton to fix build with
+	--as-needed.
+
 2008-01-28  Richard Hult  <richard@imendio.com>
 
 	* gconf/gconf-dbus.c: Patch from Ross Burton to use right the

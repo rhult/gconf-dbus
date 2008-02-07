@@ -45,7 +45,7 @@
 #define DAEMON_NAME_OWNER_CHANGED_RULE \
     "type='signal',member='NameOwnerChanged',arg0='org.gnome.GConf'"
 #define NOTIFY_RULE \
-    "type='method_call',interface='org.gnome.GConf.Database'"
+    "type='method_call',interface='org.gnome.GConf.Database',member='Notify'"
 #define DAEMON_DISCONNECTED_RULE \
     "type='signal',member='Disconnected'"
 

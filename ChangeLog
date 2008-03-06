@@ -1,3 +1,9 @@
+2008-03-05  Richard Hult  <richard@imendio.com>
+
+	* gconf/gconf-client.c (remove_key_from_cache_recursively_foreach):
+	Fix crash, not sure why a null entry can be in the cache though so
+	this is more of a workaround.
+
 2008-02-07  Richard Hult  <richard@imendio.com>
 
 	* backends/Makefile.am: Patch from Ross Burton to fix build with

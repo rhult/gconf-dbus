@@ -999,7 +999,11 @@ remove_key_from_cache_recursively_foreach (const gchar *cached_key,
 {
   if (gconf_key_is_below (cached_key, key) == 0 || strcmp (cached_key, key) == 0)
     {
-      gconf_entry_free (entry);
+      /* Not sure why a null entry would be in the cache, but it happens
+       * sometimes, workaround for now to avoid crashing.
+       */
+      if (entry)
+        gconf_entry_free (entry);
       return TRUE;
     }
   

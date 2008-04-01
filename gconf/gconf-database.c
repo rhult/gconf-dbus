@@ -1288,11 +1288,10 @@ gconf_database_notify_listeners (GConfDatabase       *db,
       tmp = g_slist_next(tmp);
     }
 
-  if (notify_others)
+  if (modified_sources)
     {
-      g_return_if_fail (modified_sources != NULL);
-
-      gconfd_notify_other_listeners (db, modified_sources, key);
+      if (notify_others)
+          gconfd_notify_other_listeners (db, modified_sources, key);
 
       g_list_free (modified_sources->sources);
       g_free (modified_sources);

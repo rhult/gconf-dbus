@@ -1276,7 +1276,6 @@ get (GConfClient *client,
   
   /* Check our client-side cache */
   if (gconf_client_lookup (client, key, &entry))
-
     {
       trace ("%s was in the client-side cache\n", key);
       
@@ -2534,8 +2533,29 @@ gconf_client_flush_notifies (GConfClient *client)
         }
       else
         {
-          trace ("Key %s was in notify queue but not in cache; we must have stopped monitoring it; not notifying\n",
-                 tmp->data);
+          /* The dbus version cleans the cache after modifying a value so a get
+           * directly after a set doesn't return a stale value. That means we
+           * have to check if the key is supposed to be monitored here, we can't
+           * just rely on it being in the cache.
+           */
+          if (key_being_monitored (client, tmp->data))
+            {
+              trace ("Key %s was in notify queue but not in cache, but is being monitored\n",
+                     tmp->data);
+
+              entry = gconf_client_get_entry (client, tmp->data, NULL, TRUE, NULL);
+              if (entry != NULL)
+                {
+                  notify_one_entry (client, entry);
+                  gconf_entry_unref (entry);
+                  last_entry = NULL;
+                }
+            }
+          else
+            {
+              trace ("Key %s was in notify queue but not in cache; we must have stopped monitoring it; not notifying\n",
+                     tmp->data);
+            }
         }
       
       tmp = tmp->next;

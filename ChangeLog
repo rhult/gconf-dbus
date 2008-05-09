@@ -1,3 +1,10 @@
+2008-05-09  Richard Hult  <richard@imendio.com>
+
+	* gconf/gconf-client.c: (gconf_client_flush_notifies): If the key
+	is not in the cache, check if it's being monitored. Fixes issue
+	where notifications were sent out for the first change after
+	unsetting a key (for example).
+
 2008-03-31  Richard Hult  <richard@imendio.com>
 
 	* gconf/gconf-database.c (gconf_database_notify_listeners): Get

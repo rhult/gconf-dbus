@@ -1,3 +1,10 @@
+2008-05-15  Richard Hult  <richard@imendio.com>
+
+	* gconf/gconf-database-dbus.c (gconf_database_notify_listeners):
+	Get rid of critical warning (and crash when built with
+	--disable-debug), when unsetting a key that has no writable
+	sources.
+
 2008-05-09  Richard Hult  <richard@imendio.com>
 
 	* gconf/gconf-client.c: (gconf_client_flush_notifies): If the key

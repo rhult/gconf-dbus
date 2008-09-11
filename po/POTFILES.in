@@ -21,3 +21,9 @@ gconf/gconf-value.c
 gconf/gconf.c
 gconf/gconfd.c
 gconf/gconftool.c
+gconf/gconf-database-dbus.c
+gconf/gconf-dbus.c
+gconf/gconfd-dbus.c
+gconf/gconf-database-dbus.c
+gconf/gconf-dbus.c
+gconf/gconfd-dbus.c

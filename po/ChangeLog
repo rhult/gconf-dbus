@@ -1,5 +1,9 @@
 2008-09-11  Richard Hult  <richard@imendio.com>
 
+	* Release 2.16.0 of the dbus version.
+
+2008-09-11  Richard Hult  <richard@imendio.com>
+
 	* POTFILES.in: Add dbus source files.
 
 2006-10-09  Luca Ferretti  <elle.uca@libero.it>

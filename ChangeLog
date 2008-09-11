@@ -1,5 +1,9 @@
 2008-09-11  Richard Hult  <richard@imendio.com>
 
+	* Release 2.16.0 of the dbus version.
+
+2008-09-11  Richard Hult  <richard@imendio.com>
+
 	* gconf/Makefile.am (DISTCLEANFILES): Add generated dbus service
 	file.
 

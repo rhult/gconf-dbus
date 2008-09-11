@@ -1,3 +1,8 @@
+2008-09-11  Richard Hult  <richard@imendio.com>
+
+	* gconf/Makefile.am (DISTCLEANFILES): Add generated dbus service
+	file.
+
 2008-05-15  Richard Hult  <richard@imendio.com>
 
 	* gconf/gconf-database-dbus.c (gconf_database_notify_listeners):

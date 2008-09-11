@@ -46,7 +46,7 @@ $(libgconf_2_la_OBJECTS) $(gconftool_2_OBJECTS) $(gconfd_2_OBJECTS): $(built_sou
 
 CLEANFILES = $(BUILT_SOURCES)
 
-DISTCLEANFILES = default.path
+DISTCLEANFILES = default.path gconf.service
 
 dist-hook:
 	cd $(distdir) ; rm -f $(CLEANFILES)

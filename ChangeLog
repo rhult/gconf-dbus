@@ -1,3 +1,8 @@
+2008-12-03  Richard Hult  <richard@imendio.com>
+
+	* backends/markup-tree.c (save_tree_with_locale): Use fdatasync to
+	flush the file before renaming.
+
 2008-09-11  Richard Hult  <richard@imendio.com>
 
 	* Release 2.16.0 of the dbus version.

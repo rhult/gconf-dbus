@@ -4465,6 +4465,7 @@ save_tree_with_locale (MarkupDir  *dir,
       goto done_writing;
     }
 
+  fflush (f);
   if (fdatasync (fileno (f)) < 0)
     {
       gconf_log (GCL_WARNING,

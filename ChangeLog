@@ -1,3 +1,8 @@
+2009-02-06  Richard Hult  <richard@imendio.com>
+
+	* backends/markup-tree.c (save_tree_with_locale): Also fflush()
+	the stream before syncing.
+
 2008-12-03  Richard Hult  <richard@imendio.com>
 
 	* backends/markup-tree.c (save_tree_with_locale): Use fdatasync to

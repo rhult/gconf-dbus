@@ -1,3 +1,8 @@
+2009-03-09  Richard Hult  <richard@imendio.com>
+
+	* Merge revision 2763 from upstream, to optimize the markup
+	backend.
+
 2009-02-06  Richard Hult  <richard@imendio.com>
 
 	* backends/markup-tree.c (save_tree_with_locale): Also fflush()

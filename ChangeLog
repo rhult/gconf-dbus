@@ -1,5 +1,10 @@
 2009-03-09  Richard Hult  <richard@imendio.com>
 
+	* Merge revision 2765 from upstream, further optimizations to the
+	markup backend.
+
+2009-03-09  Richard Hult  <richard@imendio.com>
+
 	* Merge revision 2764 from upstream, further optimizations to the
 	markup backend.
 

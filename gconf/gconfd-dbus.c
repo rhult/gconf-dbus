@@ -181,7 +181,10 @@ server_handle_shutdown (DBusConnection *connection, DBusMessage *message)
   DBusMessage *reply;
 
   if (gconfd_dbus_check_in_shutdown (connection, message))
+  {
+    dbus_connection_unref(bus_conn);	  
     return;
+  }
 
   gconf_log(GCL_DEBUG, _("Shutdown request received"));
 
@@ -190,6 +193,7 @@ server_handle_shutdown (DBusConnection *connection, DBusMessage *message)
   dbus_message_unref (reply);
   
   dbus_connection_unregister_object_path (connection, server_path);
+  dbus_connection_unref(bus_conn);	
 
   gconf_main_quit();
 }
@@ -232,6 +236,7 @@ gconfd_dbus_init (void)
   if (ret != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER)
     {
       gconf_log (GCL_ERR, "Daemon could not become primary owner");
+      dbus_connection_unref(bus_conn);
       return FALSE;
     }
   
@@ -240,6 +245,7 @@ gconfd_dbus_init (void)
       gconf_log (GCL_ERR, _("Daemon failed to acquire gconf service:\n%s"),
 		 error.message);
       dbus_error_free (&error);
+      dbus_connection_unref(bus_conn);	  
       return FALSE;
     }
 
@@ -249,6 +255,7 @@ gconfd_dbus_init (void)
 					     NULL))
     {
       gconf_log (GCL_ERR, _("Failed to register server object with the D-BUS bus daemon"));
+      dbus_connection_unref(bus_conn);  	  
       return FALSE;
     }
   
